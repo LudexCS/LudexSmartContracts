@@ -1,62 +1,64 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
-
+import "./OwnableERC2771Context.sol";
 import "./PriceTable.sol";
+import "./PaymentProcessor.sol";
+import "./Ledger.sol";
+import "./ItemRegistry.sol";
+import "./SellerRegistry.sol";
 
-contract Store is Ownable, ERC2771Context 
-{
-
-    struct FeeRateLogEntry {
-        uint256 timestamp;
-        uint16 feeRate;
-    }
-
-    FeeRateLogEntry[] feeRateLog;
+/// @title Store
+/// @author Ludex
+/// @notice 
+/// This contract is responsible for the generation of component contracts
+/// and purchase of items in the Ludex platform.
+contract Store is OwnableERC2771Context {
+    
     PriceTable priceTable;
+    PaymentProcessor payment;
+    Ledger ledger;
+    ItemRegistry itemRegistry;
+    SellerRegistry sellerRegistry;
 
     constructor (
         address forwarderAddress,
         uint16 initialFeeRate
     ) 
-        ERC2771Context(forwarderAddress)
-        Ownable(msg.sender)
+        OwnableERC2771Context(msg.sender, forwarderAddress)
     {
-        feeRateLog.push(FeeRateLogEntry(block.timestamp, initialFeeRate));
-        priceTable = new PriceTable(msg.sender, address(this));
+        priceTable = new PriceTable(msg.sender, forwarderAddress, address(this));
+        ledger = new Ledger(address(this));
+        payment = 
+            new PaymentProcessor(
+                msg.sender,
+                forwarderAddress, 
+                initialFeeRate, 
+                priceTable);
+        itemRegistry = priceTable.itemRegistry();
+        sellerRegistry = priceTable.sellerRegistry();
     }
 
+    /// @param itemID ID of item registered in the system
+    /// @param token By which token the buyer pay?
+    /// @param v Signature component v used for ERC20Permit
+    /// @param r Signature component r used for ERC20Permit
+    /// @param s Signature component s used for ERC20Permit
+    /// @return purchaseID 
+    /// The NFT token ID mapped to the purchase, 
+    /// which is minted from the `Ledger` contract.
     function purchaseItem (
         uint32 itemID,
-        address token
+        address token,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
     )
         external
         returns (uint256 purchaseID)
     {
-
-    }
-
-    function startItemSale (
-        string calldata itemName,
-        uint256 usdPrice,
-        uint16 revenueShare,
-        uint32[] parentItems 
-    )
-        external
-    {
-        
-    }
-
-    function changeFeeRate(
-        uint16 newFeeRate
-    )
-        external
-        onlyOwner
-        returns (uint16 prevFeeRate)
-    {
-        
+        require(payment.process(_msgSender(), itemID, token, v, r, s));
+        purchaseID = ledger.logPurchase(itemID, _msgSender());
     }
 
 }
