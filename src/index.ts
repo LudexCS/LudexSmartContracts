@@ -1,3 +1,4 @@
+import { abi as ERC721ABI } from "contracts/ERC721.json";
 import { abi as ERC2771ForwarderABI } from "contracts/ERC2771Forwarder.json";
 import { abi as StoreABI } from "contracts/Store.json";
 import { abi as PriceTableABI } from "contracts/PriceTable.json";
@@ -7,6 +8,7 @@ import { abi as ItemRegistryABI } from "contracts/ItemRegistry.json";
 
 export namespace LudexContract {
     export namespace ABI {
+        export const ERC721: any = ERC721ABI;
         export const ERC2771Forwarder: any = ERC2771ForwarderABI;
         export const Store: any = StoreABI;
         export const PriceTable: any = PriceTableABI;
