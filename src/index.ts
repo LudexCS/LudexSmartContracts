@@ -10,6 +10,7 @@ import { abi as ItemRegistryABI } from "contracts/ItemRegistry.json";
 export namespace LudexContract {
     export namespace ABI {
         export const ERC721: any = ERC721ABI;
+        export const ERC20Permit: any = ERC20PermitABI;
         export const ERC2771Forwarder: any = ERC2771ForwarderABI;
         export const Store: any = StoreABI;
         export const PriceTable: any = PriceTableABI;
