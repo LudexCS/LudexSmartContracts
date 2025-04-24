@@ -3,7 +3,7 @@
   "main": "src/index.js",
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "npx truffle compile"
+    "postinstall": "npx truffle compile && npx tsc"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.3.0"
