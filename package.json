@@ -1,6 +1,12 @@
 {
   "name": "ludex-contracts",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "typesVersions": {
+    "*":{
+      "*": ["dist/index.d.ts"]
+    }
+  },
   "version": "1.0.0",
   "scripts": {
     "postinstall": "npx truffle compile && npx tsc"
