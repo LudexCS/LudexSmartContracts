@@ -1,4 +1,5 @@
 import { abi as ERC721ABI } from "contracts/ERC721.json";
+import { abi as ERC20PermitABI } from "contracts/ERC20Permit.json";
 import { abi as ERC2771ForwarderABI } from "contracts/ERC2771Forwarder.json";
 import { abi as StoreABI } from "contracts/Store.json";
 import { abi as PriceTableABI } from "contracts/PriceTable.json";
