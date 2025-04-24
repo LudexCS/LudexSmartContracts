@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LudexContract = void 0;
+const ERC721_json_1 = require("contracts/ERC721.json");
+const ERC20Permit_json_1 = require("contracts/ERC20Permit.json");
 const ERC2771Forwarder_json_1 = require("contracts/ERC2771Forwarder.json");
 const Store_json_1 = require("contracts/Store.json");
 const PriceTable_json_1 = require("contracts/PriceTable.json");
@@ -11,6 +13,8 @@ var LudexContract;
 (function (LudexContract) {
     let ABI;
     (function (ABI) {
+        ABI.ERC721 = ERC721_json_1.abi;
+        ABI.ERC20Permit = ERC20Permit_json_1.abi;
         ABI.ERC2771Forwarder = ERC2771Forwarder_json_1.abi;
         ABI.Store = Store_json_1.abi;
         ABI.PriceTable = PriceTable_json_1.abi;
