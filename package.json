@@ -4,7 +4,7 @@
   "types": "src/index.d.ts",
   "typesVersions": {
     "*":{
-      "*": ["dist/index.d.ts"]
+      "*": ["src/index.d.ts"]
     }
   },
   "version": "1.0.0",
