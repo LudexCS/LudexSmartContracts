@@ -40,6 +40,28 @@ contract PriceTable is OwnableERC2771Context {
 
     address immutable storeAddress;
 
+    event ItemPriceChanged(
+        uint32 indexed itemID,
+        uint256 indexed newUsdPrice,
+        uint256 indexed prevUsdPrice);
+
+    event DiscountStarted(
+        uint32 indexed itemID,
+        uint256 indexed discountedPrice);
+
+    event ExchangeRateChanged(
+        address indexed token,
+        uint256 indexed newUsdToToken, 
+        uint256 indexed prevUsdToToken);
+
+    event PaymentChannelAdded(
+        address indexed token,
+        uint256 indexed usdToToken_);
+
+    event PaymentChannelRemoved(
+        address indexed token,
+        bool indexed isSuccess);
+
     constructor (
         address owner_,
         address forwarderAddress,
@@ -127,26 +149,27 @@ contract PriceTable is OwnableERC2771Context {
     /// @notice 
     /// Change a token's exchange rate from USD to given token
     /// This function can only be called by the owner of the platform
+    /// Emits ExchangeRateChanged event.
     /// @param paymentChannel ERC-20 contract's address
     /// @param usdToToken_ New exchange rate. 
     /// MS 18 digits for integer part, LS 18 digits for decimal part.
-    /// @return prevRate Exchange rate from USD to `paymentChannel` 
-    /// previously used
     function changeExchangeRate (
         address paymentChannel,
         uint256 usdToToken_
     )
         external
         onlyOwner
-        returns (uint256 prevRate)
     {
-        prevRate = usdToToken[paymentChannel];
+        uint256 prevRate = usdToToken[paymentChannel];
         usdToToken[paymentChannel] = usdToToken_;
+
+        emit ExchangeRateChanged(paymentChannel, usdToToken_, prevRate);
     }
 
     /// @notice 
     /// Add a new ERC-20 token contract to the platform as payment channel.
     /// This function can only be called by the owner of the platform.
+    /// Emits PaymentChannelAdded event.
     /// @param token The new token contract to be added
     function addPaymentChannel (
         address token,
@@ -162,18 +185,20 @@ contract PriceTable is OwnableERC2771Context {
         usdToToken[token] = usdToToken_;
 
         paymentChannels.push(token);
+
+        emit PaymentChannelAdded(token, usdToToken_);
     }
 
     /// @notice
     /// Remove a ERC-20 contract from the option of valid payment channels.
     /// This function can only be called by the owner of the platform.
+    /// Emits PaymentChannelRemoved event.
     /// @param token The token contract to remove from the platform
     function removePaymentChannel (
         address token
     )   
         external
         onlyOwner
-        returns (bool isSuccess)
     {
         require (
             usdToToken[token] != 0,
@@ -194,12 +219,13 @@ contract PriceTable is OwnableERC2771Context {
             }
         }
 
-        return shouldShift;
+        emit PaymentChannelRemoved(token, shouldShift);
     }
 
     /// @notice
     /// Change the price in USD for the item. 
     /// This function can only be called by the seller of the item.
+    /// Emits ItemPriceChanged event.
     /// @param itemID ID of item whose price is updated
     /// @param usdPrice_ New price of item in USD
     /// New price of item in USD. MS 18 digits for integer part,
@@ -210,15 +236,17 @@ contract PriceTable is OwnableERC2771Context {
     )
         external
         onlyItemSeller(itemID, _msgSender())
-        returns (uint256 prevPriceUsd)
     {
-        prevPriceUsd = usdPrice[itemID];
+        uint256 prevPriceUsd = usdPrice[itemID];
         usdPrice[itemID] = usdPrice_;
+
+        emit ItemPriceChanged(itemID, usdPrice_, prevPriceUsd);
     }
 
     /// @notice 
     /// Start a discount event for an item.
     /// This function can only be called by the seller of the item.
+    /// Emits DiscountStarted event
     /// @param itemID ID of item which which will be on discount
     /// @param usdPrice_ Price of discounted item 
     /// @param endTime UNIX time when the discount will be over
@@ -236,5 +264,7 @@ contract PriceTable is OwnableERC2771Context {
 
         discountEndTimes[itemID] = endTime;
         discountUsdPrice[itemID] = usdPrice_;
+
+        emit DiscountStarted(itemID, usdPrice_);
     }
 }
