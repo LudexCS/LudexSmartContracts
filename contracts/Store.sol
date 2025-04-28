@@ -21,6 +21,11 @@ contract Store is OwnableERC2771Context {
     ItemRegistry itemRegistry;
     SellerRegistry sellerRegistry;
 
+    event ItemPurchased(
+        uint32 indexed itemID,
+        address indexed buyer,
+        uint256 indexed tokenID);
+
     constructor (
         address forwarderAddress,
         uint16 initialFeeRate
@@ -39,14 +44,13 @@ contract Store is OwnableERC2771Context {
         sellerRegistry = priceTable.sellerRegistry();
     }
 
+    /// @notice
+    /// Make a purchase, emits ItemPurchased event
     /// @param itemID ID of item registered in the system
     /// @param token By which token the buyer pay?
     /// @param v Signature component v used for ERC20Permit
     /// @param r Signature component r used for ERC20Permit
     /// @param s Signature component s used for ERC20Permit
-    /// @return purchaseID 
-    /// The NFT token ID mapped to the purchase, 
-    /// which is minted from the `Ledger` contract.
     function purchaseItem (
         uint32 itemID,
         address token,
@@ -55,10 +59,11 @@ contract Store is OwnableERC2771Context {
         bytes32 s
     )
         external
-        returns (uint256 purchaseID)
     {
         require(payment.process(_msgSender(), itemID, token, v, r, s));
-        purchaseID = ledger.logPurchase(itemID, _msgSender());
+        uint256 purchaseID = ledger.logPurchase(itemID, _msgSender());
+
+        emit ItemPurchased(itemID, _msgSender(), purchaseID);
     }
 
 }
