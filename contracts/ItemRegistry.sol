@@ -25,6 +25,19 @@ contract ItemRegistry is Ownable {
     mapping (uint256 => uint32[]) private listGenerator;
     uint256 private listGenId;
  
+    event ItemRegistered(
+        string indexed itemName, 
+        address indexed seller, 
+        uint32 indexed itemID);
+
+    event ItemSaleSuspended (
+        uint32 indexed itemID, 
+        uint32[] suspension);
+
+    event ItemSaleResumed (
+        uint32 indexed itemID, 
+        uint32[] resumed);
+
     constructor (address owner_) Ownable(owner_) {}
 
     function parentOfItem(uint32 itemID, uint8 index)
@@ -36,12 +49,10 @@ contract ItemRegistry is Ownable {
     }
 
     /// @notice
-    /// Register a new item as on-sale
+    /// Register a new item as on-sale. Emits ItemRegistered event.
     /// @param itemName New item's name
     /// @param seller_ New item's seller's address
     /// @param parents Items which the new item is influenced 
-    /// @return itemID 
-    /// ID that is generated from a hash function with item information
     function registerItem (
         string calldata itemName, 
         address seller_,
@@ -49,9 +60,8 @@ contract ItemRegistry is Ownable {
     )
         external
         onlyOwner
-        returns (uint32 itemID)
     {
-        itemID = abi.encode(itemName, seller_).fnv1a32();
+        uint32 itemID = abi.encode(itemName, seller_).fnv1a32();
         seller[itemID] = seller_;
         itemParents[itemID] = parents;
         for (uint16 i = 0 ; i < parents.length; i ++)
@@ -60,6 +70,7 @@ contract ItemRegistry is Ownable {
         }
         timestampRegistered[itemID] = block.timestamp;
         numberOfParents[itemID] = uint8(parents.length);
+        emit ItemRegistered(itemName, seller_, itemID);
     }
 
     /// @notice Internal work for `suspendItemSale`
@@ -68,7 +79,6 @@ contract ItemRegistry is Ownable {
         uint32[] storage accumulation
     )
         private
-        returns (uint32[] storage suspensions_)
     {
         accumulation.push(itemID);
         suspensions[itemID] = true;
@@ -76,22 +86,21 @@ contract ItemRegistry is Ownable {
         {
             _suspendItemSale(itemChilds[itemID][i], accumulation);
         }
-        return accumulation;
     }
 
-    /// @notice Halt a item sale until the owner resumes
+    /// @notice 
+    /// Halt a item sale until the owner resume, 
+    /// emits ItemSaleSuspended event
     /// @param itemID ID of item to put a stop on sale
-    /// @return suspensions_ 
-    /// Whole list of items which are banned by the halt of the given item
     function suspendItemSale (
         uint32 itemID
     )
         external
         onlyOwner
-        returns (uint32[] memory suspensions_)
     {
         uint32[] storage list = listGenerator[++listGenId];
-        return _suspendItemSale(itemID, list);
+        _suspendItemSale(itemID, list);
+        emit ItemSaleSuspended(itemID, list);
     }
 
     /// @notice Internal work for `resumeItemSale`
@@ -100,7 +109,6 @@ contract ItemRegistry is Ownable {
         uint32[] storage accumulation
     )
         private
-        returns (uint32[] memory resumedItems)
     {
         accumulation.push(itemID);
         suspensions[itemID] = true;
@@ -108,23 +116,19 @@ contract ItemRegistry is Ownable {
         {
             _resumeItemSale(itemChilds[itemID][i], accumulation);
         }
-        return accumulation;
     }
 
-    /// @notice Resume sale for the item
+    /// @notice Resume sale for the item. Emits ItemSaleResumed event
     /// @param itemID ID of the item to be sold again
-    /// @return resumedItems 
-    /// The whole list of items which will be on sale again by the resume of
-    /// the given item's return
     function resumeItemSale (
         uint32 itemID
     )  
         external
         onlyOwner
-        returns (uint32[] memory resumedItems)
     {
         uint32[] storage list = listGenerator[++listGenId];
-        return _resumeItemSale(itemID, list);
+        _resumeItemSale(itemID, list);
+        emit ItemSaleResumed(itemID, list);
     }
 
 }
