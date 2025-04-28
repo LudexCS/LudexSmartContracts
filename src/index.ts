@@ -1,11 +1,11 @@
-import { abi as ERC721ABI } from "contracts/ERC721.json";
-import { abi as ERC20PermitABI } from "contracts/ERC20Permit.json";
-import { abi as ERC2771ForwarderABI } from "contracts/ERC2771Forwarder.json";
-import { abi as StoreABI } from "contracts/Store.json";
-import { abi as PriceTableABI } from "contracts/PriceTable.json";
-import { abi as LedgerABI } from "contracts/Ledger.json";
-import { abi as SellerRegistryABI } from "contracts/SellerRegistry.json";
-import { abi as ItemRegistryABI } from "contracts/ItemRegistry.json";
+import { abi as ERC721ABI } from "build/contracts/ERC721.json";
+import { abi as ERC20PermitABI } from "build/contracts/ERC20Permit.json";
+import { abi as ERC2771ForwarderABI } from "build/contracts/ERC2771Forwarder.json";
+import { abi as StoreABI } from "build/contracts/Store.json";
+import { abi as PriceTableABI } from "build/contracts/PriceTable.json";
+import { abi as LedgerABI } from "build/contracts/Ledger.json";
+import { abi as SellerRegistryABI } from "build/contracts/SellerRegistry.json";
+import { abi as ItemRegistryABI } from "build/contracts/ItemRegistry.json";
 
 export namespace LudexContract {
     export namespace ABI {

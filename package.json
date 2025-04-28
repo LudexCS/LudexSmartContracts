@@ -1,10 +1,10 @@
 {
   "name": "ludex-contracts",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "typesVersions": {
     "*":{
-      "*": ["index.d.ts"]
+      "*": ["dist/index.d.ts"]
     }
   },
   "version": "1.0.0",
