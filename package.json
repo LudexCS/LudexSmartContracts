@@ -9,7 +9,7 @@
   },
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "npx truffle compile --all && sleep 1 && npx tsc"
+    "postinstall": "node scripts/postinstall.js"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.3.0"
