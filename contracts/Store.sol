@@ -15,11 +15,11 @@ import "./SellerRegistry.sol";
 /// and purchase of items in the Ludex platform.
 contract Store is OwnableERC2771Context {
     
-    PriceTable priceTable;
+    PriceTable public priceTable;
     PaymentProcessor payment;
-    Ledger ledger;
-    ItemRegistry itemRegistry;
-    SellerRegistry sellerRegistry;
+    Ledger public ledger;
+    ItemRegistry public itemRegistry;
+    SellerRegistry public sellerRegistry;
 
     event ItemPurchased(
         uint32 indexed itemID,
