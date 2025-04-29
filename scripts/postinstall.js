@@ -1,38 +1,21 @@
-const { exec } = require("child_process");
-const util = require("util");
-const rimraf = require("rimraf");
+const { execSync } = require("child_process");
 
-const execAsync = util.promisify(exec);
-const rimrafAsync = util.promisify(rimraf);
-
-async function run(command) {
+function run(command) {
   try {
-    const { stdout, stderr } = await execAsync(command);
-    if (stdout) process.stdout.write(stdout);
-    if (stderr) process.stderr.write(stderr);
+    execSync(command, { stdio: "inherit" });
   } catch (error) {
-    console.error(`Error running command "${command}":`, error.stderr || error);
+    console.error(`Error running command "${command}"`);
     throw error;
-  }
-}
-
-async function clean() {
-  const paths = ["build", "artifacts", "cache", "typechain-types", "dist"];
-  for (const path of paths) {
-    console.log(`Cleaning ${path}...`);
-    await rimrafAsync(path);
   }
 }
 
 async function main() {
   try {
-    await clean();
+    console.log("Running Hardhat compile...");
+    run("npx hardhat compile");
 
-    console.log("Compiling smart contracts (Hardhat)...");
-    await run("npx hardhat compile");
-
-    console.log("Transpiling TypeScript sources (tsc)...");
-    await run("npx tsc");
+    console.log("Running TypeScript compile...");
+    run("npx tsc");
 
     console.log("Postinstall complete.");
   } catch (err) {
