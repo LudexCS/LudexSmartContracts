@@ -20,13 +20,13 @@ export class DeployCommand {
       fs.readFileSync(
         path.join(
           __dirname,
-          "../build/contracts/@openzeppelin/contracts/metatx/ERC2771Forwarder.sol/ERC2771Forwarder.json"
+          "../../build/contracts/@openzeppelin/contracts/metatx/ERC2771Forwarder.sol/ERC2771Forwarder.json"
         ),
         "utf8"
       )
     );
     const Forwarder = new ethers.ContractFactory(forwarderJson.abi, forwarderJson.bytecode, signer);
-    const forwarder = await Forwarder.deploy();
+    const forwarder = await Forwarder.deploy("Forwarder");
     await forwarder.waitForDeployment();
     deployed.set("ERC2771Forwarder", {
       address: await forwarder.getAddress(),
@@ -36,7 +36,7 @@ export class DeployCommand {
     // --- Store
     const storeJson = JSON.parse(
       fs.readFileSync(
-        path.join(__dirname, "../build/contracts/contracts/Store.sol/Store.json"),
+        path.join(__dirname, "../../build/contracts/contracts/Store.sol/Store.json"),
         "utf8"
       )
     );
@@ -56,7 +56,7 @@ export class DeployCommand {
     const loadAbi = (name: string) =>
       JSON.parse(
         fs.readFileSync(
-          path.join(__dirname, `../build/contracts/contracts/${name}.sol/${name}.json`),
+          path.join(__dirname, `../../build/contracts/contracts/${name}.sol/${name}.json`),
           "utf8"
         )
       ).abi;
