@@ -1,35 +1,42 @@
-// scripts/postinstall.js
-const { exec } = require('child_process');
+const { exec } = require("child_process");
+const util = require("util");
+const rimraf = require("rimraf");
 
-function run(command) {
-  return new Promise((resolve, reject) => {
-    const child = exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error running command "${command}"`);
-        console.error(stderr);
-        reject(error);
-      } else {
-        console.log(stdout);
-        resolve();
-      }
-    });
+const execAsync = util.promisify(exec);
+const rimrafAsync = util.promisify(rimraf);
 
-    child.stdout.pipe(process.stdout);
-    child.stderr.pipe(process.stderr);
-  });
+async function run(command) {
+  try {
+    const { stdout, stderr } = await execAsync(command);
+    if (stdout) process.stdout.write(stdout);
+    if (stderr) process.stderr.write(stderr);
+  } catch (error) {
+    console.error(`Error running command "${command}":`, error.stderr || error);
+    throw error;
+  }
+}
+
+async function clean() {
+  const paths = ["build", "artifacts", "cache", "typechain-types", "dist"];
+  for (const path of paths) {
+    console.log(`Cleaning ${path}...`);
+    await rimrafAsync(path);
+  }
 }
 
 async function main() {
   try {
-    console.log('Compiling contracts...');
-    await run('npx truffle compile --all');
+    await clean();
 
-    console.log('Compiling TypeScript...');
-    await run('npx tsc');
+    console.log("Compiling smart contracts (Hardhat)...");
+    await run("npx hardhat compile");
 
-    console.log('Postinstall complete.');
+    console.log("Transpiling TypeScript sources (tsc)...");
+    await run("npx tsc");
+
+    console.log("Postinstall complete.");
   } catch (err) {
-    console.error('Postinstall script failed.');
+    console.error("Postinstall script failed.");
     process.exit(1);
   }
 }

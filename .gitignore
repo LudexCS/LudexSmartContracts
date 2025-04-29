@@ -1,3 +1,5 @@
 node_modules
 [Bb]uild
 dist
+typechain-types
+.env
