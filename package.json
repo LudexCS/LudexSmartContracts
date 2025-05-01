@@ -12,7 +12,7 @@
   "version": "1.0.0",
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
-    "start:emulation": "node dist/hardhat-emulation/server.js"
+    "start:emulation": "node scripts/start-hardhat-server.js"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.3.0",
