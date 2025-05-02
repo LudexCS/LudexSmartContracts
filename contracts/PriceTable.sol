@@ -213,7 +213,9 @@ contract PriceTable is OwnableERC2771Context {
         delete usdToToken[token];
 
         bool shouldShift = false;
-        for (uint16 i = 0; i < paymentChannels.length - 1; i ++)
+        bool isSuccess = false;
+        uint256 numberOfPaymentChannels = paymentChannels.length;
+        for (uint16 i = 0; i < numberOfPaymentChannels - 1; i ++)
         {
             if (paymentChannels[i] == token)
             {
@@ -224,8 +226,13 @@ contract PriceTable is OwnableERC2771Context {
                 paymentChannels[i] = paymentChannels[i + 1];
             }
         }
+        if (paymentChannels[numberOfPaymentChannels - 1] == token || shouldShift)
+        {
+            delete paymentChannels[numberOfPaymentChannels - 1];
+            isSuccess = true;
+        }
 
-        emit PaymentChannelRemoved(token, shouldShift);
+        emit PaymentChannelRemoved(token, isSuccess);
     }
 
     /// @notice
