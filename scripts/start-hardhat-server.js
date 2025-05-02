@@ -1,9 +1,8 @@
 const { spawn } = require("child_process");
 const { ethers } = require("ethers");
-const path = require("path");
 
-const HARHDAT_RPC_URL = "http://127.0.0.1:8545";
-const HARDHAT_MNEMONIC = "test test test test test test test test test test test ludex"; // 12-word default mnemonic
+const HARDHAT_RPC_URL = "http://127.0.0.1:8545";
+const HARDHAT_MNEMONIC = "test test test test test test test test test test test ludex";
 
 function waitForRpcReady(url, timeoutMs = 60000) {
   const provider = new ethers.JsonRpcProvider(url);
@@ -30,15 +29,7 @@ async function main() {
 
   const node = spawn(
     "npx",
-    [
-      "hardhat",
-      "node",
-      "--hostname", "127.0.0.1",
-      "--port", "8545",
-      "--no-deploy",
-      "--config",
-      path.resolve(__dirname, "../hardhat.config.ts") // adjust if needed
-    ],
+    ["hardhat", "node", "--hostname", "127.0.0.1", "--port", "8545"],
     {
       stdio: "inherit",
       shell: true,
@@ -56,7 +47,7 @@ async function main() {
   });
 
   try {
-    await waitForRpcReady(HARHDAT_RPC_URL);
+    await waitForRpcReady(HARDHAT_RPC_URL);
   } catch (err) {
     console.error("❌ Hardhat node did not start in time.");
     node.kill();
