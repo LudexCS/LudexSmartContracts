@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "./OwnableERC2771Context.sol";
 import "./ItemRegistry.sol";
@@ -121,8 +121,9 @@ contract PriceTable is OwnableERC2771Context {
             "Not a valid payment channel");
         
         uint256 usdPrice_ = getPriceUsd(itemID);
+        uint8 decimals = ERC20(token).decimals();
 
-        return usdPrice_ * usdToToken[token] / (10 ** 18);
+        return usdPrice_ * usdToToken[token] / (10 ** decimals);
     }
 
     /// @notice 
@@ -181,6 +182,11 @@ contract PriceTable is OwnableERC2771Context {
         require (
             usdToToken[token] == 0,
             "There's already a token contract assigned");
+
+        try ERC20(token).decimals() returns (uint8) {
+        } catch  {
+            revert("Given token doesn't implement decimals");   
+        }
         
         usdToToken[token] = usdToToken_;
 
