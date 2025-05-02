@@ -1,30 +1,53 @@
 const { spawn } = require("child_process");
 const { ethers } = require("ethers");
+const path = require("path");
 
-async function waitForRpcReady(url, timeoutMs = 10000) {
+const HARHDAT_RPC_URL = "http://127.0.0.1:8545";
+const HARDHAT_MNEMONIC = "test test test test test test test test test test test ludex"; // 12-word default mnemonic
+
+function waitForRpcReady(url, timeoutMs = 60000) {
   const provider = new ethers.JsonRpcProvider(url);
   const start = Date.now();
 
-  while (true) {
-    try {
-      await provider.getBlockNumber();
-      return;
-    } catch {
-      if (Date.now() - start > timeoutMs) {
-        throw new Error(`RPC at ${url} did not become ready within ${timeoutMs}ms`);
+  return new Promise((resolve, reject) => {
+    const check = async () => {
+      try {
+        await provider.getBlockNumber();
+        return resolve();
+      } catch {
+        if (Date.now() - start > timeoutMs) {
+          return reject(new Error("Hardhat RPC did not become ready in time."));
+        }
+        setTimeout(check, 500);
       }
-      await new Promise((res) => setTimeout(res, 500));
-    }
-  }
+    };
+    check();
+  });
 }
 
 async function main() {
-  console.log("Starting Hardhat node...");
+  console.log("[+] Starting Hardhat node...");
 
-  const node = spawn("npx", ["hardhat", "node"], {
-    stdio: "inherit",
-    shell: true
-  });
+  const node = spawn(
+    "npx",
+    [
+      "hardhat",
+      "node",
+      "--hostname", "127.0.0.1",
+      "--port", "8545",
+      "--no-deploy",
+      "--config",
+      path.resolve(__dirname, "../hardhat.config.ts") // adjust if needed
+    ],
+    {
+      stdio: "inherit",
+      shell: true,
+      env: {
+        ...process.env,
+        HARDHAT_NETWORK_MNEMONIC: HARDHAT_MNEMONIC
+      }
+    }
+  );
 
   process.on("exit", () => node.kill());
   process.on("SIGINT", () => {
@@ -33,14 +56,14 @@ async function main() {
   });
 
   try {
-    await waitForRpcReady("http://127.0.0.1:8545");
+    await waitForRpcReady(HARHDAT_RPC_URL);
   } catch (err) {
-    console.error("Hardhat node did not start in time.");
+    console.error("❌ Hardhat node did not start in time.");
     node.kill();
     process.exit(1);
   }
 
-  console.log("Starting server...");
+  console.log("[+] Starting server...");
   const server = spawn("node", ["dist/hardhat-emulation/server.js"], {
     stdio: "inherit",
     shell: true
