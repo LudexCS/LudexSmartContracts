@@ -20,7 +20,7 @@ export class DeployCommand {
     };
 
     // --- MockUSDC 배포
-    const usdcJson = loadJson("../build/contracts/contracts/MockUSDC.sol/MockUSDC.json");
+    const usdcJson = loadJson("../../build/contracts/contracts/MockUSDC.sol/MockUSDC.json");
     const MockUSDC = new ethers.ContractFactory(usdcJson.abi, usdcJson.bytecode, signer);
     const usdc = await MockUSDC.deploy(accounts);
     await usdc.waitForDeployment();
@@ -30,9 +30,9 @@ export class DeployCommand {
     });
 
     // --- Forwarder 배포
-    const forwarderJson = loadJson("../build/contracts/@openzeppelin/contracts/metatx/ERC2771Forwarder.sol/ERC2771Forwarder.json");
+    const forwarderJson = loadJson("../../build/contracts/@openzeppelin/contracts/metatx/ERC2771Forwarder.sol/ERC2771Forwarder.json");
     const Forwarder = new ethers.ContractFactory(forwarderJson.abi, forwarderJson.bytecode, signer);
-    const forwarder = await Forwarder.deploy();
+    const forwarder = await Forwarder.deploy("ludex-forwarder");
     await forwarder.waitForDeployment();
     deployed.set("ERC2771Forwarder", {
       address: await forwarder.getAddress(),
@@ -40,7 +40,7 @@ export class DeployCommand {
     });
 
     // --- Store 배포
-    const storeJson = loadJson("../build/contracts/contracts/Store.sol/Store.json");
+    const storeJson = loadJson("../../build/contracts/contracts/Store.sol/Store.json");
     const StoreFactory = new ethers.ContractFactory(storeJson.abi, storeJson.bytecode, signer);
     const storeRaw = await StoreFactory.deploy(await forwarder.getAddress(), 1000); // initialFeeRate = 10%
     await storeRaw.waitForDeployment();
@@ -52,7 +52,7 @@ export class DeployCommand {
     const store = storeRaw as unknown as StoreContract;
 
     const loadAbi = (name: string) =>
-      loadJson(`../build/contracts/contracts/${name}.sol/${name}.json`).abi;
+      loadJson(`../../build/contracts/contracts/${name}.sol/${name}.json`).abi;
 
     deployed.set("PriceTable", {
       address: await store.priceTable(),
