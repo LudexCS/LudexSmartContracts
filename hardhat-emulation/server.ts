@@ -1,13 +1,12 @@
-// hardhat-emulation/server.ts
-// hardhat-emulation/server.ts
 import express, { Request, Response } from "express";
 import { DeployCommand } from "./deployCommand";
 import { ethers } from "ethers";
+import { config } from "hardhat";
 
 async function main() {
   const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
-  const addresses: string[] = await provider.send("eth_accounts", []);
 
+  const addresses: string[] = await provider.send("eth_accounts", []);
   const deployer = new DeployCommand();
   const contractMap = await deployer.execute(addresses);
 
@@ -39,9 +38,21 @@ async function main() {
     }
   });
 
+  app.get("/accounts", async (_req: Request, res: Response) => {
+    try {
+      const accounts: string[] = await provider.send("eth_accounts", []);
+      res.json(accounts);
+    } catch (err) {
+      res.status(500).json({
+        error: "Failed to fetch accounts",
+        detail: err instanceof Error ? err.message : String(err),
+      });
+    }
+  });
+
   app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");
-    console.log("Hardhat RPC assumed at http://localhost:8545");
+    console.log("Hardhat node assumed running at http://localhost:8545");
   });
 }
 
