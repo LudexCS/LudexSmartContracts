@@ -60,7 +60,7 @@ contract PriceTable is OwnableERC2771Context {
 
     event PaymentChannelRemoved(
         address indexed token,
-        bool indexed isSuccess);
+        bool isSuccess);
 
     constructor (
         address owner_,

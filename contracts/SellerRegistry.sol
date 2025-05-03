@@ -15,7 +15,7 @@ contract SellerRegistry is OwnableERC2771Context {
     event SellerRegistered (
         address indexed seller, 
         address[] paymentChannels,
-        bool indexed isSuccess);
+        bool isSuccess);
 
     event PaymentChannelsAdded (
         address indexed seller,
