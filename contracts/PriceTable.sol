@@ -69,7 +69,7 @@ contract PriceTable is OwnableERC2771Context {
     ) 
         OwnableERC2771Context(owner_, forwarderAddress)
     {
-        itemRegistry = new ItemRegistry(owner_);
+        itemRegistry = new ItemRegistry(owner_, address(this));
         sellerRegistry = new SellerRegistry(owner_, forwarderAddress);
         storeAddress = store;
     }
@@ -280,4 +280,21 @@ contract PriceTable is OwnableERC2771Context {
 
         emit DiscountStarted(itemID, usdPrice_);
     }
+
+    function initializeItemPrice (
+        uint32 itemID,
+        uint256 usdPrice_
+    )
+        external
+        returns (bool isSuccess)
+    {
+        require(
+            msg.sender == address(itemRegistry),
+            "Initialization of Item Price can only be made by ItemRegistry");
+
+        isSuccess = itemRegistry.seller(itemID) != address(0);
+
+        usdPrice[itemID] = usdPrice_;
+    }
+
 }

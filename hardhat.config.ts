@@ -9,16 +9,7 @@ const config: HardhatUserConfig = {
         cache: path.join(__dirname, "build/cache"),
         sources: path.join(__dirname, "contracts"),
         tests: path.join(__dirname, "test")
-    },
-    defaultNetwork: "hardhat",
-    networks: {
-        hardhat: {
-            accounts: {
-                mnemonic: process.env.HARDHAT_NETWORK_MNEMONIC ?? 
-                "test test test test test test test test test test test ludex"
-            }
-        }
-    },
+    }
 }
 
 export default config;

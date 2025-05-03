@@ -4,6 +4,7 @@ pragma solidity >= 0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "./Utils.sol";
+import "./PriceTable.sol";
 
 /// @title ItemRegistry
 /// @author Ludex
@@ -24,11 +25,14 @@ contract ItemRegistry is Ownable {
 
     mapping (uint256 => uint32[]) private listGenerator;
     uint256 private listGenId;
+
+    PriceTable private priceTable;
  
     event ItemRegistered(
         string indexed itemName, 
         address indexed seller, 
-        uint32 indexed itemID);
+        uint32 indexed itemID,
+        uint256 usdPrice);
 
     event ItemSaleSuspended (
         uint32 indexed itemID, 
@@ -38,7 +42,10 @@ contract ItemRegistry is Ownable {
         uint32 indexed itemID, 
         uint32[] resumed);
 
-    constructor (address owner_) Ownable(owner_) {}
+    constructor (address owner_, address priceTable_) Ownable(owner_) 
+    {
+        priceTable = PriceTable(priceTable_);
+    }
 
     function parentOfItem(uint32 itemID, uint8 index)
         external
@@ -56,7 +63,8 @@ contract ItemRegistry is Ownable {
     function registerItem (
         string calldata itemName, 
         address seller_,
-        uint32[] calldata parents
+        uint32[] calldata parents,
+        uint256 usdPrice
     )
         external
         onlyOwner
@@ -70,7 +78,10 @@ contract ItemRegistry is Ownable {
         }
         timestampRegistered[itemID] = block.timestamp;
         numberOfParents[itemID] = uint8(parents.length);
-        emit ItemRegistered(itemName, seller_, itemID);
+
+        priceTable.initializeItemPrice(itemID, usdPrice);
+
+        emit ItemRegistered(itemName, seller_, itemID, usdPrice);
     }
 
     /// @notice Internal work for `suspendItemSale`
