@@ -16,8 +16,10 @@ library Utils
 
         for (uint256 i = 0; i < input.length; i++)
         {
-            hash ^= uint32(uint8(input[i]));
-            hash *= prime;
+            unchecked {
+                hash ^= uint32(uint8(input[i]));
+                hash *= prime;
+            }
         }
     }
 
