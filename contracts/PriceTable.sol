@@ -38,8 +38,6 @@ contract PriceTable is OwnableERC2771Context {
 
     mapping(uint32 => uint16) public revenueSharing;
 
-    address immutable storeAddress;
-
     event ItemPriceChanged(
         uint32 indexed itemID,
         uint256 indexed newUsdPrice,
@@ -63,15 +61,14 @@ contract PriceTable is OwnableERC2771Context {
         bool isSuccess);
 
     constructor (
-        address owner_,
         address forwarderAddress,
-        address store
+        address itemRegistryAddress,
+        address sellerRegistryAddress
     ) 
-        OwnableERC2771Context(owner_, forwarderAddress)
+        OwnableERC2771Context(msg.sender, forwarderAddress)
     {
-        itemRegistry = new ItemRegistry(owner_, address(this));
-        sellerRegistry = new SellerRegistry(owner_, forwarderAddress);
-        storeAddress = store;
+        itemRegistry = ItemRegistry(itemRegistryAddress);
+        sellerRegistry = SellerRegistry(sellerRegistryAddress);
     }
 
     modifier onlyItemOnSale (uint32 itemID) {

@@ -21,7 +21,16 @@ contract Ledger is Ownable, ERC721
 
     mapping (uint256 => Purchase) private purchases;
 
-    constructor (address store) Ownable(store) ERC721("Ledger", "LEDG") {}
+    address private store;
+
+    constructor () Ownable(msg.sender) ERC721("Ledger", "LEDG") {}
+
+    function setStore(address storeAddress)
+        external
+        onlyOwner
+    {
+        store = storeAddress;
+    }
 
     /// @notice
     /// Log a purchase history, and mint a new NFT that is mapped to the purchase
@@ -33,9 +42,9 @@ contract Ledger is Ownable, ERC721
         address buyer
     )
         external
-        onlyOwner
         returns (uint256 tokenID)
     {
+        require(store == msg.sender);
         tokenID = getPurchaseID(buyer, itemID, block.timestamp);
         purchases[tokenID] = Purchase(tokenID, itemID, buyer, block.timestamp);
     }

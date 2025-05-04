@@ -25,8 +25,8 @@ contract SellerRegistry is OwnableERC2771Context {
         address indexed seller,
         address[] paymentChannels);
 
-    constructor (address owner_, address forwarder) 
-        OwnableERC2771Context(owner_, forwarder)
+    constructor (address forwarder) 
+        OwnableERC2771Context(msg.sender, forwarder)
     {}
 
     /// @notice Register a new seller(an address which called this function), 

@@ -34,17 +34,16 @@ contract PaymentProcessor is OwnableERC2771Context
     uint256 permissionDeadline = 1 hours;
 
     constructor (
-        address owner_,
         address forwarderAddress,
         uint16 initialFeeRate,
-        PriceTable priceTable_
+        address priceTableAddress
     ) 
-        OwnableERC2771Context(forwarderAddress, owner_)
+        OwnableERC2771Context(forwarderAddress, msg.sender)
     {
         feeRateLog.push(FeeRateLogEntry(block.timestamp, initialFeeRate));
-        priceTable = priceTable_;
-        itemRegistry = priceTable_.itemRegistry();
-        sellerRegistry = priceTable_.sellerRegistry();
+        priceTable = PriceTable(priceTableAddress);
+        itemRegistry = priceTable.itemRegistry();
+        sellerRegistry = priceTable.sellerRegistry();
     }
 
     /// @notice 

@@ -43,9 +43,14 @@ contract ItemRegistry is Ownable {
         uint32 indexed itemID, 
         uint32[] resumed);
 
-    constructor (address owner_, address priceTable_) Ownable(owner_) 
+    constructor () Ownable(msg.sender) 
+    {}
+
+    function setPriceTable(address priceTableAddress)
+        external
+        onlyOwner
     {
-        priceTable = PriceTable(priceTable_);
+        priceTable = PriceTable(priceTableAddress);
     }
 
     function revenueSharerOfItem(uint32 itemID, uint8 index)

@@ -28,18 +28,15 @@ contract Store is OwnableERC2771Context {
 
     constructor (
         address forwarderAddress,
-        uint16 initialFeeRate
+        address priceTableAddress,
+        address ledgerAddress,
+        address paymentProcessorAddress
     ) 
         OwnableERC2771Context(msg.sender, forwarderAddress)
     {
-        priceTable = new PriceTable(msg.sender, forwarderAddress, address(this));
-        ledger = new Ledger(address(this));
-        payment = 
-            new PaymentProcessor(
-                msg.sender,
-                forwarderAddress, 
-                initialFeeRate, 
-                priceTable);
+        priceTable = PriceTable(priceTableAddress);
+        ledger = Ledger(ledgerAddress);
+        payment = PaymentProcessor(paymentProcessorAddress);
         itemRegistry = priceTable.itemRegistry();
         sellerRegistry = priceTable.sellerRegistry();
     }
