@@ -29,7 +29,7 @@ contract ItemRegistry is Ownable {
     PriceTable private priceTable;
  
     event ItemRegistered(
-        string indexed itemName, 
+        bytes32 indexed itemName, 
         address indexed seller, 
         uint32 indexed itemID,
         uint256 usdPrice,
@@ -100,7 +100,7 @@ contract ItemRegistry is Ownable {
                     itemShareID, 
                     type(uint32).max, 
                     shares[i]));
-            itemShareIDs.push(itemShareID);
+            itemShareIDs[i] = itemShareID;
         }
 
         emit ItemRegistered(
