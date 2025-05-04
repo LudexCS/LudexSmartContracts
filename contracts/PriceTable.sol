@@ -84,7 +84,13 @@ contract PriceTable is OwnableERC2771Context {
         _;
     }
 
-    /// @notice Price of an item in US Dollar
+    modifier onlyRegistry () {
+        require(
+            msg.sender == address(itemRegistry),
+            "Initialization of Item Price can only be made by ItemRegistry");
+        _;
+    }
+
     /// @param itemID ID of the item to inquire the price in USD
     /// @return price 
     /// Price of the item. MS 18 digits for the integer part, 
@@ -283,16 +289,16 @@ contract PriceTable is OwnableERC2771Context {
 
     function initializeItemPrice (
         uint32 itemID,
-        uint256 usdPrice_
+        uint256 usdPrice_,
+        uint16 revenueShare
     )
         external
+        onlyRegistry
         returns (bool isSuccess)
     {
-        require(
-            msg.sender == address(itemRegistry),
-            "Initialization of Item Price can only be made by ItemRegistry");
-
         isSuccess = itemRegistry.seller(itemID) != address(0);
+
+        revenueSharing[itemID] = revenueShare;
 
         usdPrice[itemID] = usdPrice_;
     }

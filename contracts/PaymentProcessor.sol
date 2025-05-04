@@ -130,11 +130,11 @@ contract PaymentProcessor is OwnableERC2771Context
         returns (bool success)
     {
         //uint32[] storage parents = itemRegistry.itemParents(itemID);
-        uint8 numberOfParents = itemRegistry.numberOfParents(itemID);
+        uint8 numberOfParents = itemRegistry.numberOfSharers(itemID);
         uint256 childStake = revenueUsd;
         for (uint8 i = 0; i < numberOfParents; i ++)
         {
-            uint32 parent = itemRegistry.parentOfItem(itemID, i);
+            uint32 parent = itemRegistry.revenueSharerOfItem(itemID, i);
             uint16 share = priceTable.revenueSharing(parent);
             uint256 parentStake = revenueUsd / 10000 * share;
             childStake -= parentStake;

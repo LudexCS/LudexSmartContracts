@@ -16,9 +16,9 @@ contract ItemRegistry is Ownable {
     using Utils for bytes;
 
     mapping (uint32 => address) public seller;
-    mapping (uint32 => uint32[]) public itemParents;
-    mapping (uint32 => uint8) public numberOfParents;
-    mapping (uint32 => uint32[]) public itemChilds;
+    mapping (uint32 => uint32[]) public itemRevenueSharers;
+    mapping (uint32 => uint8) public numberOfSharers;
+    mapping (uint32 => uint32[]) public revenueSharingItems;
     mapping (uint32 => uint256) public timestampRegistered;
 
     mapping (uint32 => bool) suspensions;
@@ -32,7 +32,8 @@ contract ItemRegistry is Ownable {
         string indexed itemName, 
         address indexed seller, 
         uint32 indexed itemID,
-        uint256 usdPrice);
+        uint256 usdPrice,
+        uint32[] shareItemIDs);
 
     event ItemSaleSuspended (
         uint32 indexed itemID, 
@@ -47,41 +48,67 @@ contract ItemRegistry is Ownable {
         priceTable = PriceTable(priceTable_);
     }
 
-    function parentOfItem(uint32 itemID, uint8 index)
+    function revenueSharerOfItem(uint32 itemID, uint8 index)
         external
         view
         returns (uint32 parent)
     {
-        return itemParents[itemID][index];
+        return itemRevenueSharers[itemID][index];
     }
 
-    /// @notice
-    /// Register a new item as on-sale. Emits ItemRegistered event.
-    /// @param itemName New item's name
-    /// @param seller_ New item's seller's address
-    /// @param parents Items which the new item is influenced 
+    function nameHash(
+        string calldata nameToHash
+    )
+        public
+        pure
+        returns (bytes32 hash)
+    {
+        hash = keccak256(abi.encodePacked(nameToHash));
+    }
+
     function registerItem (
-        string calldata itemName, 
+        bytes32 itemNameHash, 
         address seller_,
-        uint32[] calldata parents,
-        uint256 usdPrice
+        uint32[] calldata revenueSharers,
+        uint256 usdPrice,
+        uint32[] calldata shareTerms,
+        uint16[] calldata shares
     )
         external
         onlyOwner
     {
-        uint32 itemID = abi.encode(itemName, seller_).fnv1a32();
+        uint32 itemID = abi.encode(itemNameHash, seller_).fnv1a32();
         seller[itemID] = seller_;
-        itemParents[itemID] = parents;
-        for (uint16 i = 0 ; i < parents.length; i ++)
+        itemRevenueSharers[itemID] = revenueSharers;
+        for (uint16 i = 0 ; i < revenueSharers.length; i ++)
         {
-            itemChilds[parents[i]].push(itemID);
+            revenueSharingItems[revenueSharers[i]].push(itemID);
         }
         timestampRegistered[itemID] = block.timestamp;
-        numberOfParents[itemID] = uint8(parents.length);
+        numberOfSharers[itemID] = uint8(revenueSharers.length);
 
-        priceTable.initializeItemPrice(itemID, usdPrice);
+        assert(priceTable.initializeItemPrice(itemID, usdPrice, 0));
 
-        emit ItemRegistered(itemName, seller_, itemID, usdPrice);
+        uint32[] memory itemShareIDs = new uint32[](shareTerms.length);
+        for (uint16 i = 0; i < shareTerms.length; i ++)
+        {
+            uint32 shareTermID = shareTerms[i];
+            uint32 itemShareID = abi.encode(itemID, shareTermID).fnv1a32();
+            seller[itemShareID] = seller_;
+            assert(
+                priceTable.initializeItemPrice(
+                    itemShareID, 
+                    type(uint32).max, 
+                    shares[i]));
+            itemShareIDs.push(itemShareID);
+        }
+
+        emit ItemRegistered(
+            itemNameHash, 
+            seller_, 
+            itemID, 
+            usdPrice,
+            itemShareIDs);
     }
 
     /// @notice Internal work for `suspendItemSale`
@@ -93,9 +120,9 @@ contract ItemRegistry is Ownable {
     {
         accumulation.push(itemID);
         suspensions[itemID] = true;
-        for (uint8 i = 0 ; i < itemChilds[itemID].length; i++)
+        for (uint8 i = 0 ; i < revenueSharingItems[itemID].length; i++)
         {
-            _suspendItemSale(itemChilds[itemID][i], accumulation);
+            _suspendItemSale(revenueSharingItems[itemID][i], accumulation);
         }
     }
 
@@ -123,9 +150,9 @@ contract ItemRegistry is Ownable {
     {
         accumulation.push(itemID);
         suspensions[itemID] = true;
-        for (uint8 i = 0; i < itemChilds[itemID].length; i ++)
+        for (uint8 i = 0; i < revenueSharingItems[itemID].length; i ++)
         {
-            _resumeItemSale(itemChilds[itemID][i], accumulation);
+            _resumeItemSale(revenueSharingItems[itemID][i], accumulation);
         }
     }
 
