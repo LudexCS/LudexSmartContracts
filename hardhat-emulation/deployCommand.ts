@@ -96,7 +96,7 @@ export class DeployCommand {
     // --- Ledger 배포
     const ledgerJson = loadJson("../../build/contracts/contracts/Ledger.sol/Ledger.json");
     const ledgerFactory = new ethers.ContractFactory(ledgerJson.abi, ledgerJson.bytecode, wallet);
-    const ledgerContract = await ledgerFactory.deploy();
+    const ledgerContract = await ledgerFactory.deploy(forwarderAdress);
     await ledgerContract.waitForDeployment();
     const ledgerAddress = await ledgerContract.getAddress();
     deployed.set("Ledger", {

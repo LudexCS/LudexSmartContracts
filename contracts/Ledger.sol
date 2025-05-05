@@ -1,29 +1,25 @@
-//SPDX-License-Identifier: MIT
-pragma solidity >= 0.8.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./OwnableERC2771Context.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
 
-/// @title Ledger
-/// @author Ludex
-/// @notice
-/// NFT-minter contract where each of tokens is mapped to a single purchase
-/// of an item in Ludex platform.
-contract Ledger is Ownable, ERC721 
-{
-    struct Purchase 
-    {
+contract Ledger is OwnableERC2771Context, ERC721 {
+    struct Purchase {
         uint256 tokenID;
         uint32 itemID;
         address buyer;
         uint256 timestamp;
     }
 
-    mapping (uint256 => Purchase) private purchases;
-
+    mapping(uint256 => Purchase) private purchases;
     address private store;
 
-    constructor () Ownable(msg.sender) ERC721("Ledger", "LEDG") {}
+    constructor(address forwarderAddress)
+        OwnableERC2771Context(msg.sender, forwarderAddress)
+        ERC721("Ledger", "LEDG")
+    {}
 
     function setStore(address storeAddress)
         external
@@ -32,30 +28,19 @@ contract Ledger is Ownable, ERC721
         store = storeAddress;
     }
 
-    /// @notice
-    /// Log a purchase history, and mint a new NFT that is mapped to the purchase
-    /// @param itemID ID of the item that is being purchased
-    /// @param buyer Address who gets the NFT
-    /// @return tokenID ID of the NFT
-    function logPurchase (
+    function logPurchase(
         uint32 itemID,
         address buyer
     )
         external
         returns (uint256 tokenID)
     {
-        require(store == msg.sender);
+        require(_msgSender() == store, "Unauthorized store");
         tokenID = getPurchaseID(buyer, itemID, block.timestamp);
         purchases[tokenID] = Purchase(tokenID, itemID, buyer, block.timestamp);
     }
 
-    /// @notice
-    /// From purchase info, create an ID that will identify the purchase
-    /// @param buyer Address who owns the NFT
-    /// @param itemID ID of the item that is or was purchased
-    /// @param timestamp UNIX timestamp when the purchase take/took its place
-    /// @return tokenID NFT token's ID
-    function getPurchaseID (
+    function getPurchaseID(
         address buyer,
         uint32 itemID,
         uint256 timestamp
@@ -67,5 +52,30 @@ contract Ledger is Ownable, ERC721
         tokenID = uint256(keccak256(abi.encode(itemID, buyer, timestamp)));
     }
 
+    function _msgSender()
+        internal
+        view
+        override(Context, OwnableERC2771Context)
+        returns (address sender)
+    {
+        return OwnableERC2771Context._msgSender();
+    }
 
+    function _msgData()
+        internal
+        view
+        override(Context, OwnableERC2771Context)
+        returns (bytes calldata)
+    {
+        return OwnableERC2771Context._msgData();
+    }
+
+    function _contextSuffixLength()
+        internal
+        view
+        override(Context, OwnableERC2771Context)
+        returns (uint256)
+    {
+        return OwnableERC2771Context._contextSuffixLength();
+    }
 }
