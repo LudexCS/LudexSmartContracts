@@ -275,7 +275,7 @@ contract PriceTable is OwnableERC2771Context {
         onlyItemSeller (itemID, _msgSender())
     {
         require(
-            usdPrice[itemID] <= usdPrice_,
+            usdPrice[itemID] > usdPrice_,
             "Discounted price should be lower than the original price");
 
         discountEndTimes[itemID] = endTime;
