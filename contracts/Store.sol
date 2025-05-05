@@ -51,13 +51,14 @@ contract Store is OwnableERC2771Context {
     function purchaseItem (
         uint32 itemID,
         address token,
+        uint256 deadline,
         uint8 v,
         bytes32 r,
         bytes32 s
     )
         external
     {
-        require(payment.process(_msgSender(), itemID, token, v, r, s));
+        payment.process(_msgSender(), itemID, token, deadline, v, r, s);
         uint256 purchaseID = ledger.logPurchase(itemID, _msgSender());
 
         emit ItemPurchased(itemID, _msgSender(), purchaseID);

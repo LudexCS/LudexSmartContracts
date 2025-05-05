@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -12,33 +12,31 @@ import "./PriceTable.sol";
 /// @title PaymentProcessor
 /// @author Ludex
 /// @notice
-/// The contract where the actual token transfer happens,
-/// with automatic revenue share from the pay for the item, 
-/// up to the item ancestor hierarchy.
-contract PaymentProcessor is OwnableERC2771Context
-{
-    /// @dev 
-    /// Struct for information of history of fee rate in this platform
+/// Handles payments via permit-based meta-transactions and internally tracks token balances for sellers.
+contract PaymentProcessor is OwnableERC2771Context {
     struct FeeRateLogEntry {
-        /// @dev UNIX time
         uint256 timestamp;
-        /// @dev Permyriad
-        uint16 feeRate;
+        uint16 feeRate; // permyriad
     }
 
-    FeeRateLogEntry[] feeRateLog;
-    ItemRegistry itemRegistry;
-    SellerRegistry sellerRegistry;
-    PriceTable priceTable;
+    FeeRateLogEntry[] public feeRateLog;
+    ItemRegistry public itemRegistry;
+    SellerRegistry public sellerRegistry;
+    PriceTable public priceTable;
 
-    uint256 permissionDeadline = 1 hours;
+    uint256 public permissionDeadline = 1 hours;
 
-    constructor (
+    // Escrow balances per token per seller
+    mapping(address => mapping(address => uint256)) public sellerTokenEscrow; // seller => token => amount
+    mapping(address => mapping(address => bool)) public isSellerToPay; // seller => token => isPending
+    mapping(address => address[]) public sellersToPay; // token => list of sellers
+
+    constructor(
         address forwarderAddress,
         uint16 initialFeeRate,
         address priceTableAddress
     ) 
-        OwnableERC2771Context(forwarderAddress, msg.sender)
+        OwnableERC2771Context(forwarderAddress, msg.sender) 
     {
         feeRateLog.push(FeeRateLogEntry(block.timestamp, initialFeeRate));
         priceTable = PriceTable(priceTableAddress);
@@ -46,161 +44,107 @@ contract PaymentProcessor is OwnableERC2771Context
         sellerRegistry = priceTable.sellerRegistry();
     }
 
-    /// @notice 
-    /// Fee rate when the item is added in the registry
-    /// @param itemID ID of item to inquire
-    /// @return feeRate Fee rate that the seller agreed upon. Permyriad scale.
-    function paymentFeeRate (uint32 itemID)
-        private
-        view
-        returns (uint16 feeRate)
-    {
+    function paymentFeeRate(uint32 itemID) private view returns (uint16 feeRate) {
         uint256 timestamp = priceTable.itemRegistry().timestampRegistered(itemID);
         feeRate = feeRateLog[feeRateLog.length - 1].feeRate;
-        uint256 i = 0;
-        for (i = 0; i < feeRateLog.length; i ++)
-        {
-            if (feeRateLog[i].timestamp >= timestamp)
-            {
-                i --;
+        for (uint256 i = 0; i < feeRateLog.length; i++) {
+            if (feeRateLog[i].timestamp >= timestamp) {
+                if (i > 0) i--;
+                feeRate = feeRateLog[i].feeRate;
                 break;
             }
         }
-        if (feeRateLog[i].feeRate < feeRate)
-            feeRate = feeRateLog[i].feeRate;
     }
 
-    /// @notice
-    /// Send `desiredToken` from `from` to `to` by the amount
-    /// that is exchaneable to `usdMount`. 
-    /// If `to` doesn't want to receive the profit in `desiredToken`,
-    /// He/she/they will be paid via platform's main token.
-    function transferToken (
-        address from,
-        address to,
-        uint256 usdAmount,
-        address desiredToken
-    )
-        private
-        returns (bool success)
-    {
-        if (sellerRegistry.paymentChannels(to, desiredToken))
-        {
-            IERC20 tokenContract = IERC20(desiredToken);
-            uint256 tokenAmount = 
-                usdAmount * priceTable.usdToToken(desiredToken);
-            return tokenContract.transferFrom(from, to, tokenAmount);
-        } 
-        else 
-        {
-            address mainToken = priceTable.paymentChannels(0);
-            IERC20 mainTokenContract = IERC20(mainToken);
-            uint256 mainTokenAmount = 
-                usdAmount * priceTable.usdToToken(mainToken);
-            if (!mainTokenContract.transfer(to, mainTokenAmount))
-            {
-                return false;
-            }
-
-            IERC20 desiredTokenContract = IERC20(desiredToken);
-            uint256 desiredTokenAmount = 
-                usdAmount * priceTable.usdToToken(desiredToken);
-            return 
-                desiredTokenContract.transferFrom(
-                    from, owner(), desiredTokenAmount);
-        }
-    }
-
-    /// @notice
-    /// Recursively, share the revenue denoted in USD via `desiredToken`, 
-    /// up the revenue share hierarchy. 
-    /// @param buyer Buyer who bought the item
-    /// @param itemID ID of item whose seller should get 
-    /// his/her/their/its claimable stake
-    /// @param revenueUsd Revenue that arises from the item
-    /// @param desiredToken ERC-20 token which the `buyer` wants to pay via
-    function shareRevenue (
-        address buyer,
-        uint32 itemID,
-        uint256 revenueUsd,
-        address desiredToken
-    ) 
-        private
-        returns (bool success)
-    {
-        //uint32[] storage parents = itemRegistry.itemParents(itemID);
-        uint8 numberOfParents = itemRegistry.numberOfSharers(itemID);
-        uint256 childStake = revenueUsd;
-        for (uint8 i = 0; i < numberOfParents; i ++)
-        {
-            uint32 parent = itemRegistry.revenueSharerOfItem(itemID, i);
-            uint16 share = priceTable.revenueSharing(parent);
-            uint256 parentStake = revenueUsd / 10000 * share;
-            childStake -= parentStake;
-            require(
-                shareRevenue(
-                    buyer,
-                    parent,
-                    parentStake,
-                    desiredToken));
-        }
-        return 
-            transferToken( 
-                buyer,
-                itemRegistry.seller(itemID),
-                childStake,
-                desiredToken);
-    }
-
-    /// @notice
-    /// Process the payment for an item with the address of `buyer` and
-    /// his/her/their desired token as payment channel
-    /// @param buyer Address who will get ownership of the item
-    /// @param itemID ID of item to purchase
-    /// @param token Address of ERC-20 contract by which the payment will happen
-    /// @param v Signature component v used for ERC20Permit
-    /// @param r Signature component r used for ERC20Permit
-    /// @param s Signature component s used for ERC20Permit
-    function process (
+    function process(
         address buyer,
         uint32 itemID,
         address token,
+        uint256 deadline,
         uint8 v,
         bytes32 r,
         bytes32 s
-    )   
-        external
-        returns (bool success)
+    ) 
+        external 
     {
-        IERC20Permit tokenPermission = IERC20Permit(token);
-        tokenPermission.permit(
-            buyer, 
+        // Permit
+        IERC20Permit(token).permit(
+            buyer,
             address(this),
-            priceTable.priceOfItemIn(itemID, token),
-            block.timestamp + permissionDeadline,
-            v, r, s);
+            type(uint256).max,
+            deadline,
+            v, r, s
+        );
 
-        uint256 usdPrice_ = priceTable.usdPrice(itemID);
+        // Transfer tokens
+        uint256 usdPrice = priceTable.usdPrice(itemID);
+        uint256 tokenAmount = usdPrice * priceTable.usdToToken(token);
+        require(IERC20(token).transferFrom(buyer, address(this), tokenAmount), "Transfer failed");
 
+        // Calculate and immediately send platform fee to owner
         uint16 feeRate = paymentFeeRate(itemID);
-        uint256 feeUsd = usdPrice_ / 10000 * feeRate; 
-        transferToken(buyer, owner(), feeUsd, token);
+        uint256 feeTokenAmount = tokenAmount * feeRate / 10000;
+        require(IERC20(token).transfer(owner(), feeTokenAmount), "Fee transfer failed");
 
-        return 
-            shareRevenue(
-                buyer,
-                itemID,
-                usdPrice_ - feeUsd,
-                token);
+        // Remaining to share
+        uint256 remainingTokenAmount = tokenAmount - feeTokenAmount;
+        _shareRevenue(itemID, token, remainingTokenAmount);
     }
 
-    /// @notice
-    /// Change deadline of permission for ERC20Permit in upcoming payments.
-    /// This function can only be called by the owner of platform.
-    function changePermissionDeadline(
-        uint256 newDeadline
-    )
-        external
+    function _shareRevenue(uint32 itemID, address token, uint256 tokenAmount) 
+        private 
+    {
+        uint8 sharers = itemRegistry.numberOfSharers(itemID);
+        uint256 childShare = tokenAmount;
+        for (uint8 i = 0; i < sharers; i++) {
+            uint32 parentID = itemRegistry.revenueSharerOfItem(itemID, i);
+            uint16 share = priceTable.revenueSharing(parentID);
+            uint256 parentStake = tokenAmount * share / 10000;
+            childShare -= parentStake;
+            _shareRevenue(parentID, token, parentStake);
+        }
+
+        address seller = itemRegistry.seller(itemID);
+        sellerTokenEscrow[seller][token] += childShare;
+        if (!isSellerToPay[seller][token]) {
+            sellersToPay[token].push(seller);
+            isSellerToPay[seller][token] = true;
+        }
+    }
+
+    function distribute(address token) 
+        external 
+        onlyOwner 
+    {
+        address[] storage list = sellersToPay[token];
+        for (uint256 i = 0; i < list.length; i++) {
+            address seller = list[i];
+            uint256 balance = sellerTokenEscrow[seller][token];
+            if (balance == 0) continue;
+
+            require(IERC20(token).transfer(seller, balance), "Distribute failed");
+
+            sellerTokenEscrow[seller][token] = 0;
+            isSellerToPay[seller][token] = false;
+        }
+        delete sellersToPay[token];
+    }
+
+    function claim(address token) 
+        external 
+    {
+        address seller = _msgSender();
+        uint256 balance = sellerTokenEscrow[seller][token];
+        require(balance > 0, "No balance to claim");
+
+        sellerTokenEscrow[seller][token] = 0;
+        isSellerToPay[seller][token] = false;
+
+        require(IERC20(token).transfer(seller, balance), "Claim failed");
+    }
+
+    function changePermissionDeadline(uint256 newDeadline) 
+        external 
         onlyOwner
     {
         permissionDeadline = newDeadline;
