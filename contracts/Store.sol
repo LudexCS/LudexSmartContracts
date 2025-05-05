@@ -16,7 +16,7 @@ import "./SellerRegistry.sol";
 contract Store is OwnableERC2771Context {
     
     PriceTable public priceTable;
-    PaymentProcessor payment;
+    PaymentProcessor public payment;
     Ledger public ledger;
     ItemRegistry public itemRegistry;
     SellerRegistry public sellerRegistry;
