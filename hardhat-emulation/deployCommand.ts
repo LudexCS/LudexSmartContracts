@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import type { ItemRegistry as ItemRegistryContract } from "../typechain-types/contracts/ItemRegistry";
 import type { Store as StoreContract } from "../typechain-types/contracts/Store";
+import type { Ledger as LedgerContract } from "../typechain-types/contracts/Ledger";
 
 export class DeployCommand {
   private readonly provider: ethers.JsonRpcProvider;
@@ -114,11 +115,13 @@ export class DeployCommand {
         ledgerAddress,
         paymentProcessorAddress);
     await storeContract.waitForDeployment();
+    const storeAddress = await storeContract.getAddress();
     deployed.set("Store", {
-      address: await storeContract.getAddress(),
+      address: storeAddress,
       abi: storeJson.abi
     });
-    
+    await (ledgerContract as unknown as LedgerContract).setStore(storeAddress);
+
     return deployed;
   }
 }
