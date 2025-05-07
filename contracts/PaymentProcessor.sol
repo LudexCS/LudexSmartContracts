@@ -31,6 +31,8 @@ contract PaymentProcessor is OwnableERC2771Context {
     mapping(address => mapping(address => bool)) public isSellerToPay; // seller => token => isPending
     mapping(address => address[]) public sellersToPay; // token => list of sellers
 
+    event ProfitClaimed(address indexed seller, address indexed token, uint256 indexed amount);
+
     constructor(
         address forwarderAddress,
         uint16 initialFeeRate,
@@ -112,6 +114,7 @@ contract PaymentProcessor is OwnableERC2771Context {
         }
     }
 
+    // This feature is for geth console, not web3
     function distribute(address token) 
         external 
         onlyOwner 
@@ -141,6 +144,8 @@ contract PaymentProcessor is OwnableERC2771Context {
         isSellerToPay[seller][token] = false;
 
         require(IERC20(token).transfer(seller, balance), "Claim failed");
+
+        emit ProfitClaimed(_msgSender(), token, balance);
     }
 
     function changePermissionDeadline(uint256 newDeadline) 
