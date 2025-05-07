@@ -93,6 +93,10 @@ export class DeployCommand {
         priceTableAddress);
     await paymentProcessorContract.waitForDeployment();
     const paymentProcessorAddress = await paymentProcessorContract.getAddress();
+    deployed.set("PaymentProcessor", {
+      address: paymentProcessorAddress,
+      abi: paymentProcessorJson.abi
+    });
 
     // --- Ledger 배포
     const ledgerJson = loadJson("../../build/contracts/contracts/Ledger.sol/Ledger.json");
