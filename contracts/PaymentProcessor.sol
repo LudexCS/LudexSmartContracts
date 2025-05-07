@@ -38,7 +38,7 @@ contract PaymentProcessor is OwnableERC2771Context {
         uint16 initialFeeRate,
         address priceTableAddress
     ) 
-        OwnableERC2771Context(forwarderAddress, msg.sender) 
+        OwnableERC2771Context(msg.sender, forwarderAddress) 
     {
         feeRateLog.push(FeeRateLogEntry(block.timestamp, initialFeeRate));
         priceTable = PriceTable(priceTableAddress);

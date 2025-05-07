@@ -13,7 +13,7 @@ contract Ledger is OwnableERC2771Context, ERC721 {
         uint256 timestamp;
     }
 
-    mapping(uint256 => Purchase) private purchases;
+    mapping(uint256 => Purchase) public purchases;
     address private store;
 
     constructor(address forwarderAddress)
