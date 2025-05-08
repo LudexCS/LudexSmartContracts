@@ -1,14 +1,15 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import { DeployCommand } from "./deployCommand";
+import { DeployCommand } from "../deploy/deploy-command";
 import { ethers } from "ethers";
 import { config } from "hardhat";
 
 async function main() {
   const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
 
+  const signer = await provider.getSigner(0);
   const addresses: string[] = await provider.send("eth_accounts", []);
-  const deployer = new DeployCommand();
+  const deployer = new DeployCommand(signer, "hardhat");
   const contractMap = await deployer.execute(addresses);
 
   const app = express();
