@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import { DeployCommand } from "./deployCommand";
 import { ethers } from "ethers";
 import { config } from "hardhat";
@@ -11,6 +12,8 @@ async function main() {
   const contractMap = await deployer.execute(addresses);
 
   const app = express();
+
+  app.use(cors());
 
   app.get("/contracts", (req: Request, res: Response) => {
     const result = Object.fromEntries(contractMap);
