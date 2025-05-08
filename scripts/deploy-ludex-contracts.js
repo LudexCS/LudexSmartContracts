@@ -1,8 +1,13 @@
 import { config } from "dotenv";
-import { DeployCommand } from "./deployCommand";
+import { DeployCommand } from "../dist/deploy/deploy-command.js";
 import { Wallet, JsonRpcProvider } from "ethers";
-import path from "path";
+import { fileURLToPath } from "url";
+import path, { dirname } from "path";
 import fs from "fs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+config();
 
 const argv = process.argv;
 const network = argv[2];

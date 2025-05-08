@@ -11,16 +11,36 @@ export class DeployCommand {
     private readonly networkName: string = "custom"
   ) {}
 
-  public async execute(accounts: string[], initialFeeRate = 1000, includeMockUSDC = false) {
+  public async execute(
+    accounts: string[], initialFeeRate = 1000, includeMockUSDC = false
+  ) {
+    // Synchronize provider to avoid nonce mismatch
+    if (!this.wallet.provider) {
+      throw new Error("Wallet is not connected to a provider.");
+    }
+    await this.wallet.provider.getBlockNumber();
+
     const deployed = new Map<string, { address: string; abi: any }>();
 
     const loadJson = (relPath: string) => {
-      return JSON.parse(fs.readFileSync(path.resolve(__dirname, relPath), "utf8"));
+      const resolved = path.resolve(__dirname, relPath);
+      if (!fs.existsSync(resolved)) {
+        throw new Error(`ABI/bytecode file not found: ${resolved}`);
+      }
+      return JSON.parse(fs.readFileSync(resolved, "utf8"));
     };
 
-    const deployPath = path.resolve(__dirname, `../deployment.${this.networkName}.json`);
+    const deployPath = path.resolve(
+      __dirname,
+      `../deployment.${this.networkName}.json`
+    );
+
     const record = (name: string, address: string, abi: any) => {
+      if (!name || !address || !abi) {
+        throw new Error(`Invalid deployment record: ${name}`);
+      }
       deployed.set(name, { address, abi });
+      console.log(`${name} deployed at:`, address);
     };
 
     // --- Deploy MockUSDC (optional)
@@ -29,7 +49,8 @@ export class DeployCommand {
       const MockUSDC = new ethers.ContractFactory(usdcJson.abi, usdcJson.bytecode, this.wallet);
       const usdc = await MockUSDC.deploy(accounts);
       await usdc.waitForDeployment();
-      record("MockUSDC", await usdc.getAddress(), usdcJson.abi);
+      const usdcAddress = await usdc.getAddress();
+      record("MockUSDC", usdcAddress, usdcJson.abi);
     }
 
     // --- Deploy Forwarder
@@ -64,7 +85,9 @@ export class DeployCommand {
     const priceTableAddress = await priceTableContract.getAddress();
     record("PriceTable", priceTableAddress, priceTableJson.abi);
 
-    await (itemRegistryContract as unknown as ItemRegistryContract).setPriceTable(priceTableAddress);
+    const itemRegistryInitTX = 
+      await (itemRegistryContract as unknown as ItemRegistryContract).setPriceTable(priceTableAddress);
+    await itemRegistryInitTX.wait();
 
     // --- Deploy PaymentProcessor
     const paymentProcessorJson = loadJson("../build/contracts/contracts/PaymentProcessor.sol/PaymentProcessor.json");
@@ -90,7 +113,9 @@ export class DeployCommand {
     const storeAddress = await storeContract.getAddress();
     record("Store", storeAddress, storeJson.abi);
 
-    await (ledgerContract as unknown as LedgerContract).setStore(storeAddress);
+    const ledgerInitTX = 
+      await (ledgerContract as unknown as LedgerContract).setStore(storeAddress);
+    await ledgerInitTX.wait();
 
     // --- Write to deployment.<network>.json
     const obj: Record<string, any[]> = {};
