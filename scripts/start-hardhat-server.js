@@ -49,13 +49,13 @@ async function main() {
   try {
     await waitForRpcReady(HARDHAT_RPC_URL);
   } catch (err) {
-    console.error("❌ Hardhat node did not start in time.");
+    console.error("Hardhat node did not start in time.");
     node.kill();
     process.exit(1);
   }
 
   console.log("[+] Starting server...");
-  const server = spawn("node", ["dist/hardhat-emulation/server.js"], {
+  const server = spawn("node", ["dist/src/hardhat-emulation/server.js"], {
     stdio: "inherit",
     shell: true
   });

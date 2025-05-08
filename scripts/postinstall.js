@@ -6,24 +6,25 @@ function run(command) {
   try {
     execSync(command, { stdio: "inherit" });
   } catch (error) {
-    console.error(`Error running command "${command}"`);
+    console.error(`Error running command: "${command}"`);
     process.exit(1);
   }
 }
 
 function clean(dir) {
-  rimraf.sync(dir); // OS 호환 완전 삭제
+  rimraf.sync(dir);
+  console.log(`Removed ${dir}`);
 }
 
 function main() {
   const root = path.resolve(__dirname, "..");
+  const src = path.join(root, "src");
 
   console.log("Cleaning build artifacts...");
-  clean(path.join(root, "build"));
-  clean(path.join(root, "artifacts"));
-  clean(path.join(root, "cache"));
-  clean(path.join(root, "typechain-types"));
-  clean(path.join(root, "dist"));
+  clean(path.join(root, "build/cache"));              // Hardhat cache
+  clean(path.join(src, "build/contracts"));           // ABI JSONs
+  clean(path.join(src, "typechain-types"));           // TypeChain output
+  clean(path.join(root, "dist"));                     // TypeScript output
 
   console.log("Running Hardhat compile...");
   run("npx hardhat compile");
