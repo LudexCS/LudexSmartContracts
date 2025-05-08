@@ -38,6 +38,7 @@ contract Ledger is OwnableERC2771Context, ERC721 {
         require(_msgSender() == store, "Unauthorized store");
         tokenID = getPurchaseID(buyer, itemID, block.timestamp);
         purchases[tokenID] = Purchase(tokenID, itemID, buyer, block.timestamp);
+        _mint(buyer, tokenID);
     }
 
     function getPurchaseID(
