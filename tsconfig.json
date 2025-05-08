@@ -111,6 +111,6 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["src/**/*", "src/hardhat-emulation/**/*", "typechain-types/**/*"],
+  "include": ["src/**/*", "src/hardhat-emulation/**/*", "src/build/contracts/**/*.json"],
   "exclude": ["build", "dist", "node_modules", "**/*.test.ts"] 
 }
