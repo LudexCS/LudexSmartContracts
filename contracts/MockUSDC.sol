@@ -18,4 +18,10 @@ contract MockUSDC is ERC20Permit {
     function decimals() public pure override returns (uint8) {
         return 6;
     }
+
+    function giveaway(address to)
+        public
+    {
+        _mint(to, INITIAL_AMOUNT);
+    }
 }
