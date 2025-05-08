@@ -22,7 +22,7 @@ export class DeployCommand {
     };
 
     // --- MockUSDC 배포
-    const usdcJson = loadJson("../../build/contracts/contracts/MockUSDC.sol/MockUSDC.json");
+    const usdcJson = loadJson("../build/contracts/contracts/MockUSDC.sol/MockUSDC.json");
     const MockUSDC = new ethers.ContractFactory(usdcJson.abi, usdcJson.bytecode, wallet);
     const usdc = await MockUSDC.deploy(accounts);
     await usdc.waitForDeployment();
@@ -32,7 +32,7 @@ export class DeployCommand {
     });
 
     // --- Forwarder 배포
-    const forwarderJson = loadJson("../../build/contracts/@openzeppelin/contracts/metatx/ERC2771Forwarder.sol/ERC2771Forwarder.json");
+    const forwarderJson = loadJson("../build/contracts/@openzeppelin/contracts/metatx/ERC2771Forwarder.sol/ERC2771Forwarder.json");
     const forwarderFactory = new ethers.ContractFactory(forwarderJson.abi, forwarderJson.bytecode, wallet);
     const forwarder = await forwarderFactory.deploy("ludex-forwarder");
     await forwarder.waitForDeployment();
@@ -43,7 +43,7 @@ export class DeployCommand {
     });
 
     // --- SellerRegistry 배포
-    const sellerRegistryJson = loadJson("../../build/contracts/contracts/SellerRegistry.sol/SellerRegistry.json");
+    const sellerRegistryJson = loadJson("../build/contracts/contracts/SellerRegistry.sol/SellerRegistry.json");
     const sellerRegistryFactory = new ethers.ContractFactory(sellerRegistryJson.abi, sellerRegistryJson.bytecode, wallet);
     const sellerRegistryContract = await sellerRegistryFactory.deploy(forwarderAdress);
     await sellerRegistryContract.waitForDeployment();
@@ -54,7 +54,7 @@ export class DeployCommand {
     });
     
     // --- ItemRegistry 배포
-    const itemRegistryJson = loadJson("../../build/contracts/contracts/ItemRegistry.sol/ItemRegistry.json");
+    const itemRegistryJson = loadJson("../build/contracts/contracts/ItemRegistry.sol/ItemRegistry.json");
     const itemRegistryFactory = new ethers.ContractFactory(itemRegistryJson.abi, itemRegistryJson.bytecode, wallet);
     const itemRegistryContract = await itemRegistryFactory.deploy();
     await itemRegistryContract.waitForDeployment();
@@ -65,7 +65,7 @@ export class DeployCommand {
     });
 
     // --- PriceTable 배포
-    const priceTableJson = loadJson("../../build/contracts/contracts/PriceTable.sol/PriceTable.json");
+    const priceTableJson = loadJson("../build/contracts/contracts/PriceTable.sol/PriceTable.json");
     const priceTableFactory = new ethers.ContractFactory(priceTableJson.abi, priceTableJson.bytecode, wallet);
     const priceTableContract = 
       await priceTableFactory.deploy(
@@ -84,7 +84,7 @@ export class DeployCommand {
       .setPriceTable(priceTableAddress);
 
     // --- PaymentProcessor 배포
-    const paymentProcessorJson = loadJson("../../build/contracts/contracts/PaymentProcessor.sol/PaymentProcessor.json");
+    const paymentProcessorJson = loadJson("../build/contracts/contracts/PaymentProcessor.sol/PaymentProcessor.json");
     const paymentProcessorFactory = new ethers.ContractFactory(paymentProcessorJson.abi, paymentProcessorJson.bytecode, wallet);
     const paymentProcessorContract =
       await paymentProcessorFactory.deploy(
@@ -99,7 +99,7 @@ export class DeployCommand {
     });
 
     // --- Ledger 배포
-    const ledgerJson = loadJson("../../build/contracts/contracts/Ledger.sol/Ledger.json");
+    const ledgerJson = loadJson("../build/contracts/contracts/Ledger.sol/Ledger.json");
     const ledgerFactory = new ethers.ContractFactory(ledgerJson.abi, ledgerJson.bytecode, wallet);
     const ledgerContract = await ledgerFactory.deploy(forwarderAdress);
     await ledgerContract.waitForDeployment();
@@ -110,7 +110,7 @@ export class DeployCommand {
     });
 
     // --- Store 배포
-    const storeJson = loadJson("../../build/contracts/contracts/Store.sol/Store.json");
+    const storeJson = loadJson("../build/contracts/contracts/Store.sol/Store.json");
     const storeFactory = new ethers.ContractFactory(storeJson.abi, storeJson.bytecode, wallet);
     const storeContract = 
       await storeFactory.deploy(

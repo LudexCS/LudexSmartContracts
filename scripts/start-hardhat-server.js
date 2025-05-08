@@ -55,7 +55,7 @@ async function main() {
   }
 
   console.log("[+] Starting server...");
-  const server = spawn("node", ["dist/src/hardhat-emulation/server.js"], {
+  const server = spawn("node", ["dist/hardhat-emulation/server.js"], {
     stdio: "inherit",
     shell: true
   });
