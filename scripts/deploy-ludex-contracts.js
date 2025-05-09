@@ -49,13 +49,31 @@ async function main() {
     deployConfig.includeMockUSDC ?? false
   );
 
-  const outputPath = path.resolve(__dirname, `../deployment.${network}.json`);
-  const output = {};
-  for (const [name, info] of deploymentMap.entries()) {
-    if (!output[name]) output[name] = [];
-    output[name].push(info);
+const outputPath = path.resolve(__dirname, `../deployment.${network}.json`);
+
+  let existingData = [];
+  if (fs.existsSync(outputPath)) {
+    try {
+      existingData = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+      if (!Array.isArray(existingData)) existingData = [];
+    } catch {
+      existingData = [];
+    }
   }
-  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+
+  const deploymentEntry = {};
+  for (const [name, info] of deploymentMap.entries()) {
+    if (!deploymentEntry[name]) deploymentEntry[name] = [];
+    deploymentEntry[name].push(info);
+  }
+
+  existingData.push({
+    timestamp: new Date().toISOString(),
+    network,
+    deployments: deploymentEntry,
+  });
+
+  fs.writeFileSync(outputPath, JSON.stringify(existingData, null, 2));
 
   console.log("Deployment completed successfully.");
 }
