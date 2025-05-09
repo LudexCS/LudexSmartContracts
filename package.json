@@ -12,7 +12,8 @@
   "version": "1.0.0",
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
-    "start:emulation": "node scripts/start-hardhat-server.js"
+    "start:emulation": "node scripts/start-hardhat-server.js",
+    "deploy-ludex": "node scripts/deploy-ludex-contracts.js"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",

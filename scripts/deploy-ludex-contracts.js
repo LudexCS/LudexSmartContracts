@@ -1,11 +1,8 @@
 import { config } from "dotenv";
 import { DeployCommand } from "../dist/deploy/deploy-command.js";
 import { Wallet, JsonRpcProvider } from "ethers";
-import { fileURLToPath } from "url";
-import path, { dirname } from "path";
+import path from "path";
 import fs from "fs";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 config();
 
@@ -31,7 +28,9 @@ if (!rpcUrl) {
   process.exit(1);
 }
 
-const configPath = path.resolve(__dirname, `../deploy-config/${network}.json`);
+const cwd = process.cwd();
+const configPath = path.resolve(cwd, `deploy-config/${network}.json`);
+
 if (!fs.existsSync(configPath)) {
   console.error(`Error: deploy-config/${network}.json does not exist.`);
   process.exit(1);
@@ -49,7 +48,7 @@ async function main() {
     deployConfig.includeMockUSDC ?? false
   );
 
-const outputPath = path.resolve(__dirname, `../deployment.${network}.json`);
+  const outputPath = path.resolve(cwd, `deployment.${network}.json`);
 
   let existingData = [];
   if (fs.existsSync(outputPath)) {
