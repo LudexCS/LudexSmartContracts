@@ -43,10 +43,20 @@ async function main() {
   const provider = new JsonRpcProvider(rpcUrl);
   const wallet = Wallet.fromPhrase(mnemonic, provider);
   const command = new DeployCommand(wallet, network);
-  await command.execute(
-    [wallet.address, ...(deployConfig.accounts ?? [])], 
+  const deploymentMap = await command.execute(
+    [wallet.address, ...(deployConfig.accounts ?? [])],
     deployConfig.initialFeeRate,
-    deployConfig.includeMockUSDC ?? false);
+    deployConfig.includeMockUSDC ?? false
+  );
+
+  const outputPath = path.resolve(__dirname, `../deployment.${network}.json`);
+  const output = {};
+  for (const [name, info] of deploymentMap.entries()) {
+    if (!output[name]) output[name] = [];
+    output[name].push(info);
+  }
+  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+
   console.log("Deployment completed successfully.");
 }
 

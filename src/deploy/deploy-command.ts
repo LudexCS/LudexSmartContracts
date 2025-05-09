@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, Contract } from "ethers";
 import fs from "fs";
 import path from "path";
 import type { ItemRegistry as ItemRegistryContract } from "../typechain-types/contracts/ItemRegistry";
@@ -13,14 +13,13 @@ export class DeployCommand {
 
   public async execute(
     accounts: string[], initialFeeRate = 1000, includeMockUSDC = false
-  ) {
-    // Synchronize provider to avoid nonce mismatch
+  ): Promise<Map<string, { address: string; abi: any; timestamp: string }>> {
     if (!this.wallet.provider) {
       throw new Error("Wallet is not connected to a provider.");
     }
     await this.wallet.provider.getBlockNumber();
 
-    const deployed = new Map<string, { address: string; abi: any }>();
+    const deployed = new Map<string, { address: string; abi: any; timestamp: string }>();
 
     const loadJson = (relPath: string) => {
       const resolved = path.resolve(__dirname, relPath);
@@ -30,27 +29,43 @@ export class DeployCommand {
       return JSON.parse(fs.readFileSync(resolved, "utf8"));
     };
 
-    const deployPath = path.resolve(
-      __dirname,
-      `../deployment.${this.networkName}.json`
-    );
-
-    const record = (name: string, address: string, abi: any) => {
-      if (!name || !address || !abi) {
-        throw new Error(`Invalid deployment record: ${name}`);
+    const record = async (
+      name: string,
+      contract: Contract,
+      abi: any,
+      txResponse: ethers.ContractTransactionResponse | null
+    ) => {
+      if (!txResponse) {
+        throw new Error(`Missing deployment transaction for: ${name}`);
       }
-      deployed.set(name, { address, abi });
+
+      const txHash = txResponse.hash;
+
+      const tx = await this.wallet.provider!.getTransactionReceipt(txHash);
+      if (!tx) {
+        throw new Error(`Transaction receipt not found for: ${txHash}`);
+      }
+
+      const block = await this.wallet.provider!.getBlock(tx.blockNumber);
+      if (!block) {
+        throw new Error(`Failed to fetch block for tx: ${txHash}`);
+      }
+
+      const timestamp = new Date(block.timestamp * 1000).toISOString();
+      const address = await contract.getAddress();
+
+      deployed.set(name, { address, abi, timestamp });
       console.log(`${name} deployed at:`, address);
     };
 
     // --- Deploy MockUSDC (optional)
+    let usdc;
     if (includeMockUSDC) {
       const usdcJson = loadJson("../build/contracts/contracts/MockUSDC.sol/MockUSDC.json");
       const MockUSDC = new ethers.ContractFactory(usdcJson.abi, usdcJson.bytecode, this.wallet);
-      const usdc = await MockUSDC.deploy(accounts);
+      usdc = await MockUSDC.deploy(accounts);
       await usdc.waitForDeployment();
-      const usdcAddress = await usdc.getAddress();
-      record("MockUSDC", usdcAddress, usdcJson.abi);
+      await record("MockUSDC", usdc as Contract, usdcJson.abi, usdc.deploymentTransaction());
     }
 
     // --- Deploy Forwarder
@@ -58,72 +73,63 @@ export class DeployCommand {
     const forwarderFactory = new ethers.ContractFactory(forwarderJson.abi, forwarderJson.bytecode, this.wallet);
     const forwarder = await forwarderFactory.deploy("ludex-forwarder");
     await forwarder.waitForDeployment();
-    const forwarderAddress = await forwarder.getAddress();
-    record("ERC2771Forwarder", forwarderAddress, forwarderJson.abi);
+    await record("ERC2771Forwarder", forwarder as Contract, forwarderJson.abi, forwarder.deploymentTransaction());
 
     // --- Deploy SellerRegistry
     const sellerRegistryJson = loadJson("../build/contracts/contracts/SellerRegistry.sol/SellerRegistry.json");
     const sellerRegistryFactory = new ethers.ContractFactory(sellerRegistryJson.abi, sellerRegistryJson.bytecode, this.wallet);
-    const sellerRegistryContract = await sellerRegistryFactory.deploy(forwarderAddress);
-    await sellerRegistryContract.waitForDeployment();
-    const sellerRegistryAddress = await sellerRegistryContract.getAddress();
-    record("SellerRegistry", sellerRegistryAddress, sellerRegistryJson.abi);
+    const forwarderAddress = await forwarder.getAddress();
+    const sellerRegistry = await sellerRegistryFactory.deploy(forwarderAddress);
+    await sellerRegistry.waitForDeployment();
+    await record("SellerRegistry", sellerRegistry as Contract, sellerRegistryJson.abi, sellerRegistry.deploymentTransaction());
 
     // --- Deploy ItemRegistry
     const itemRegistryJson = loadJson("../build/contracts/contracts/ItemRegistry.sol/ItemRegistry.json");
     const itemRegistryFactory = new ethers.ContractFactory(itemRegistryJson.abi, itemRegistryJson.bytecode, this.wallet);
-    const itemRegistryContract = await itemRegistryFactory.deploy();
-    await itemRegistryContract.waitForDeployment();
-    const itemRegistryAddress = await itemRegistryContract.getAddress();
-    record("ItemRegistry", itemRegistryAddress, itemRegistryJson.abi);
+    const itemRegistry = await itemRegistryFactory.deploy();
+    await itemRegistry.waitForDeployment();
+    await record("ItemRegistry", itemRegistry as Contract, itemRegistryJson.abi, itemRegistry.deploymentTransaction());
 
     // --- Deploy PriceTable
     const priceTableJson = loadJson("../build/contracts/contracts/PriceTable.sol/PriceTable.json");
     const priceTableFactory = new ethers.ContractFactory(priceTableJson.abi, priceTableJson.bytecode, this.wallet);
-    const priceTableContract = await priceTableFactory.deploy(forwarderAddress, itemRegistryAddress, sellerRegistryAddress);
-    await priceTableContract.waitForDeployment();
-    const priceTableAddress = await priceTableContract.getAddress();
-    record("PriceTable", priceTableAddress, priceTableJson.abi);
+    const itemRegistryAddress = await itemRegistry.getAddress();
+    const sellerRegistryAddress = await sellerRegistry.getAddress();
+    const priceTable = await priceTableFactory.deploy(forwarderAddress, itemRegistryAddress, sellerRegistryAddress);
+    await priceTable.waitForDeployment();
+    await record("PriceTable", priceTable as Contract, priceTableJson.abi, priceTable.deploymentTransaction());
 
-    const itemRegistryInitTX = 
-      await (itemRegistryContract as unknown as ItemRegistryContract).setPriceTable(priceTableAddress);
-    await itemRegistryInitTX.wait();
+    const priceTableAddr = await priceTable.getAddress();
+    const setPriceTableTX = await (itemRegistry as unknown as ItemRegistryContract).setPriceTable(priceTableAddr);
+    await setPriceTableTX.wait();
 
     // --- Deploy PaymentProcessor
     const paymentProcessorJson = loadJson("../build/contracts/contracts/PaymentProcessor.sol/PaymentProcessor.json");
     const paymentProcessorFactory = new ethers.ContractFactory(paymentProcessorJson.abi, paymentProcessorJson.bytecode, this.wallet);
-    const paymentProcessorContract = await paymentProcessorFactory.deploy(forwarderAddress, initialFeeRate, priceTableAddress);
-    await paymentProcessorContract.waitForDeployment();
-    const paymentProcessorAddress = await paymentProcessorContract.getAddress();
-    record("PaymentProcessor", paymentProcessorAddress, paymentProcessorJson.abi);
+    const priceTableAddress = await priceTable.getAddress();
+    const paymentProcessor = await paymentProcessorFactory.deploy(forwarderAddress, initialFeeRate, priceTableAddress);
+    await paymentProcessor.waitForDeployment();
+    await record("PaymentProcessor", paymentProcessor as Contract, paymentProcessorJson.abi, paymentProcessor.deploymentTransaction());
 
     // --- Deploy Ledger
     const ledgerJson = loadJson("../build/contracts/contracts/Ledger.sol/Ledger.json");
     const ledgerFactory = new ethers.ContractFactory(ledgerJson.abi, ledgerJson.bytecode, this.wallet);
-    const ledgerContract = await ledgerFactory.deploy(forwarderAddress);
-    await ledgerContract.waitForDeployment();
-    const ledgerAddress = await ledgerContract.getAddress();
-    record("Ledger", ledgerAddress, ledgerJson.abi);
+    const ledger = await ledgerFactory.deploy(forwarderAddress);
+    await ledger.waitForDeployment();
+    await record("Ledger", ledger as Contract, ledgerJson.abi, ledger.deploymentTransaction());
 
     // --- Deploy Store
     const storeJson = loadJson("../build/contracts/contracts/Store.sol/Store.json");
     const storeFactory = new ethers.ContractFactory(storeJson.abi, storeJson.bytecode, this.wallet);
-    const storeContract = await storeFactory.deploy(forwarderAddress, priceTableAddress, ledgerAddress, paymentProcessorAddress);
-    await storeContract.waitForDeployment();
-    const storeAddress = await storeContract.getAddress();
-    record("Store", storeAddress, storeJson.abi);
+    const ledgerAddress = await ledger.getAddress();
+    const paymentProcessorAddress = await paymentProcessor.getAddress();
+    const store = await storeFactory.deploy(forwarderAddress, priceTableAddress, ledgerAddress, paymentProcessorAddress);
+    await store.waitForDeployment();
+    await record("Store", store as Contract, storeJson.abi, store.deploymentTransaction());
 
-    const ledgerInitTX = 
-      await (ledgerContract as unknown as LedgerContract).setStore(storeAddress);
-    await ledgerInitTX.wait();
-
-    // --- Write to deployment.<network>.json
-    const obj: Record<string, any[]> = {};
-    for (const [name, info] of deployed.entries()) {
-      if (!obj[name]) obj[name] = [];
-      obj[name].push({ ...info, timestamp: new Date().toISOString() });
-    }
-    fs.writeFileSync(deployPath, JSON.stringify(obj, null, 2));
+    const storeAddr = await store.getAddress();
+    const setStoreTX = await (ledger as unknown as LedgerContract).setStore(storeAddr);
+    await setStoreTX.wait();
 
     return deployed;
   }
