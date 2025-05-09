@@ -10,7 +10,7 @@ async function main() {
   const signer = await provider.getSigner(0);
   const addresses: string[] = await provider.send("eth_accounts", []);
   const deployer = new DeployCommand(signer, "hardhat");
-  const contractMap = await deployer.execute(addresses);
+  const contractMap = await deployer.execute(addresses, 1000, true);
 
   const app = express();
 
