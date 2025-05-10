@@ -8,6 +8,7 @@ import { abi as PaymentProcessorABI } from "./build/contracts/contracts/PaymentP
 import { abi as LedgerABI } from "./build/contracts/contracts/Ledger.sol/Ledger.json";
 import { abi as SellerRegistryABI } from "./build/contracts/contracts/SellerRegistry.sol/SellerRegistry.json";
 import { abi as ItemRegistryABI } from "./build/contracts/contracts/ItemRegistry.sol/ItemRegistry.json";
+import { abi as MockUSDCABI} from "./build/contracts/contracts/MockUSDC.sol/MockUSDC.json";
 
 // ─── Factory Import ────────────────────────────────────────────
 import {
@@ -19,7 +20,8 @@ import {
   PaymentProcessor__factory,
   Ledger__factory,
   SellerRegistry__factory,
-  ItemRegistry__factory
+  ItemRegistry__factory,
+  MockUSDC__factory
 } from "./typechain-types";
 
 // ─── Type Import (with Aliases) ────────────────────────────────
@@ -32,6 +34,7 @@ import type { PaymentProcessor as TPaymentProcessor } from "./typechain-types";
 import type { Ledger as TLedger } from "./typechain-types";
 import type { SellerRegistry as TSellerRegistry } from "./typechain-types";
 import type { ItemRegistry as TItemRegistry } from "./typechain-types";
+import type { MockUSDC as TMockUSDC } from "./typechain-types";
 
 // ─── Namespace Export ──────────────────────────────────────────
 export namespace LudexContract {
@@ -45,6 +48,7 @@ export namespace LudexContract {
     export const Ledger = LedgerABI;
     export const SellerRegistry = SellerRegistryABI;
     export const ItemRegistry = ItemRegistryABI;
+    export const MockUSDC = MockUSDCABI;
   }
 
   export namespace Factory {
@@ -57,6 +61,7 @@ export namespace LudexContract {
     export const Ledger = Ledger__factory;
     export const SellerRegistry = SellerRegistry__factory;
     export const ItemRegistry = ItemRegistry__factory;
+    export const MockUSDC = MockUSDC__factory;
   }
 
   export namespace Type {
@@ -69,5 +74,6 @@ export namespace LudexContract {
     export type Ledger = TLedger;
     export type SellerRegistry = TSellerRegistry;
     export type ItemRegistry = TItemRegistry;
+    export type MockUSDC = TMockUSDC;
   }
 }
