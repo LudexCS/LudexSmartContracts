@@ -1,6 +1,9 @@
 import { HardhatUserConfig } from "hardhat/types";
 import "@nomicfoundation/hardhat-toolbox";
 import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const config: HardhatUserConfig = {
     solidity: "0.8.21",
@@ -13,6 +16,14 @@ const config: HardhatUserConfig = {
     typechain:{
         outDir: "src/typechain-types",
         target: "ethers-v6"
+    },
+    networks: {
+        opSepolia: {
+            url: "https://sepolia.optimism.io/",
+            accounts: {
+                mnemonic: process.env.MNEMONIC as string
+            }
+        }
     }
 }
 
