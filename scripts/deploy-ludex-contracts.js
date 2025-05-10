@@ -62,8 +62,7 @@ async function main() {
 
   const deploymentEntry = {};
   for (const [name, info] of deploymentMap.entries()) {
-    if (!deploymentEntry[name]) deploymentEntry[name] = [];
-    deploymentEntry[name].push(info);
+    deploymentEntry[name] = info;
   }
 
   existingData.push({
