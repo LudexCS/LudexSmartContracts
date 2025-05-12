@@ -124,9 +124,8 @@ contract PriceTable is OwnableERC2771Context {
             "Not a valid payment channel");
         
         uint256 usdPrice_ = getPriceUsd(itemID);
-        uint8 decimals = ERC20(token).decimals();
 
-        return usdPrice_ * usdToToken[token] / (10 ** decimals);
+        return usdPrice_ * usdToToken[token] / 1e18;
     }
 
     /// @notice 

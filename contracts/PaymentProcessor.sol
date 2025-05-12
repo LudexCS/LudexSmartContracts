@@ -78,9 +78,7 @@ contract PaymentProcessor is OwnableERC2771Context {
             v, r, s
         );
 
-        // Transfer tokens
-        uint256 usdPrice = priceTable.usdPrice(itemID);
-        uint256 tokenAmount = usdPrice * priceTable.usdToToken(token);
+        uint256 tokenAmount = priceTable.priceOfItemIn(itemID, token);
         require(IERC20(token).transferFrom(buyer, address(this), tokenAmount), "Transfer failed");
 
         // Calculate and immediately send platform fee to owner
