@@ -23,28 +23,51 @@ import type {
   TypedContractMethod,
 } from "../common";
 
+export declare namespace PurchaseProxy {
+  export type PurchaseInfoStruct = {
+    tokenID: BigNumberish;
+    itemID: BigNumberish;
+    buyer: BigNumberish;
+    timestamp: BigNumberish;
+  };
+
+  export type PurchaseInfoStructOutput = [
+    tokenID: bigint,
+    itemID: bigint,
+    buyer: bigint,
+    timestamp: bigint
+  ] & { tokenID: bigint; itemID: bigint; buyer: bigint; timestamp: bigint };
+}
+
 export interface PurchaseProxyInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "claimPurchaseIDs"
-      | "owner(uint32,uint256)"
+      | "getPurchaseInfo"
       | "owner()"
+      | "owner(uint256)"
       | "purchaseItem"
       | "renounceOwnership"
       | "transferOwnership"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "OwnershipTransferred" | "PurchaseIDsClaimed"
+  ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "claimPurchaseIDs",
-    values: [BigNumberish, AddressLike, AddressLike]
+    values: [BigNumberish, AddressLike, BigNumberish[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "owner(uint32,uint256)",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: "getPurchaseInfo",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner()", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "owner(uint256)",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "purchaseItem",
     values: [AddressLike, BigNumberish, BigNumberish]
@@ -63,10 +86,14 @@ export interface PurchaseProxyInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "owner(uint32,uint256)",
+    functionFragment: "getPurchaseInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner()", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "owner(uint256)",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "purchaseItem",
     data: BytesLike
@@ -87,6 +114,19 @@ export namespace OwnershipTransferredEvent {
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace PurchaseIDsClaimedEvent {
+  export type InputTuple = [owner: AddressLike, purchases: BigNumberish[]];
+  export type OutputTuple = [owner: string, purchases: bigint[]];
+  export interface OutputObject {
+    owner: string;
+    purchases: bigint[];
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -138,18 +178,20 @@ export interface PurchaseProxy extends BaseContract {
   ): Promise<this>;
 
   claimPurchaseIDs: TypedContractMethod<
-    [ownerID: BigNumberish, claimer: AddressLike, token: AddressLike],
+    [ownerID: BigNumberish, claimer: AddressLike, purchaseIDs: BigNumberish[]],
     [void],
     "nonpayable"
   >;
 
-  "owner(uint32,uint256)": TypedContractMethod<
-    [arg0: BigNumberish, arg1: BigNumberish],
-    [bigint],
+  getPurchaseInfo: TypedContractMethod<
+    [purchaseID: BigNumberish],
+    [PurchaseProxy.PurchaseInfoStructOutput],
     "view"
   >;
 
   "owner()": TypedContractMethod<[], [string], "view">;
+
+  "owner(uint256)": TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
 
   purchaseItem: TypedContractMethod<
     [token: AddressLike, itemID: BigNumberish, ownerID: BigNumberish],
@@ -172,20 +214,23 @@ export interface PurchaseProxy extends BaseContract {
   getFunction(
     nameOrSignature: "claimPurchaseIDs"
   ): TypedContractMethod<
-    [ownerID: BigNumberish, claimer: AddressLike, token: AddressLike],
+    [ownerID: BigNumberish, claimer: AddressLike, purchaseIDs: BigNumberish[]],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "owner(uint32,uint256)"
+    nameOrSignature: "getPurchaseInfo"
   ): TypedContractMethod<
-    [arg0: BigNumberish, arg1: BigNumberish],
-    [bigint],
+    [purchaseID: BigNumberish],
+    [PurchaseProxy.PurchaseInfoStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "owner()"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "owner(uint256)"
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "purchaseItem"
   ): TypedContractMethod<
@@ -207,6 +252,13 @@ export interface PurchaseProxy extends BaseContract {
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
   >;
+  getEvent(
+    key: "PurchaseIDsClaimed"
+  ): TypedContractEvent<
+    PurchaseIDsClaimedEvent.InputTuple,
+    PurchaseIDsClaimedEvent.OutputTuple,
+    PurchaseIDsClaimedEvent.OutputObject
+  >;
 
   filters: {
     "OwnershipTransferred(address,address)": TypedContractEvent<
@@ -218,6 +270,17 @@ export interface PurchaseProxy extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "PurchaseIDsClaimed(address,uint256[])": TypedContractEvent<
+      PurchaseIDsClaimedEvent.InputTuple,
+      PurchaseIDsClaimedEvent.OutputTuple,
+      PurchaseIDsClaimedEvent.OutputObject
+    >;
+    PurchaseIDsClaimed: TypedContractEvent<
+      PurchaseIDsClaimedEvent.InputTuple,
+      PurchaseIDsClaimedEvent.OutputTuple,
+      PurchaseIDsClaimedEvent.OutputObject
     >;
   };
 }

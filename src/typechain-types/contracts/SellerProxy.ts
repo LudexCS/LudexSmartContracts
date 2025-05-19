@@ -45,7 +45,7 @@ export interface SellerProxyInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "claimProfit",
-    values: [BigNumberish, BigNumberish[], AddressLike, AddressLike]
+    values: [BigNumberish, BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimSellerRight",
@@ -133,13 +133,13 @@ export namespace ProfitClaimDelegatedEvent {
   export type InputTuple = [
     token: AddressLike,
     recipient: AddressLike,
-    items: BigNumberish[]
+    itemID: BigNumberish
   ];
-  export type OutputTuple = [token: string, recipient: string, items: bigint[]];
+  export type OutputTuple = [token: string, recipient: string, itemID: bigint];
   export interface OutputObject {
     token: string;
     recipient: string;
-    items: bigint[];
+    itemID: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -215,7 +215,7 @@ export interface SellerProxy extends BaseContract {
   claimProfit: TypedContractMethod<
     [
       sellerID: BigNumberish,
-      items: BigNumberish[],
+      itemID: BigNumberish,
       token: AddressLike,
       recipient: AddressLike
     ],
@@ -267,7 +267,7 @@ export interface SellerProxy extends BaseContract {
   ): TypedContractMethod<
     [
       sellerID: BigNumberish,
-      items: BigNumberish[],
+      itemID: BigNumberish,
       token: AddressLike,
       recipient: AddressLike
     ],
@@ -360,7 +360,7 @@ export interface SellerProxy extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
-    "ProfitClaimDelegated(address,address,uint32[])": TypedContractEvent<
+    "ProfitClaimDelegated(address,address,uint32)": TypedContractEvent<
       ProfitClaimDelegatedEvent.InputTuple,
       ProfitClaimDelegatedEvent.OutputTuple,
       ProfitClaimDelegatedEvent.OutputObject

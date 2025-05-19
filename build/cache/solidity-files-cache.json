@@ -1579,8 +1579,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PurchaseProxy.sol": {
-      "lastModificationDate": 1747643974155,
-      "contentHash": "93e8a8227637821479239f95faa90c74",
+      "lastModificationDate": 1747663206682,
+      "contentHash": "82f86f85e0262501e9d37c34b2223965",
       "sourceName": "contracts/PurchaseProxy.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1621,8 +1621,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\SellerProxy.sol": {
-      "lastModificationDate": 1747425198832,
-      "contentHash": "60b88a7e6179141d45b36f24e0f2699a",
+      "lastModificationDate": 1747660318239,
+      "contentHash": "b897daf5366ed2151c6ae018810c6b22",
       "sourceName": "contracts/SellerProxy.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1663,8 +1663,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\ProfitEscrow.sol": {
-      "lastModificationDate": 1747420604656,
-      "contentHash": "c798f0a822953ab9b1388cf461a5c83e",
+      "lastModificationDate": 1747656866632,
+      "contentHash": "b3988b8e0cf464266d3a066360b8de17",
       "sourceName": "contracts/ProfitEscrow.sol",
       "solcConfig": {
         "version": "0.8.21",

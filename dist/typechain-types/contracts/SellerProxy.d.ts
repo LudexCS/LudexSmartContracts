@@ -3,7 +3,7 @@ import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, Typed
 export interface SellerProxyInterface extends Interface {
     getFunction(nameOrSignature: "claimProfit" | "claimSellerRight" | "getItemsOfSeller" | "owner" | "registerItem" | "renounceOwnership" | "transferOwnership"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "ItemRegistrationDelegated" | "OwnershipTransferred" | "ProfitClaimDelegated" | "SellerRightClaimed"): EventFragment;
-    encodeFunctionData(functionFragment: "claimProfit", values: [BigNumberish, BigNumberish[], AddressLike, AddressLike]): string;
+    encodeFunctionData(functionFragment: "claimProfit", values: [BigNumberish, BigNumberish, AddressLike, AddressLike]): string;
     encodeFunctionData(functionFragment: "claimSellerRight", values: [BigNumberish, BigNumberish[], AddressLike]): string;
     encodeFunctionData(functionFragment: "getItemsOfSeller", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -53,13 +53,13 @@ export declare namespace ProfitClaimDelegatedEvent {
     type InputTuple = [
         token: AddressLike,
         recipient: AddressLike,
-        items: BigNumberish[]
+        itemID: BigNumberish
     ];
-    type OutputTuple = [token: string, recipient: string, items: bigint[]];
+    type OutputTuple = [token: string, recipient: string, itemID: bigint];
     interface OutputObject {
         token: string;
         recipient: string;
-        items: bigint[];
+        itemID: bigint;
     }
     type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
     type Filter = TypedDeferredTopicFilter<Event>;
@@ -102,7 +102,7 @@ export interface SellerProxy extends BaseContract {
     removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
     claimProfit: TypedContractMethod<[
         sellerID: BigNumberish,
-        items: BigNumberish[],
+        itemID: BigNumberish,
         token: AddressLike,
         recipient: AddressLike
     ], [
@@ -140,7 +140,7 @@ export interface SellerProxy extends BaseContract {
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
     getFunction(nameOrSignature: "claimProfit"): TypedContractMethod<[
         sellerID: BigNumberish,
-        items: BigNumberish[],
+        itemID: BigNumberish,
         token: AddressLike,
         recipient: AddressLike
     ], [
@@ -176,7 +176,7 @@ export interface SellerProxy extends BaseContract {
         ItemRegistrationDelegated: TypedContractEvent<ItemRegistrationDelegatedEvent.InputTuple, ItemRegistrationDelegatedEvent.OutputTuple, ItemRegistrationDelegatedEvent.OutputObject>;
         "OwnershipTransferred(address,address)": TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
         OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
-        "ProfitClaimDelegated(address,address,uint32[])": TypedContractEvent<ProfitClaimDelegatedEvent.InputTuple, ProfitClaimDelegatedEvent.OutputTuple, ProfitClaimDelegatedEvent.OutputObject>;
+        "ProfitClaimDelegated(address,address,uint32)": TypedContractEvent<ProfitClaimDelegatedEvent.InputTuple, ProfitClaimDelegatedEvent.OutputTuple, ProfitClaimDelegatedEvent.OutputObject>;
         ProfitClaimDelegated: TypedContractEvent<ProfitClaimDelegatedEvent.InputTuple, ProfitClaimDelegatedEvent.OutputTuple, ProfitClaimDelegatedEvent.OutputObject>;
         "SellerRightClaimed(uint32,address,uint32[])": TypedContractEvent<SellerRightClaimedEvent.InputTuple, SellerRightClaimedEvent.OutputTuple, SellerRightClaimedEvent.OutputObject>;
         SellerRightClaimed: TypedContractEvent<SellerRightClaimedEvent.InputTuple, SellerRightClaimedEvent.OutputTuple, SellerRightClaimedEvent.OutputObject>;
