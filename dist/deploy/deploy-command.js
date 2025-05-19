@@ -92,7 +92,6 @@ class DeployCommand {
             const priceTableAddress = yield priceTable.getAddress();
             const setPriceTableTX = yield itemRegistry.setPriceTable(priceTableAddress);
             yield setPriceTableTX.wait();
-            console.log("set price table completed");
             // --- Deploy ProfitEscrow
             const profitEscrowJson = loadJson("../build/contracts/contracts/ProfitEscrow.sol/ProfitEscrow.json");
             const profitEscrowFactory = new ethers_1.ethers.ContractFactory(profitEscrowJson.abi, profitEscrowJson.bytecode, this.wallet);

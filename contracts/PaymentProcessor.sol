@@ -63,9 +63,10 @@ contract PaymentProcessor is OwnableERC2771Context {
             }
         }
     }
-    
+
     /// @notice Perform permit-based approval for token transfer.
     function getPermission(
+        address buyer,
         address token,
         uint256 deadline,
         uint8 v,
@@ -75,7 +76,7 @@ contract PaymentProcessor is OwnableERC2771Context {
         external
     {
         IERC20Permit(token).permit(
-            _msgSender(),
+            buyer,
             address(this),
             type(uint256).max,
             deadline,

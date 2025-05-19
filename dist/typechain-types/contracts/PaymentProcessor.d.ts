@@ -1,12 +1,18 @@
 import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
 import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../common";
 export interface PaymentProcessorInterface extends Interface {
-    getFunction(nameOrSignature: "changePermissionDeadline" | "feeRateLog" | "getPermission" | "isAllowedToPurchase" | "isTrustedForwarder" | "itemRegistry" | "owner" | "permissionDeadline" | "priceTable" | "process" | "profitEscrow" | "renounceOwnership" | "sellerRegistry" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
+    getFunction(nameOrSignature: "changePermissionDeadline" | "feeRateLog" | "getPermission" | "isTrustedForwarder" | "itemRegistry" | "owner" | "permissionDeadline" | "priceTable" | "process" | "profitEscrow" | "renounceOwnership" | "sellerRegistry" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
     encodeFunctionData(functionFragment: "changePermissionDeadline", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "feeRateLog", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "getPermission", values: [AddressLike, BigNumberish, BigNumberish, BytesLike, BytesLike]): string;
-    encodeFunctionData(functionFragment: "isAllowedToPurchase", values: [AddressLike, BigNumberish, AddressLike]): string;
+    encodeFunctionData(functionFragment: "getPermission", values: [
+        AddressLike,
+        AddressLike,
+        BigNumberish,
+        BigNumberish,
+        BytesLike,
+        BytesLike
+    ]): string;
     encodeFunctionData(functionFragment: "isTrustedForwarder", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "itemRegistry", values?: undefined): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -21,7 +27,6 @@ export interface PaymentProcessorInterface extends Interface {
     decodeFunctionResult(functionFragment: "changePermissionDeadline", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "feeRateLog", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getPermission", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "isAllowedToPurchase", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "isTrustedForwarder", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "itemRegistry", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -73,6 +78,7 @@ export interface PaymentProcessor extends BaseContract {
         }
     ], "view">;
     getPermission: TypedContractMethod<[
+        buyer: AddressLike,
         token: AddressLike,
         deadline: BigNumberish,
         v: BigNumberish,
@@ -81,13 +87,6 @@ export interface PaymentProcessor extends BaseContract {
     ], [
         void
     ], "nonpayable">;
-    isAllowedToPurchase: TypedContractMethod<[
-        buyer: AddressLike,
-        itemID: BigNumberish,
-        token: AddressLike
-    ], [
-        boolean
-    ], "view">;
     isTrustedForwarder: TypedContractMethod<[
         forwarder: AddressLike
     ], [
@@ -124,6 +123,7 @@ export interface PaymentProcessor extends BaseContract {
         }
     ], "view">;
     getFunction(nameOrSignature: "getPermission"): TypedContractMethod<[
+        buyer: AddressLike,
         token: AddressLike,
         deadline: BigNumberish,
         v: BigNumberish,
@@ -132,13 +132,6 @@ export interface PaymentProcessor extends BaseContract {
     ], [
         void
     ], "nonpayable">;
-    getFunction(nameOrSignature: "isAllowedToPurchase"): TypedContractMethod<[
-        buyer: AddressLike,
-        itemID: BigNumberish,
-        token: AddressLike
-    ], [
-        boolean
-    ], "view">;
     getFunction(nameOrSignature: "isTrustedForwarder"): TypedContractMethod<[forwarder: AddressLike], [boolean], "view">;
     getFunction(nameOrSignature: "itemRegistry"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;

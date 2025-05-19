@@ -1179,8 +1179,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PaymentProcessor.sol": {
-      "lastModificationDate": 1747651476809,
-      "contentHash": "26349ee977011771d56ebe26f57b6da3",
+      "lastModificationDate": 1747652230666,
+      "contentHash": "2bbae49849b7a79b11fae1977e6e6348",
       "sourceName": "contracts/PaymentProcessor.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1457,8 +1457,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\Store.sol": {
-      "lastModificationDate": 1747651522978,
-      "contentHash": "c909414aaac53d5bb1c04e49fe24c7f8",
+      "lastModificationDate": 1747652623322,
+      "contentHash": "3c07bff94ecdb16fa589234e0ec0dfc4",
       "sourceName": "contracts/Store.sol",
       "solcConfig": {
         "version": "0.8.21",

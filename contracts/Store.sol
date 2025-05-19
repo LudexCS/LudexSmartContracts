@@ -43,6 +43,26 @@ contract Store is OwnableERC2771Context {
         sellerRegistry = priceTable.sellerRegistry();
     }
 
+    /// @notice Perform permit-based approval for token transfer.
+    function getPermission(
+        address buyer,
+        address token,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    )
+        private
+    {
+        IERC20Permit(token).permit(
+            buyer,
+            address(payment),
+            type(uint256).max,
+            deadline,
+            v, r, s
+        );
+    }
+
     function _isTokenPermitted (address buyer, address token)
         private 
         view
@@ -108,7 +128,7 @@ contract Store is OwnableERC2771Context {
             return _purchaseItem(_msgSender(), itemID, token);
         }
 
-        payment.getPermission(token, deadline, v, r, s);
+        getPermission(_msgSender(), token, deadline, v, r, s);
 
         return _purchaseItem(_msgSender(), itemID, token);
     }

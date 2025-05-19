@@ -54,7 +54,14 @@ export interface PaymentProcessorInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getPermission",
-    values: [AddressLike, BigNumberish, BigNumberish, BytesLike, BytesLike]
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "isTrustedForwarder",
@@ -214,6 +221,7 @@ export interface PaymentProcessor extends BaseContract {
 
   getPermission: TypedContractMethod<
     [
+      buyer: AddressLike,
       token: AddressLike,
       deadline: BigNumberish,
       v: BigNumberish,
@@ -276,6 +284,7 @@ export interface PaymentProcessor extends BaseContract {
     nameOrSignature: "getPermission"
   ): TypedContractMethod<
     [
+      buyer: AddressLike,
       token: AddressLike,
       deadline: BigNumberish,
       v: BigNumberish,
