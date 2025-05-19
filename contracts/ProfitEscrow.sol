@@ -33,13 +33,13 @@ contract ProfitEscrow is OwnableERC2771Context {
 
     modifier onlyPaymentProcessor()
     {
-        require(msg.sender == paymentProcessor, "Not authorized");
+        require(_msgSender() == paymentProcessor, "Not authorized");
         _;
     }
 
     modifier onlyItemSeller(uint32 itemID)
     {
-        require(itemRegistry.seller(itemID) == msg.sender, "Not item seller");
+        require(itemRegistry.seller(itemID) == _msgSender(), "Not item seller");
         _;
     }
 
