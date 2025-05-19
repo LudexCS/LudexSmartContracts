@@ -12,6 +12,9 @@ const Ledger_json_1 = require("./build/contracts/contracts/Ledger.sol/Ledger.jso
 const SellerRegistry_json_1 = require("./build/contracts/contracts/SellerRegistry.sol/SellerRegistry.json");
 const ItemRegistry_json_1 = require("./build/contracts/contracts/ItemRegistry.sol/ItemRegistry.json");
 const MockUSDC_json_1 = require("./build/contracts/contracts/MockUSDC.sol/MockUSDC.json");
+const ProfitEscrow_json_1 = require("./build/contracts/contracts/ProfitEscrow.sol/ProfitEscrow.json");
+const SellerProxy_json_1 = require("./build/contracts/contracts/SellerProxy.sol/SellerProxy.json");
+const PurchaseProxy_json_1 = require("./build/contracts/contracts/PurchaseProxy.sol/PurchaseProxy.json");
 // ─── Factory Import ────────────────────────────────────────────
 const typechain_types_1 = require("./typechain-types");
 // ─── Namespace Export ──────────────────────────────────────────
@@ -29,6 +32,9 @@ var LudexContract;
         ABI.SellerRegistry = SellerRegistry_json_1.abi;
         ABI.ItemRegistry = ItemRegistry_json_1.abi;
         ABI.MockUSDC = MockUSDC_json_1.abi;
+        ABI.ProfitEscrow = ProfitEscrow_json_1.abi;
+        ABI.SellerProxy = SellerProxy_json_1.abi;
+        ABI.PurchaseProxy = PurchaseProxy_json_1.abi;
     })(ABI = LudexContract.ABI || (LudexContract.ABI = {}));
     let Factory;
     (function (Factory) {
@@ -42,6 +48,9 @@ var LudexContract;
         Factory.SellerRegistry = typechain_types_1.SellerRegistry__factory;
         Factory.ItemRegistry = typechain_types_1.ItemRegistry__factory;
         Factory.MockUSDC = typechain_types_1.MockUSDC__factory;
+        Factory.ProfitEscrow = typechain_types_1.ProfitEscrow__factory;
+        Factory.SellerProxy = typechain_types_1.SellerProxy__factory;
+        Factory.PurchaseProxy = typechain_types_1.PurchaseProxy__factory;
     })(Factory = LudexContract.Factory || (LudexContract.Factory = {}));
 })(LudexContract || (exports.LudexContract = LudexContract = {}));
 //# sourceMappingURL=index.js.map

@@ -1,4 +1,4 @@
-import { ERC721__factory, ERC20Permit__factory, ERC2771Forwarder__factory, Store__factory, PriceTable__factory, PaymentProcessor__factory, Ledger__factory, SellerRegistry__factory, ItemRegistry__factory, MockUSDC__factory } from "./typechain-types";
+import { ERC721__factory, ERC20Permit__factory, ERC2771Forwarder__factory, Store__factory, PriceTable__factory, PaymentProcessor__factory, Ledger__factory, SellerRegistry__factory, ItemRegistry__factory, MockUSDC__factory, ProfitEscrow__factory, SellerProxy__factory, PurchaseProxy__factory } from "./typechain-types";
 import type { ERC721 as TERC721 } from "./typechain-types";
 import type { ERC20Permit as TERC20Permit } from "./typechain-types";
 import type { ERC2771Forwarder as TERC2771Forwarder } from "./typechain-types";
@@ -9,6 +9,9 @@ import type { Ledger as TLedger } from "./typechain-types";
 import type { SellerRegistry as TSellerRegistry } from "./typechain-types";
 import type { ItemRegistry as TItemRegistry } from "./typechain-types";
 import type { MockUSDC as TMockUSDC } from "./typechain-types";
+import type { ProfitEscrow as TProfitEscrow } from "./typechain-types";
+import type { SellerProxy as TSellerProxy } from "./typechain-types";
+import type { PurchaseProxy as TPurchaseProxy } from "./typechain-types";
 export declare namespace LudexContract {
     namespace ABI {
         const ERC721: ({
@@ -546,6 +549,156 @@ export declare namespace LudexContract {
             type: string;
             anonymous?: undefined;
         })[];
+        const ProfitEscrow: ({
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            stateMutability: string;
+            type: string;
+            name?: undefined;
+            anonymous?: undefined;
+            outputs?: undefined;
+        } | {
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            type: string;
+            stateMutability?: undefined;
+            anonymous?: undefined;
+            outputs?: undefined;
+        } | {
+            anonymous: boolean;
+            inputs: {
+                indexed: boolean;
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            type: string;
+            stateMutability?: undefined;
+            outputs?: undefined;
+        } | {
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            outputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            stateMutability: string;
+            type: string;
+            anonymous?: undefined;
+        })[];
+        const SellerProxy: ({
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            stateMutability: string;
+            type: string;
+            name?: undefined;
+            anonymous?: undefined;
+            outputs?: undefined;
+        } | {
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            type: string;
+            stateMutability?: undefined;
+            anonymous?: undefined;
+            outputs?: undefined;
+        } | {
+            anonymous: boolean;
+            inputs: {
+                indexed: boolean;
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            type: string;
+            stateMutability?: undefined;
+            outputs?: undefined;
+        } | {
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            outputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            stateMutability: string;
+            type: string;
+            anonymous?: undefined;
+        })[];
+        const PurchaseProxy: ({
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            stateMutability: string;
+            type: string;
+            name?: undefined;
+            anonymous?: undefined;
+            outputs?: undefined;
+        } | {
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            type: string;
+            stateMutability?: undefined;
+            anonymous?: undefined;
+            outputs?: undefined;
+        } | {
+            anonymous: boolean;
+            inputs: {
+                indexed: boolean;
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            type: string;
+            stateMutability?: undefined;
+            outputs?: undefined;
+        } | {
+            inputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            name: string;
+            outputs: {
+                internalType: string;
+                name: string;
+                type: string;
+            }[];
+            stateMutability: string;
+            type: string;
+            anonymous?: undefined;
+        })[];
     }
     namespace Factory {
         const ERC721: typeof ERC721__factory;
@@ -558,6 +711,9 @@ export declare namespace LudexContract {
         const SellerRegistry: typeof SellerRegistry__factory;
         const ItemRegistry: typeof ItemRegistry__factory;
         const MockUSDC: typeof MockUSDC__factory;
+        const ProfitEscrow: typeof ProfitEscrow__factory;
+        const SellerProxy: typeof SellerProxy__factory;
+        const PurchaseProxy: typeof PurchaseProxy__factory;
     }
     namespace Type {
         type ERC721 = TERC721;
@@ -570,6 +726,9 @@ export declare namespace LudexContract {
         type SellerRegistry = TSellerRegistry;
         type ItemRegistry = TItemRegistry;
         type MockUSDC = TMockUSDC;
+        type ProfitEscrow = TProfitEscrow;
+        type SellerProxy = TSellerProxy;
+        type PurchaseProxy = TPurchaseProxy;
     }
 }
 //# sourceMappingURL=index.d.ts.map
