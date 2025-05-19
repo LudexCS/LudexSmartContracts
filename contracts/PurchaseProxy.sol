@@ -10,10 +10,21 @@ import "./Store.sol";
 
 contract PurchaseProxy is Ownable {
 
-    mapping(uint32 => uint256[]) public owner;
+    mapping(uint256 => uint32) public owner;
+
+    struct PurchaseInfo {
+        uint256 tokenID;
+        uint32 itemID;
+        uint32 buyer;
+        uint256 timestamp;
+    }
 
     Store private store;   
-    IERC721 private ledger;
+    Ledger private ledger;
+
+    event PurchaseIDsClaimed(
+        address indexed owner,
+        uint256[] purchases);
 
     constructor (
         address storeAddress
@@ -21,7 +32,7 @@ contract PurchaseProxy is Ownable {
         Ownable(msg.sender)
     {
         store = Store(storeAddress);
-        ledger = IERC721(store.ledger());
+        ledger = Ledger(store.ledger());
     }
 
     function purchaseItem(
@@ -42,24 +53,45 @@ contract PurchaseProxy is Ownable {
 
         uint256 purchaseID = store.purchaseItem(itemID, token);
 
-        owner[ownerID].push(purchaseID);
+        owner[purchaseID] = ownerID;
     }
 
     function claimPurchaseIDs(
         uint32 ownerID,
         address claimer,
-        address token
+        uint256[] calldata purchaseIDs
     )
         external
         onlyOwner
     {
-        IERC20 tokenContract = IERC20(token);
+        require(claimer != address(0), "Not a valid claimer address");
 
-        while (owner[ownerID].length > 0)
+        for (uint32 i = 0 ; i < purchaseIDs.length; i ++)
         {
-            uint256 purchaseID = owner[ownerID][owner[ownerID].length - 1];
-            tokenContract.transferFrom(address(this), claimer, purchaseID);
-            owner[ownerID].pop();
+            uint256 purchaseID = purchaseIDs[i];
+            require(owner[purchaseID] == ownerID, "Not item owner");
+            ledger.transferFrom(address(this), claimer, purchaseID);
         }
+
+        emit PurchaseIDsClaimed(
+            claimer,
+            purchaseIDs);
     }   
+
+    function getPurchaseInfo(
+        uint256 purchaseID
+    )
+        external
+        view
+        returns (PurchaseInfo memory purchase)
+    {
+        ( , uint32 itemID,  , uint256 timestamp) = 
+            ledger.purchases(purchaseID);
+
+        return PurchaseInfo(
+            purchaseID,
+            itemID,
+            owner[purchaseID],
+            timestamp);
+    }
 }
