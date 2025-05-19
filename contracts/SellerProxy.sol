@@ -24,7 +24,7 @@ contract SellerProxy is Ownable {
     event ProfitClaimDelegated (
         address indexed token,
         address indexed recipient,
-        uint32[] items
+        uint32 indexed itemID
     );
 
     event SellerRightClaimed (
@@ -93,25 +93,22 @@ contract SellerProxy is Ownable {
 
     function claimProfit(
         uint32 sellerID,
-        uint32[] calldata items,
+        uint32 itemID,
         address token,
         address recipient
     )
         external
         onlyOwner
     {
-        for (uint32 i = 0; i < items.length; i ++ )
-        {
-            require(
-                seller[items[i]] == sellerID,
-                "Not item seller");
-            profitEscrow.claim(items[i], token, recipient);
-        }
+        require(
+            seller[itemID] == sellerID,
+            "Not item seller");
+        profitEscrow.claim(itemID, token, recipient);
     
         emit ProfitClaimDelegated(
             token,
             recipient,
-            items
+            itemID
         );
     }
 
