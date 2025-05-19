@@ -28,7 +28,6 @@ export interface PaymentProcessorInterface extends Interface {
     nameOrSignature:
       | "changePermissionDeadline"
       | "feeRateLog"
-      | "getPermission"
       | "isTrustedForwarder"
       | "itemRegistry"
       | "owner"
@@ -51,17 +50,6 @@ export interface PaymentProcessorInterface extends Interface {
   encodeFunctionData(
     functionFragment: "feeRateLog",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPermission",
-    values: [
-      AddressLike,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BytesLike
-    ]
   ): string;
   encodeFunctionData(
     functionFragment: "isTrustedForwarder",
@@ -110,10 +98,6 @@ export interface PaymentProcessorInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "feeRateLog", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getPermission",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "isTrustedForwarder",
     data: BytesLike
@@ -219,19 +203,6 @@ export interface PaymentProcessor extends BaseContract {
     "view"
   >;
 
-  getPermission: TypedContractMethod<
-    [
-      buyer: AddressLike,
-      token: AddressLike,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike
-    ],
-    [void],
-    "nonpayable"
-  >;
-
   isTrustedForwarder: TypedContractMethod<
     [forwarder: AddressLike],
     [boolean],
@@ -279,20 +250,6 @@ export interface PaymentProcessor extends BaseContract {
     [arg0: BigNumberish],
     [[bigint, bigint] & { timestamp: bigint; feeRate: bigint }],
     "view"
-  >;
-  getFunction(
-    nameOrSignature: "getPermission"
-  ): TypedContractMethod<
-    [
-      buyer: AddressLike,
-      token: AddressLike,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike
-    ],
-    [void],
-    "nonpayable"
   >;
   getFunction(
     nameOrSignature: "isTrustedForwarder"
