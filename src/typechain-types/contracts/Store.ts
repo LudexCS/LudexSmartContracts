@@ -60,14 +60,7 @@ export interface StoreInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "purchaseItem",
-    values: [
-      BigNumberish,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BytesLike
-    ]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -211,15 +204,8 @@ export interface Store extends BaseContract {
   priceTable: TypedContractMethod<[], [string], "view">;
 
   purchaseItem: TypedContractMethod<
-    [
-      itemID: BigNumberish,
-      token: AddressLike,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike
-    ],
-    [void],
+    [itemID: BigNumberish, token: AddressLike],
+    [bigint],
     "nonpayable"
   >;
 
@@ -260,15 +246,8 @@ export interface Store extends BaseContract {
   getFunction(
     nameOrSignature: "purchaseItem"
   ): TypedContractMethod<
-    [
-      itemID: BigNumberish,
-      token: AddressLike,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike
-    ],
-    [void],
+    [itemID: BigNumberish, token: AddressLike],
+    [bigint],
     "nonpayable"
   >;
   getFunction(

@@ -7,5 +7,8 @@ export { MockUSDC__factory } from "./MockUSDC__factory";
 export { OwnableERC2771Context__factory } from "./OwnableERC2771Context__factory";
 export { PaymentProcessor__factory } from "./PaymentProcessor__factory";
 export { PriceTable__factory } from "./PriceTable__factory";
+export { ProfitEscrow__factory } from "./ProfitEscrow__factory";
+export { PurchaseProxy__factory } from "./PurchaseProxy__factory";
+export { SellerProxy__factory } from "./SellerProxy__factory";
 export { SellerRegistry__factory } from "./SellerRegistry__factory";
 export { Store__factory } from "./Store__factory";

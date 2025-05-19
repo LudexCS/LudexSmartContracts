@@ -9,14 +9,7 @@ export interface StoreInterface extends Interface {
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
     encodeFunctionData(functionFragment: "payment", values?: undefined): string;
     encodeFunctionData(functionFragment: "priceTable", values?: undefined): string;
-    encodeFunctionData(functionFragment: "purchaseItem", values: [
-        BigNumberish,
-        AddressLike,
-        BigNumberish,
-        BigNumberish,
-        BytesLike,
-        BytesLike
-    ]): string;
+    encodeFunctionData(functionFragment: "purchaseItem", values: [BigNumberish, AddressLike]): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
     encodeFunctionData(functionFragment: "sellerRegistry", values?: undefined): string;
     encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
@@ -87,13 +80,9 @@ export interface Store extends BaseContract {
     priceTable: TypedContractMethod<[], [string], "view">;
     purchaseItem: TypedContractMethod<[
         itemID: BigNumberish,
-        token: AddressLike,
-        deadline: BigNumberish,
-        v: BigNumberish,
-        r: BytesLike,
-        s: BytesLike
+        token: AddressLike
     ], [
-        void
+        bigint
     ], "nonpayable">;
     renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
     sellerRegistry: TypedContractMethod<[], [string], "view">;
@@ -112,13 +101,9 @@ export interface Store extends BaseContract {
     getFunction(nameOrSignature: "priceTable"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "purchaseItem"): TypedContractMethod<[
         itemID: BigNumberish,
-        token: AddressLike,
-        deadline: BigNumberish,
-        v: BigNumberish,
-        r: BytesLike,
-        s: BytesLike
+        token: AddressLike
     ], [
-        void
+        bigint
     ], "nonpayable">;
     getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
     getFunction(nameOrSignature: "sellerRegistry"): TypedContractMethod<[], [string], "view">;

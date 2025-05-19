@@ -142,6 +142,18 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PriceTable__factory>;
     getContractFactory(
+      name: "ProfitEscrow",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ProfitEscrow__factory>;
+    getContractFactory(
+      name: "PurchaseProxy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PurchaseProxy__factory>;
+    getContractFactory(
+      name: "SellerProxy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SellerProxy__factory>;
+    getContractFactory(
       name: "SellerRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SellerRegistry__factory>;
@@ -311,6 +323,21 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.PriceTable>;
     getContractAt(
+      name: "ProfitEscrow",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ProfitEscrow>;
+    getContractAt(
+      name: "PurchaseProxy",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PurchaseProxy>;
+    getContractAt(
+      name: "SellerProxy",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SellerProxy>;
+    getContractAt(
       name: "SellerRegistry",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -450,6 +477,18 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.PriceTable>;
     deployContract(
+      name: "ProfitEscrow",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ProfitEscrow>;
+    deployContract(
+      name: "PurchaseProxy",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PurchaseProxy>;
+    deployContract(
+      name: "SellerProxy",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SellerProxy>;
+    deployContract(
       name: "SellerRegistry",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.SellerRegistry>;
@@ -618,6 +657,21 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.PriceTable>;
+    deployContract(
+      name: "ProfitEscrow",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ProfitEscrow>;
+    deployContract(
+      name: "PurchaseProxy",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PurchaseProxy>;
+    deployContract(
+      name: "SellerProxy",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SellerProxy>;
     deployContract(
       name: "SellerRegistry",
       args: any[],

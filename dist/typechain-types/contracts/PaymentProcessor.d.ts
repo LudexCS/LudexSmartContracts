@@ -1,48 +1,36 @@
 import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
 import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../common";
 export interface PaymentProcessorInterface extends Interface {
-    getFunction(nameOrSignature: "changePermissionDeadline" | "claim" | "distribute" | "feeRateLog" | "isSellerToPay" | "isTrustedForwarder" | "itemRegistry" | "owner" | "permissionDeadline" | "priceTable" | "process" | "renounceOwnership" | "sellerRegistry" | "sellerTokenEscrow" | "sellersToPay" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
-    getEvent(nameOrSignatureOrTopic: "OwnershipTransferred" | "ProfitClaimed"): EventFragment;
+    getFunction(nameOrSignature: "changePermissionDeadline" | "feeRateLog" | "getPermission" | "isAllowedToPurchase" | "isTrustedForwarder" | "itemRegistry" | "owner" | "permissionDeadline" | "priceTable" | "process" | "profitEscrow" | "renounceOwnership" | "sellerRegistry" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
+    getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
     encodeFunctionData(functionFragment: "changePermissionDeadline", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "claim", values: [AddressLike]): string;
-    encodeFunctionData(functionFragment: "distribute", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "feeRateLog", values: [BigNumberish]): string;
-    encodeFunctionData(functionFragment: "isSellerToPay", values: [AddressLike, AddressLike]): string;
+    encodeFunctionData(functionFragment: "getPermission", values: [AddressLike, BigNumberish, BigNumberish, BytesLike, BytesLike]): string;
+    encodeFunctionData(functionFragment: "isAllowedToPurchase", values: [AddressLike, BigNumberish, AddressLike]): string;
     encodeFunctionData(functionFragment: "isTrustedForwarder", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "itemRegistry", values?: undefined): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
     encodeFunctionData(functionFragment: "permissionDeadline", values?: undefined): string;
     encodeFunctionData(functionFragment: "priceTable", values?: undefined): string;
-    encodeFunctionData(functionFragment: "process", values: [
-        AddressLike,
-        BigNumberish,
-        AddressLike,
-        BigNumberish,
-        BigNumberish,
-        BytesLike,
-        BytesLike
-    ]): string;
+    encodeFunctionData(functionFragment: "process", values: [AddressLike, BigNumberish, AddressLike]): string;
+    encodeFunctionData(functionFragment: "profitEscrow", values?: undefined): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
     encodeFunctionData(functionFragment: "sellerRegistry", values?: undefined): string;
-    encodeFunctionData(functionFragment: "sellerTokenEscrow", values: [AddressLike, AddressLike]): string;
-    encodeFunctionData(functionFragment: "sellersToPay", values: [AddressLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "trustedForwarder", values?: undefined): string;
     decodeFunctionResult(functionFragment: "changePermissionDeadline", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "distribute", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "feeRateLog", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "isSellerToPay", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "getPermission", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "isAllowedToPurchase", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "isTrustedForwarder", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "itemRegistry", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "permissionDeadline", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "priceTable", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "process", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "profitEscrow", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "renounceOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "sellerRegistry", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "sellerTokenEscrow", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "sellersToPay", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "trustedForwarder", data: BytesLike): Result;
 }
@@ -52,23 +40,6 @@ export declare namespace OwnershipTransferredEvent {
     interface OutputObject {
         previousOwner: string;
         newOwner: string;
-    }
-    type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-    type Filter = TypedDeferredTopicFilter<Event>;
-    type Log = TypedEventLog<Event>;
-    type LogDescription = TypedLogDescription<Event>;
-}
-export declare namespace ProfitClaimedEvent {
-    type InputTuple = [
-        seller: AddressLike,
-        token: AddressLike,
-        amount: BigNumberish
-    ];
-    type OutputTuple = [seller: string, token: string, amount: bigint];
-    interface OutputObject {
-        seller: string;
-        token: string;
-        amount: bigint;
     }
     type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
     type Filter = TypedDeferredTopicFilter<Event>;
@@ -93,8 +64,6 @@ export interface PaymentProcessor extends BaseContract {
     ], [
         void
     ], "nonpayable">;
-    claim: TypedContractMethod<[token: AddressLike], [void], "nonpayable">;
-    distribute: TypedContractMethod<[token: AddressLike], [void], "nonpayable">;
     feeRateLog: TypedContractMethod<[
         arg0: BigNumberish
     ], [
@@ -103,9 +72,19 @@ export interface PaymentProcessor extends BaseContract {
             feeRate: bigint;
         }
     ], "view">;
-    isSellerToPay: TypedContractMethod<[
-        arg0: AddressLike,
-        arg1: AddressLike
+    getPermission: TypedContractMethod<[
+        token: AddressLike,
+        deadline: BigNumberish,
+        v: BigNumberish,
+        r: BytesLike,
+        s: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    isAllowedToPurchase: TypedContractMethod<[
+        buyer: AddressLike,
+        itemID: BigNumberish,
+        token: AddressLike
     ], [
         boolean
     ], "view">;
@@ -121,28 +100,13 @@ export interface PaymentProcessor extends BaseContract {
     process: TypedContractMethod<[
         buyer: AddressLike,
         itemID: BigNumberish,
-        token: AddressLike,
-        deadline: BigNumberish,
-        v: BigNumberish,
-        r: BytesLike,
-        s: BytesLike
+        token: AddressLike
     ], [
         void
     ], "nonpayable">;
+    profitEscrow: TypedContractMethod<[], [string], "view">;
     renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
     sellerRegistry: TypedContractMethod<[], [string], "view">;
-    sellerTokenEscrow: TypedContractMethod<[
-        arg0: AddressLike,
-        arg1: AddressLike
-    ], [
-        bigint
-    ], "view">;
-    sellersToPay: TypedContractMethod<[
-        arg0: AddressLike,
-        arg1: BigNumberish
-    ], [
-        string
-    ], "view">;
     transferOwnership: TypedContractMethod<[
         newOwner: AddressLike
     ], [
@@ -151,8 +115,6 @@ export interface PaymentProcessor extends BaseContract {
     trustedForwarder: TypedContractMethod<[], [string], "view">;
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
     getFunction(nameOrSignature: "changePermissionDeadline"): TypedContractMethod<[newDeadline: BigNumberish], [void], "nonpayable">;
-    getFunction(nameOrSignature: "claim"): TypedContractMethod<[token: AddressLike], [void], "nonpayable">;
-    getFunction(nameOrSignature: "distribute"): TypedContractMethod<[token: AddressLike], [void], "nonpayable">;
     getFunction(nameOrSignature: "feeRateLog"): TypedContractMethod<[
         arg0: BigNumberish
     ], [
@@ -161,9 +123,19 @@ export interface PaymentProcessor extends BaseContract {
             feeRate: bigint;
         }
     ], "view">;
-    getFunction(nameOrSignature: "isSellerToPay"): TypedContractMethod<[
-        arg0: AddressLike,
-        arg1: AddressLike
+    getFunction(nameOrSignature: "getPermission"): TypedContractMethod<[
+        token: AddressLike,
+        deadline: BigNumberish,
+        v: BigNumberish,
+        r: BytesLike,
+        s: BytesLike
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "isAllowedToPurchase"): TypedContractMethod<[
+        buyer: AddressLike,
+        itemID: BigNumberish,
+        token: AddressLike
     ], [
         boolean
     ], "view">;
@@ -175,37 +147,19 @@ export interface PaymentProcessor extends BaseContract {
     getFunction(nameOrSignature: "process"): TypedContractMethod<[
         buyer: AddressLike,
         itemID: BigNumberish,
-        token: AddressLike,
-        deadline: BigNumberish,
-        v: BigNumberish,
-        r: BytesLike,
-        s: BytesLike
+        token: AddressLike
     ], [
         void
     ], "nonpayable">;
+    getFunction(nameOrSignature: "profitEscrow"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
     getFunction(nameOrSignature: "sellerRegistry"): TypedContractMethod<[], [string], "view">;
-    getFunction(nameOrSignature: "sellerTokenEscrow"): TypedContractMethod<[
-        arg0: AddressLike,
-        arg1: AddressLike
-    ], [
-        bigint
-    ], "view">;
-    getFunction(nameOrSignature: "sellersToPay"): TypedContractMethod<[
-        arg0: AddressLike,
-        arg1: BigNumberish
-    ], [
-        string
-    ], "view">;
     getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
     getFunction(nameOrSignature: "trustedForwarder"): TypedContractMethod<[], [string], "view">;
     getEvent(key: "OwnershipTransferred"): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
-    getEvent(key: "ProfitClaimed"): TypedContractEvent<ProfitClaimedEvent.InputTuple, ProfitClaimedEvent.OutputTuple, ProfitClaimedEvent.OutputObject>;
     filters: {
         "OwnershipTransferred(address,address)": TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
         OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
-        "ProfitClaimed(address,address,uint256)": TypedContractEvent<ProfitClaimedEvent.InputTuple, ProfitClaimedEvent.OutputTuple, ProfitClaimedEvent.OutputObject>;
-        ProfitClaimed: TypedContractEvent<ProfitClaimedEvent.InputTuple, ProfitClaimedEvent.OutputTuple, ProfitClaimedEvent.OutputObject>;
     };
 }
 //# sourceMappingURL=PaymentProcessor.d.ts.map

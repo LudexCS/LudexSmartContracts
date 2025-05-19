@@ -7,5 +7,8 @@ export type { MockUSDC } from "./MockUSDC";
 export type { OwnableERC2771Context } from "./OwnableERC2771Context";
 export type { PaymentProcessor } from "./PaymentProcessor";
 export type { PriceTable } from "./PriceTable";
+export type { ProfitEscrow } from "./ProfitEscrow";
+export type { PurchaseProxy } from "./PurchaseProxy";
+export type { SellerProxy } from "./SellerProxy";
 export type { SellerRegistry } from "./SellerRegistry";
 export type { Store } from "./Store";

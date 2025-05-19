@@ -1,0 +1,52 @@
+await mockUSDC.connect(owner).balanceOf("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")
+await mockUSDC.connect(owner).giveaway("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")
+mockUSDC.connect(owner).giveaway("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")
+mockUSDC
+var mockUSDC = await ethers.getContractAt("MockUSDC", "0xa513ABFdD3366E7cDf0cC50a2bebCD893CdA9729")
+var mockUSDC = ethers.getContractAt("0xa513ABFdD3366E7cDf0cC50a2bebCD893CdA9729", "MockUSDC", owner)
+var MockUSDC = await mockUSDC
+var mockUSDC = ethers.getContractFactory("MockUSDC")
+var owner = accounts[0]
+accounts = await accounts
+var accounts = ethers.getSigners()
+yield
+accounts
+accounts = await ethers.getSigners()
+accounts = ethers.getSigners()
+let accounts = ethers.getSigners()
+let accounts = ethers.getAccounts()
+yield
+signerOwner
+await token.balanceOf(buyer);
+token.balanceOf(buyer);
+await token.connect(signerOwner).giveaway(buyer);
+await token.balanceOf(buyer);
+token.balanceOf
+let buyer = signers[4];
+signers
+let token = Token.attach("0x225f3f481F7647B64219C6E4E1226dFEc60c7241");
+Token = await Token;
+let Token = ethers.getContractFactory("MockUSDC");
+await ledger.owner();
+await ledger.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
+let ledger = Ledger.attach("0x6EA8fc1c828FAc37e905D307302FC9e893178ad4");
+Ledger = await Ledger;
+let Ledger = ethers.getContractFactory("Ledger");
+await store.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
+store.isTrustedForwarder
+let store = Store.attach("0xAdD7B73d47Fc342be20058329acF01c833F3bCD1");
+let Store = await ethers.getContractFactory("Store");
+let signerOwner = signers[0];
+await owner
+let owner = signers[0];
+owner;
+owner = signers[0];
+signers = await ethers.getSigners();
+let signers = ethers.getSigners();
+owner = ethers.getSigner(0);
+owner = ethers.getSigners(0);
+[owner, user1, user2, user3, user4] = ethers.getSigners();
+let [owner, user1, user2, user3, user4] = ethers.getSigners();
+let [owner, user1, user2, user3, user4] = ethers.getSigners90;
+yield
+let [owner, user] = await ethers.getSigners();

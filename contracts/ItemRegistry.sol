@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "./Utils.sol";
 import "./PriceTable.sol";
+import "./SellerProxy.sol";
 
 /// @title ItemRegistry
 /// @author Ludex
@@ -16,17 +17,20 @@ contract ItemRegistry is Ownable {
     using Utils for bytes;
 
     mapping (uint32 => address) public seller;
+    mapping (address => uint32[]) private itemsOfSeller;
+
     mapping (uint32 => uint32[]) public itemRevenueSharers;
     mapping (uint32 => uint8) public numberOfSharers;
     mapping (uint32 => uint32[]) public revenueSharingItems;
     mapping (uint32 => uint256) public timestampRegistered;
 
-    mapping (uint32 => bool) suspensions;
+    mapping (uint32 => bool) public suspensions;
 
     mapping (uint256 => uint32[]) private listGenerator;
     uint256 private listGenId;
 
     PriceTable private priceTable;
+    address private sellerProxy;
  
     event ItemRegistered(
         bytes32 indexed itemName, 
@@ -43,7 +47,8 @@ contract ItemRegistry is Ownable {
         uint32 indexed itemID, 
         uint32[] resumed);
 
-    constructor () Ownable(msg.sender) 
+    constructor () 
+        Ownable(msg.sender) 
     {}
 
     function setPriceTable(address priceTableAddress)
@@ -51,6 +56,54 @@ contract ItemRegistry is Ownable {
         onlyOwner
     {
         priceTable = PriceTable(priceTableAddress);
+    }
+
+    function setSellerProxy(address sellerProxy_)
+        external
+        onlyOwner
+    {
+        sellerProxy = sellerProxy_;
+    }
+
+    modifier onlyRegistrationHandler()
+    {
+        require(
+            msg.sender == owner() ||
+            (sellerProxy != address(0) && msg.sender == sellerProxy),
+            "Not a registration handler");
+        _;
+    }
+
+    function getItemsOfSeller(
+        address seller_
+    )
+        external
+        view
+        returns (uint32[] memory)
+    {
+        uint32 length = uint32(itemsOfSeller[seller_].length);
+        uint32 skipCount = 0;
+        for (uint32 i = 0; i < length; i ++)
+        {
+            uint32 itemID = itemsOfSeller[seller_][i];
+            if (seller[itemID] != seller_)
+            {
+                skipCount ++;
+            }
+        }
+
+        uint32[] memory items = new uint32[](length - skipCount);
+        uint32 j = 0;
+        for (uint32 i = 0; i < length; i ++)
+        {
+            uint32 itemID = itemsOfSeller[seller_][i];
+            if (seller[itemID] != seller_) 
+                continue;
+            items[j] = itemsOfSeller[seller_][i];
+            j++;
+        }
+
+        return items;
     }
 
     function revenueSharerOfItem(uint32 itemID, uint8 index)
@@ -80,10 +133,14 @@ contract ItemRegistry is Ownable {
         uint16[] calldata shares
     )
         external
-        onlyOwner
+        onlyRegistrationHandler
+        returns (uint32 itemID)
     {
-        uint32 itemID = abi.encode(itemNameHash, seller_).fnv1a32();
+        itemID = abi.encode(itemNameHash, seller_).fnv1a32();
+
         seller[itemID] = seller_;
+        itemsOfSeller[seller_].push(itemID);
+
         itemRevenueSharers[itemID] = revenueSharers;
         for (uint16 i = 0 ; i < revenueSharers.length; i ++)
         {
@@ -99,7 +156,10 @@ contract ItemRegistry is Ownable {
         {
             uint32 shareTermID = shareTerms[i];
             uint32 itemShareID = abi.encode(itemID, shareTermID).fnv1a32();
+
             seller[itemShareID] = seller_;
+            itemsOfSeller[seller_].push(itemShareID);
+
             assert(
                 priceTable.initializeItemPrice(
                     itemShareID, 
@@ -172,6 +232,21 @@ contract ItemRegistry is Ownable {
         uint32[] storage list = listGenerator[++listGenId];
         _resumeItemSale(itemID, list);
         emit ItemSaleResumed(itemID, list);
+    }
+
+    function transferSellerRight(
+        uint32 itemID,
+        address newSeller
+    )
+        external
+        onlyRegistrationHandler
+    {
+        require(
+            _msgSender() == seller[itemID],
+            "Not item seller");
+        
+        seller[itemID] = newSeller;
+        itemsOfSeller[newSeller].push(itemID);
     }
 
 }

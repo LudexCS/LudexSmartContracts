@@ -1,0 +1,140 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >= 0.8.0;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+import "./ItemRegistry.sol";
+import "./ProfitEscrow.sol";
+import "./PaymentProcessor.sol";
+import "./Store.sol";
+
+contract SellerProxy is Ownable {
+
+    ItemRegistry private itemRegistry;
+    ProfitEscrow private profitEscrow;
+
+    mapping(uint32 => uint32) seller;
+    mapping(uint32 => uint32[]) itemsOfSeller;
+
+    event ItemRegistrationDelegated (
+        uint32 indexed itemID,
+        uint32 indexed sellerID
+    );
+
+    event ProfitClaimDelegated (
+        address indexed token,
+        address indexed recipient,
+        uint32[] items
+    );
+
+    event SellerRightClaimed (
+        uint32 indexed sellerID,
+        address indexed sellerAddress,
+        uint32[] items
+    );
+
+    constructor (
+        address paymentProcessor
+    ) 
+        Ownable(msg.sender)   
+    {
+        PaymentProcessor payment = PaymentProcessor(paymentProcessor);
+        itemRegistry = payment.itemRegistry();
+        profitEscrow = payment.profitEscrow();
+    }
+
+    function registerItem (
+        bytes32 itemNameHash,
+        uint32 sellerID,
+        uint32[] calldata revenueSharers,
+        uint256 usdPrice,
+        uint32[] calldata shareTerms,
+        uint16[] calldata shares
+    )
+        external
+        onlyOwner
+    {
+        uint32 itemID = 
+            itemRegistry.registerItem(
+                itemNameHash, 
+                address(this), 
+                revenueSharers,
+                usdPrice,
+                shareTerms,
+                shares
+            );
+        
+        seller[itemID] = sellerID;
+        itemsOfSeller[sellerID].push(itemID);
+
+        emit ItemRegistrationDelegated(
+            itemID,
+            sellerID
+        ); 
+    }
+
+    function getItemsOfSeller(
+        uint32 sellerID
+    )
+        public
+        view
+        returns (uint32[] memory)
+    {
+        uint32 length = uint32(itemsOfSeller[sellerID].length);
+        uint32[] memory items = new uint32[](length);
+
+        for (uint32 i = 0; i < length; i++)
+        {
+            items[i] = itemsOfSeller[sellerID][i];
+        }
+
+        return items;
+    }
+
+    function claimProfit(
+        uint32 sellerID,
+        uint32[] calldata items,
+        address token,
+        address recipient
+    )
+        external
+        onlyOwner
+    {
+        for (uint32 i = 0; i < items.length; i ++ )
+        {
+            require(
+                seller[items[i]] == sellerID,
+                "Not item seller");
+            profitEscrow.claim(items[i], token, recipient);
+        }
+    
+        emit ProfitClaimDelegated(
+            token,
+            recipient,
+            items
+        );
+    }
+
+    function claimSellerRight(
+        uint32 sellerID,
+        uint32[] calldata items,
+        address sellerAddress
+    )
+        external
+        onlyOwner
+    {
+        for (uint32 i = 0; i < items.length; i ++)
+        {
+            require(
+                seller[items[i]] == sellerID,
+                "Not item seller");
+
+            itemRegistry.transferSellerRight(items[i], sellerAddress);
+        }
+
+        emit SellerRightClaimed(
+            sellerID,
+            sellerAddress,
+            items);
+    }
+}

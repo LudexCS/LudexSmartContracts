@@ -89,16 +89,26 @@ class DeployCommand {
             const priceTable = yield priceTableFactory.deploy(forwarderAddress, itemRegistryAddress, sellerRegistryAddress);
             yield priceTable.waitForDeployment();
             yield record("PriceTable", priceTable, priceTableJson.abi, priceTable.deploymentTransaction());
-            const priceTableAddr = yield priceTable.getAddress();
-            const setPriceTableTX = yield itemRegistry.setPriceTable(priceTableAddr);
+            const priceTableAddress = yield priceTable.getAddress();
+            const setPriceTableTX = yield itemRegistry.setPriceTable(priceTableAddress);
             yield setPriceTableTX.wait();
+            console.log("set price table completed");
+            // --- Deploy ProfitEscrow
+            const profitEscrowJson = loadJson("../build/contracts/contracts/ProfitEscrow.sol/ProfitEscrow.json");
+            const profitEscrowFactory = new ethers_1.ethers.ContractFactory(profitEscrowJson.abi, profitEscrowJson.bytecode, this.wallet);
+            const profitEscrow = yield profitEscrowFactory.deploy(itemRegistryAddress, priceTableAddress, forwarderAddress);
+            yield profitEscrow.waitForDeployment();
+            yield record("ProfitEscrow", profitEscrow, profitEscrowJson.abi, profitEscrow.deploymentTransaction());
+            const profitEscrowAddress = yield profitEscrow.getAddress();
             // --- Deploy PaymentProcessor
             const paymentProcessorJson = loadJson("../build/contracts/contracts/PaymentProcessor.sol/PaymentProcessor.json");
             const paymentProcessorFactory = new ethers_1.ethers.ContractFactory(paymentProcessorJson.abi, paymentProcessorJson.bytecode, this.wallet);
-            const priceTableAddress = yield priceTable.getAddress();
-            const paymentProcessor = yield paymentProcessorFactory.deploy(forwarderAddress, initialFeeRate, priceTableAddress);
+            const paymentProcessor = yield paymentProcessorFactory.deploy(forwarderAddress, initialFeeRate, priceTableAddress, profitEscrowAddress);
             yield paymentProcessor.waitForDeployment();
             yield record("PaymentProcessor", paymentProcessor, paymentProcessorJson.abi, paymentProcessor.deploymentTransaction());
+            const paymentProcessorAddress = yield paymentProcessor.getAddress();
+            const setPaymentProcessorTX = yield profitEscrow.setPaymentProcessor(paymentProcessorAddress);
+            yield setPaymentProcessorTX.wait();
             // --- Deploy Ledger
             const ledgerJson = loadJson("../build/contracts/contracts/Ledger.sol/Ledger.json");
             const ledgerFactory = new ethers_1.ethers.ContractFactory(ledgerJson.abi, ledgerJson.bytecode, this.wallet);
@@ -109,13 +119,22 @@ class DeployCommand {
             const storeJson = loadJson("../build/contracts/contracts/Store.sol/Store.json");
             const storeFactory = new ethers_1.ethers.ContractFactory(storeJson.abi, storeJson.bytecode, this.wallet);
             const ledgerAddress = yield ledger.getAddress();
-            const paymentProcessorAddress = yield paymentProcessor.getAddress();
             const store = yield storeFactory.deploy(forwarderAddress, priceTableAddress, ledgerAddress, paymentProcessorAddress);
             yield store.waitForDeployment();
             yield record("Store", store, storeJson.abi, store.deploymentTransaction());
-            const storeAddr = yield store.getAddress();
-            const setStoreTX = yield ledger.setStore(storeAddr);
+            const storeAddress = yield store.getAddress();
+            const setStoreTX = yield ledger.setStore(storeAddress);
             yield setStoreTX.wait();
+            const sellerProxyJson = loadJson("../build/contracts/contracts/SellerProxy.sol/SellerProxy.json");
+            const sellerProxyFactory = new ethers_1.ethers.ContractFactory(sellerProxyJson.abi, sellerProxyJson.bytecode, this.wallet);
+            const sellerProxy = yield sellerProxyFactory.deploy(paymentProcessorAddress);
+            yield sellerProxy.waitForDeployment();
+            yield record("SellerProxy", sellerProxy, sellerProxyJson.abi, sellerProxy.deploymentTransaction());
+            const purchaseProxyJson = loadJson("../build/contracts/contracts/PurchaseProxy.sol/PurchaseProxy.json");
+            const purchaseProxyFactory = new ethers_1.ethers.ContractFactory(purchaseProxyJson.abi, purchaseProxyJson.bytecode, this.wallet);
+            const purchaseProxy = yield purchaseProxyFactory.deploy(storeAddress);
+            yield purchaseProxy.waitForDeployment();
+            yield record("PurchaseProxy", purchaseProxy, purchaseProxyJson.abi, purchaseProxy.deploymentTransaction());
             return deployed;
         });
     }

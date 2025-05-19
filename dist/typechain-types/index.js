@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Store__factory = exports.SellerRegistry__factory = exports.PriceTable__factory = exports.PaymentProcessor__factory = exports.OwnableERC2771Context__factory = exports.MockUSDC__factory = exports.Ledger__factory = exports.ItemRegistry__factory = exports.Strings__factory = exports.ShortStrings__factory = exports.Nonces__factory = exports.SafeCast__factory = exports.IERC165__factory = exports.ERC165__factory = exports.Errors__factory = exports.EIP712__factory = exports.ECDSA__factory = exports.Address__factory = exports.IERC721Receiver__factory = exports.IERC721__factory = exports.IERC721Metadata__factory = exports.ERC721__factory = exports.IERC20__factory = exports.IERC20Permit__factory = exports.IERC20Metadata__factory = exports.ERC20Permit__factory = exports.ERC20__factory = exports.ERC2771Forwarder__factory = exports.ERC2771Context__factory = exports.IERC5267__factory = exports.IERC721Errors__factory = exports.IERC20Errors__factory = exports.IERC1155Errors__factory = exports.Ownable__factory = exports.factories = void 0;
+exports.Store__factory = exports.SellerRegistry__factory = exports.SellerProxy__factory = exports.PurchaseProxy__factory = exports.ProfitEscrow__factory = exports.PriceTable__factory = exports.PaymentProcessor__factory = exports.OwnableERC2771Context__factory = exports.MockUSDC__factory = exports.Ledger__factory = exports.ItemRegistry__factory = exports.Strings__factory = exports.ShortStrings__factory = exports.Nonces__factory = exports.SafeCast__factory = exports.IERC165__factory = exports.ERC165__factory = exports.Errors__factory = exports.EIP712__factory = exports.ECDSA__factory = exports.Address__factory = exports.IERC721Receiver__factory = exports.IERC721__factory = exports.IERC721Metadata__factory = exports.ERC721__factory = exports.IERC20__factory = exports.IERC20Permit__factory = exports.IERC20Metadata__factory = exports.ERC20Permit__factory = exports.ERC20__factory = exports.ERC2771Forwarder__factory = exports.ERC2771Context__factory = exports.IERC5267__factory = exports.IERC721Errors__factory = exports.IERC20Errors__factory = exports.IERC1155Errors__factory = exports.Ownable__factory = exports.factories = void 0;
 exports.factories = __importStar(require("./factories"));
 var Ownable__factory_1 = require("./factories/@openzeppelin/contracts/access/Ownable__factory");
 Object.defineProperty(exports, "Ownable__factory", { enumerable: true, get: function () { return Ownable__factory_1.Ownable__factory; } });
@@ -99,6 +99,12 @@ var PaymentProcessor__factory_1 = require("./factories/contracts/PaymentProcesso
 Object.defineProperty(exports, "PaymentProcessor__factory", { enumerable: true, get: function () { return PaymentProcessor__factory_1.PaymentProcessor__factory; } });
 var PriceTable__factory_1 = require("./factories/contracts/PriceTable__factory");
 Object.defineProperty(exports, "PriceTable__factory", { enumerable: true, get: function () { return PriceTable__factory_1.PriceTable__factory; } });
+var ProfitEscrow__factory_1 = require("./factories/contracts/ProfitEscrow__factory");
+Object.defineProperty(exports, "ProfitEscrow__factory", { enumerable: true, get: function () { return ProfitEscrow__factory_1.ProfitEscrow__factory; } });
+var PurchaseProxy__factory_1 = require("./factories/contracts/PurchaseProxy__factory");
+Object.defineProperty(exports, "PurchaseProxy__factory", { enumerable: true, get: function () { return PurchaseProxy__factory_1.PurchaseProxy__factory; } });
+var SellerProxy__factory_1 = require("./factories/contracts/SellerProxy__factory");
+Object.defineProperty(exports, "SellerProxy__factory", { enumerable: true, get: function () { return SellerProxy__factory_1.SellerProxy__factory; } });
 var SellerRegistry__factory_1 = require("./factories/contracts/SellerRegistry__factory");
 Object.defineProperty(exports, "SellerRegistry__factory", { enumerable: true, get: function () { return SellerRegistry__factory_1.SellerRegistry__factory; } });
 var Store__factory_1 = require("./factories/contracts/Store__factory");

@@ -45,21 +45,19 @@ contract Store is OwnableERC2771Context {
     /// Make a purchase, emits ItemPurchased event
     /// @param itemID ID of item registered in the system
     /// @param token By which token the buyer pay?
-    /// @param v Signature component v used for ERC20Permit
-    /// @param r Signature component r used for ERC20Permit
-    /// @param s Signature component s used for ERC20Permit
     function purchaseItem (
         uint32 itemID,
-        address token,
-        uint256 deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
+        address token
     )
         external
+        returns (uint256 purchaseID)
     {
-        payment.process(_msgSender(), itemID, token, deadline, v, r, s);
-        uint256 purchaseID = ledger.logPurchase(itemID, _msgSender());
+        require(
+            payment.isAllowedToPurchase(_msgSender(), itemID, token),
+            "Payment is not allowed");
+
+        payment.process(_msgSender(), itemID, token);
+        purchaseID = ledger.logPurchase(itemID, _msgSender());
 
         emit ItemPurchased(itemID, _msgSender(), purchaseID);
     }
