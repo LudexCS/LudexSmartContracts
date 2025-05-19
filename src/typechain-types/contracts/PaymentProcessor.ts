@@ -29,7 +29,6 @@ export interface PaymentProcessorInterface extends Interface {
       | "changePermissionDeadline"
       | "feeRateLog"
       | "getPermission"
-      | "isAllowedToPurchase"
       | "isTrustedForwarder"
       | "itemRegistry"
       | "owner"
@@ -56,10 +55,6 @@ export interface PaymentProcessorInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getPermission",
     values: [AddressLike, BigNumberish, BigNumberish, BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isAllowedToPurchase",
-    values: [AddressLike, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "isTrustedForwarder",
@@ -110,10 +105,6 @@ export interface PaymentProcessorInterface extends Interface {
   decodeFunctionResult(functionFragment: "feeRateLog", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getPermission",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isAllowedToPurchase",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -233,12 +224,6 @@ export interface PaymentProcessor extends BaseContract {
     "nonpayable"
   >;
 
-  isAllowedToPurchase: TypedContractMethod<
-    [buyer: AddressLike, itemID: BigNumberish, token: AddressLike],
-    [boolean],
-    "view"
-  >;
-
   isTrustedForwarder: TypedContractMethod<
     [forwarder: AddressLike],
     [boolean],
@@ -299,13 +284,6 @@ export interface PaymentProcessor extends BaseContract {
     ],
     [void],
     "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "isAllowedToPurchase"
-  ): TypedContractMethod<
-    [buyer: AddressLike, itemID: BigNumberish, token: AddressLike],
-    [boolean],
-    "view"
   >;
   getFunction(
     nameOrSignature: "isTrustedForwarder"

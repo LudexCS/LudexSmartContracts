@@ -26,6 +26,7 @@ import type {
 export interface StoreInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "isTokenPermitted"
       | "isTrustedForwarder"
       | "itemRegistry"
       | "ledger"
@@ -33,6 +34,7 @@ export interface StoreInterface extends Interface {
       | "payment"
       | "priceTable"
       | "purchaseItem"
+      | "purchaseItemWithPermission"
       | "renounceOwnership"
       | "sellerRegistry"
       | "transferOwnership"
@@ -43,6 +45,10 @@ export interface StoreInterface extends Interface {
     nameOrSignatureOrTopic: "ItemPurchased" | "OwnershipTransferred"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "isTokenPermitted",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "isTrustedForwarder",
     values: [AddressLike]
@@ -63,6 +69,17 @@ export interface StoreInterface extends Interface {
     values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "purchaseItemWithPermission",
+    values: [
+      BigNumberish,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -80,6 +97,10 @@ export interface StoreInterface extends Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "isTokenPermitted",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isTrustedForwarder",
     data: BytesLike
   ): Result;
@@ -93,6 +114,10 @@ export interface StoreInterface extends Interface {
   decodeFunctionResult(functionFragment: "priceTable", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "purchaseItem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "purchaseItemWithPermission",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -187,6 +212,12 @@ export interface Store extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  isTokenPermitted: TypedContractMethod<
+    [token: AddressLike],
+    [boolean],
+    "view"
+  >;
+
   isTrustedForwarder: TypedContractMethod<
     [forwarder: AddressLike],
     [boolean],
@@ -209,6 +240,19 @@ export interface Store extends BaseContract {
     "nonpayable"
   >;
 
+  purchaseItemWithPermission: TypedContractMethod<
+    [
+      itemID: BigNumberish,
+      token: AddressLike,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike
+    ],
+    [bigint],
+    "nonpayable"
+  >;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   sellerRegistry: TypedContractMethod<[], [string], "view">;
@@ -225,6 +269,9 @@ export interface Store extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "isTokenPermitted"
+  ): TypedContractMethod<[token: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "isTrustedForwarder"
   ): TypedContractMethod<[forwarder: AddressLike], [boolean], "view">;
@@ -247,6 +294,20 @@ export interface Store extends BaseContract {
     nameOrSignature: "purchaseItem"
   ): TypedContractMethod<
     [itemID: BigNumberish, token: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "purchaseItemWithPermission"
+  ): TypedContractMethod<
+    [
+      itemID: BigNumberish,
+      token: AddressLike,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike
+    ],
     [bigint],
     "nonpayable"
   >;

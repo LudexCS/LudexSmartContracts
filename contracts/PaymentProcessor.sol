@@ -63,23 +63,7 @@ contract PaymentProcessor is OwnableERC2771Context {
             }
         }
     }
-
-    /// @notice View whether buyer has enough allowance to purchase.
-    function isAllowedToPurchase(
-        address buyer,
-        uint32 itemID,
-        address token
-    )
-        external
-        view
-        returns (bool isAllowed)
-    {
-        IERC20 tokenContract = IERC20(token);
-        uint256 tokenAmount = priceTable.priceOfItemIn(itemID, token);
-
-        return tokenContract.allowance(buyer, address(this)) >= tokenAmount;
-    }
-
+    
     /// @notice Perform permit-based approval for token transfer.
     function getPermission(
         address token,

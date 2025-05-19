@@ -1179,8 +1179,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PaymentProcessor.sol": {
-      "lastModificationDate": 1747410688311,
-      "contentHash": "2f0c1bd0560429b1f2799886008ad4c9",
+      "lastModificationDate": 1747651476809,
+      "contentHash": "26349ee977011771d56ebe26f57b6da3",
       "sourceName": "contracts/PaymentProcessor.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1457,8 +1457,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\Store.sol": {
-      "lastModificationDate": 1747403656051,
-      "contentHash": "ac7afae8ccba243334e90bd30ba197f2",
+      "lastModificationDate": 1747651522978,
+      "contentHash": "c909414aaac53d5bb1c04e49fe24c7f8",
       "sourceName": "contracts/Store.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1485,6 +1485,7 @@
         }
       },
       "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "./OwnableERC2771Context.sol",
         "./PriceTable.sol",
         "./PaymentProcessor.sol",
