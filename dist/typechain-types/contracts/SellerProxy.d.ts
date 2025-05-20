@@ -26,11 +26,20 @@ export interface SellerProxyInterface extends Interface {
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
 }
 export declare namespace ItemRegistrationDelegatedEvent {
-    type InputTuple = [itemID: BigNumberish, sellerID: BigNumberish];
-    type OutputTuple = [itemID: bigint, sellerID: bigint];
+    type InputTuple = [
+        itemID: BigNumberish,
+        sellerID: BigNumberish,
+        itemShareIDs: BigNumberish[]
+    ];
+    type OutputTuple = [
+        itemID: bigint,
+        sellerID: bigint,
+        itemShareIDs: bigint[]
+    ];
     interface OutputObject {
         itemID: bigint;
         sellerID: bigint;
+        itemShareIDs: bigint[];
     }
     type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
     type Filter = TypedDeferredTopicFilter<Event>;
@@ -172,7 +181,7 @@ export interface SellerProxy extends BaseContract {
     getEvent(key: "ProfitClaimDelegated"): TypedContractEvent<ProfitClaimDelegatedEvent.InputTuple, ProfitClaimDelegatedEvent.OutputTuple, ProfitClaimDelegatedEvent.OutputObject>;
     getEvent(key: "SellerRightClaimed"): TypedContractEvent<SellerRightClaimedEvent.InputTuple, SellerRightClaimedEvent.OutputTuple, SellerRightClaimedEvent.OutputObject>;
     filters: {
-        "ItemRegistrationDelegated(uint32,uint32)": TypedContractEvent<ItemRegistrationDelegatedEvent.InputTuple, ItemRegistrationDelegatedEvent.OutputTuple, ItemRegistrationDelegatedEvent.OutputObject>;
+        "ItemRegistrationDelegated(uint32,uint32,uint32[])": TypedContractEvent<ItemRegistrationDelegatedEvent.InputTuple, ItemRegistrationDelegatedEvent.OutputTuple, ItemRegistrationDelegatedEvent.OutputObject>;
         ItemRegistrationDelegated: TypedContractEvent<ItemRegistrationDelegatedEvent.InputTuple, ItemRegistrationDelegatedEvent.OutputTuple, ItemRegistrationDelegatedEvent.OutputObject>;
         "OwnershipTransferred(address,address)": TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
         OwnershipTransferred: TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;

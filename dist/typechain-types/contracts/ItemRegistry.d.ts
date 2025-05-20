@@ -145,7 +145,10 @@ export interface ItemRegistry extends BaseContract {
         shareTerms: BigNumberish[],
         shares: BigNumberish[]
     ], [
-        bigint
+        [bigint, bigint[]] & {
+            itemID: bigint;
+            itemShareIDs: bigint[];
+        }
     ], "nonpayable">;
     renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
     resumeItemSale: TypedContractMethod<[
@@ -217,7 +220,10 @@ export interface ItemRegistry extends BaseContract {
         shareTerms: BigNumberish[],
         shares: BigNumberish[]
     ], [
-        bigint
+        [bigint, bigint[]] & {
+            itemID: bigint;
+            itemShareIDs: bigint[];
+        }
     ], "nonpayable">;
     getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
     getFunction(nameOrSignature: "resumeItemSale"): TypedContractMethod<[itemID: BigNumberish], [void], "nonpayable">;

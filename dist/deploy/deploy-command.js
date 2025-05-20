@@ -129,6 +129,9 @@ class DeployCommand {
             const sellerProxy = yield sellerProxyFactory.deploy(paymentProcessorAddress);
             yield sellerProxy.waitForDeployment();
             yield record("SellerProxy", sellerProxy, sellerProxyJson.abi, sellerProxy.deploymentTransaction());
+            const sellerProxyAddress = sellerProxy.getAddress();
+            const setSellerProxyTX = yield itemRegistry.setSellerProxy(sellerProxyAddress);
+            yield setSellerProxyTX.wait();
             const purchaseProxyJson = loadJson("../build/contracts/contracts/PurchaseProxy.sol/PurchaseProxy.json");
             const purchaseProxyFactory = new ethers_1.ethers.ContractFactory(purchaseProxyJson.abi, purchaseProxyJson.bytecode, this.wallet);
             const purchaseProxy = yield purchaseProxyFactory.deploy(storeAddress);

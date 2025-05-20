@@ -330,7 +330,7 @@ export interface ItemRegistry extends BaseContract {
       shareTerms: BigNumberish[],
       shares: BigNumberish[]
     ],
-    [bigint],
+    [[bigint, bigint[]] & { itemID: bigint; itemShareIDs: bigint[] }],
     "nonpayable"
   >;
 
@@ -428,7 +428,7 @@ export interface ItemRegistry extends BaseContract {
       shareTerms: BigNumberish[],
       shares: BigNumberish[]
     ],
-    [bigint],
+    [[bigint, bigint[]] & { itemID: bigint; itemShareIDs: bigint[] }],
     "nonpayable"
   >;
   getFunction(

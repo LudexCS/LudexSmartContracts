@@ -104,11 +104,20 @@ export interface SellerProxyInterface extends Interface {
 }
 
 export namespace ItemRegistrationDelegatedEvent {
-  export type InputTuple = [itemID: BigNumberish, sellerID: BigNumberish];
-  export type OutputTuple = [itemID: bigint, sellerID: bigint];
+  export type InputTuple = [
+    itemID: BigNumberish,
+    sellerID: BigNumberish,
+    itemShareIDs: BigNumberish[]
+  ];
+  export type OutputTuple = [
+    itemID: bigint,
+    sellerID: bigint,
+    itemShareIDs: bigint[]
+  ];
   export interface OutputObject {
     itemID: bigint;
     sellerID: bigint;
+    itemShareIDs: bigint[];
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -338,7 +347,7 @@ export interface SellerProxy extends BaseContract {
   >;
 
   filters: {
-    "ItemRegistrationDelegated(uint32,uint32)": TypedContractEvent<
+    "ItemRegistrationDelegated(uint32,uint32,uint32[])": TypedContractEvent<
       ItemRegistrationDelegatedEvent.InputTuple,
       ItemRegistrationDelegatedEvent.OutputTuple,
       ItemRegistrationDelegatedEvent.OutputObject

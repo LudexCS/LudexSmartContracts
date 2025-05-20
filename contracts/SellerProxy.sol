@@ -18,7 +18,8 @@ contract SellerProxy is Ownable {
 
     event ItemRegistrationDelegated (
         uint32 indexed itemID,
-        uint32 indexed sellerID
+        uint32 indexed sellerID,
+        uint32[] itemShareIDs
     );
 
     event ProfitClaimDelegated (
@@ -54,7 +55,7 @@ contract SellerProxy is Ownable {
         external
         onlyOwner
     {
-        uint32 itemID = 
+        (uint32 itemID, uint32[] memory itemShareIDs) = 
             itemRegistry.registerItem(
                 itemNameHash, 
                 address(this), 
@@ -67,9 +68,16 @@ contract SellerProxy is Ownable {
         seller[itemID] = sellerID;
         itemsOfSeller[sellerID].push(itemID);
 
+        for (uint16 i = 0; i < itemShareIDs.length; i ++)
+        {
+            seller[itemShareIDs[i]] = sellerID;
+            itemsOfSeller[sellerID].push(itemShareIDs[i]);
+        }
+
         emit ItemRegistrationDelegated(
             itemID,
-            sellerID
+            sellerID,
+            itemShareIDs
         ); 
     }
 

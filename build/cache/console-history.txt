@@ -1,3 +1,17 @@
+owner.address
+await itemRegistry.connect(owner).setSellerProxy("0xfAB3e996c07989bEE94c0Cf77D367578Ae0147Ff")
+itemRegistry.connect(owner).setSellerProxy("0xfAB3e996c07989bEE94c0Cf77D367578Ae0147Ff")
+itemRegistry = await itemRegistry
+var itemRegistry = ethers.getContractAt("ItemRegistry", "0x7a85a5e7A18EC387f719359d9A002E36DE52C23A")
+ethers.getContractAt.toString()
+Object.keys(ethers.getContractAt)
+Object.Keys(ethers.getContractAt)
+ItemRegistry = await ItemRegistry
+var ItemRegistry = ethers.getContractFactory("ItemRegistry");
+ethers.getContractFactory
+var owner = accounts[0];
+accounts = await accounts;
+var accounts = ethers.getSigners()
 await mockUSDC.connect(owner).balanceOf("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")
 await mockUSDC.connect(owner).giveaway("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")
 mockUSDC.connect(owner).giveaway("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")

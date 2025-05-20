@@ -134,7 +134,7 @@ contract ItemRegistry is Ownable {
     )
         external
         onlyRegistrationHandler
-        returns (uint32 itemID)
+        returns (uint32 itemID, uint32[] memory itemShareIDs)
     {
         itemID = abi.encode(itemNameHash, seller_).fnv1a32();
 
@@ -151,7 +151,7 @@ contract ItemRegistry is Ownable {
 
         assert(priceTable.initializeItemPrice(itemID, usdPrice, 0));
 
-        uint32[] memory itemShareIDs = new uint32[](shareTerms.length);
+        itemShareIDs = new uint32[](shareTerms.length);
         for (uint16 i = 0; i < shareTerms.length; i ++)
         {
             uint32 shareTermID = shareTerms[i];
