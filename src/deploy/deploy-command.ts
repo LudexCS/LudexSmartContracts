@@ -149,6 +149,10 @@ export class DeployCommand {
     await sellerProxy.waitForDeployment();
     await record("SellerProxy", sellerProxy as Contract, sellerProxyJson.abi, sellerProxy.deploymentTransaction());
 
+    const sellerProxyAddress = sellerProxy.getAddress();
+    const setSellerProxyTX = await (itemRegistry as ItemRegistryContract).setSellerProxy(sellerProxyAddress);
+    await setSellerProxyTX.wait();
+
     const purchaseProxyJson = loadJson("../build/contracts/contracts/PurchaseProxy.sol/PurchaseProxy.json");
     const purchaseProxyFactory = new ethers.ContractFactory(purchaseProxyJson.abi, purchaseProxyJson.bytecode, this.wallet);
     const purchaseProxy = await purchaseProxyFactory.deploy(storeAddress);
