@@ -275,11 +275,6 @@ export declare namespace LudexContract {
             }[];
             name: string;
             outputs: {
-                components: {
-                    internalType: string;
-                    name: string;
-                    type: string;
-                }[];
                 internalType: string;
                 name: string;
                 type: string;
@@ -295,6 +290,11 @@ export declare namespace LudexContract {
             }[];
             name: string;
             outputs: {
+                components: {
+                    internalType: string;
+                    name: string;
+                    type: string;
+                }[];
                 internalType: string;
                 name: string;
                 type: string;
