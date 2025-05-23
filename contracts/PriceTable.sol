@@ -178,7 +178,7 @@ contract PriceTable is OwnableERC2771Context {
         uint16 reducedShare = type(uint16).max;
         if (revShareReductionEndTime[sharerID] > block.timestamp)
         {
-            reducedShare = reducedRevShare[itemID];
+            reducedShare = reducedRevShare[sharerID];
         }
 
         uint256 length = revenueSharing[sharerID].length;

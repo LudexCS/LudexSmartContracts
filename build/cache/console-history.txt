@@ -1,3 +1,48 @@
+await priceTable.revenueSharing(3590375653, 1)
+await priceTable.connect(seller1).changeRevShare(3590375653, 1500)
+var seller1 = signer[1]
+signer[1]
+var signer = await ethers.getSigners();
+await priceTable.revenueSharing(3590375653, 0)
+priceTable.revenueSharing(3590375653, 0)
+await priceTable.changeRevShare(3590375653, 1500)
+await itemRegistry.seller(3590375653)
+await itemRegistry.seller(2361474204)
+itemRegistry.seller(2361474204);
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0x900603abC02687fEcF6B9741899AC4c95fD0D0eE")
+var priceTable = await ethers.getContractAt("PriceTable", "0x33915088f9746ECa549E28fc4A544bA38065b595")
+var revShare = priceTable.revenueSharing(3501190002)
+result
+var result = await priceTable.callStatic.revenueSharing(3425990434n, 0)
+var [share, timestamp] = await priceTable.revenueSharing(3425990434n, 0)
+await itemRegistry.revenueSharingItems(3501190002n, 0)
+itemRegistry.revenueSharingItems(3501190002n, 0)
+await itemRegistry.seller(3501190002)
+itemRegistry.seller(3501190002)
+await priceTable.revShareReductionEndTime(3425990434)
+await priceTable.revShareReductionEndTime(3425990434n)
+var share = await priceTable.revenueSharing(3425990434n)
+var share = await priceTable.revenueSharing(3425990434n, 0)
+var share = await priceTable.revenueSharing(3501190002n, 0)
+await priceTable.getRevShare(3501190002n, 1639842554n);
+await itemRegistry.timestampRegistered(1639842554n)
+itemRegistry.timestampRegistered(1639842554n)
+await itemRegistry.owner()
+itemRegistry.owner()
+provider
+var provider = new ethers.JsonRpcProvider("https://opt-sepolia.g.alchemy.com/v2/04Cl2AZOm2T34vfclslpWuQBttwTnb--")
+await itemRegistry.seller(3501190002n)
+itemRegistry.seller(3501190002n)
+var itemRegistry = await itemRegistry;
+var itemRegistry = ethers.getContractAt("ItemRegistry", "0x17bcCa450358c5d4C9d00fE5a17A1a385Df69D98")
+await priceTable.getRevShare(3501190002n, 1639842554n);
+await priceTable.getRevShare(3501190002, 1639842554);
+priceTable.getRevShare(3501190002, 1639842554);
+var priceTable = await priceTable;
+var priceTable = ethers.getContractAt("PriceTable", "0xC6ab2B75870B09d30F7F77EDEb2AcB79d12815dD")
+var owner = signers[0];
+var signers = await ethers.getSigners();
+var owner = ethers.getSigner(0)
 owner.address
 await itemRegistry.connect(owner).setSellerProxy("0xfAB3e996c07989bEE94c0Cf77D367578Ae0147Ff")
 itemRegistry.connect(owner).setSellerProxy("0xfAB3e996c07989bEE94c0Cf77D367578Ae0147Ff")
@@ -46,21 +91,4 @@ await ledger.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
 let ledger = Ledger.attach("0x6EA8fc1c828FAc37e905D307302FC9e893178ad4");
 Ledger = await Ledger;
 let Ledger = ethers.getContractFactory("Ledger");
-await store.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
-store.isTrustedForwarder
-let store = Store.attach("0xAdD7B73d47Fc342be20058329acF01c833F3bCD1");
-let Store = await ethers.getContractFactory("Store");
-let signerOwner = signers[0];
-await owner
-let owner = signers[0];
-owner;
-owner = signers[0];
-signers = await ethers.getSigners();
-let signers = ethers.getSigners();
-owner = ethers.getSigner(0);
-owner = ethers.getSigners(0);
-[owner, user1, user2, user3, user4] = ethers.getSigners();
-let [owner, user1, user2, user3, user4] = ethers.getSigners();
-let [owner, user1, user2, user3, user4] = ethers.getSigners90;
-yield
-let [owner, user] = await ethers.getSigners();
+await store.isTrustedForwarder("0xb9bf741D2F7b5
