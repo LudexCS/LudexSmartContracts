@@ -85,7 +85,7 @@ export interface SellerProxyInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "startDiscount",
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "startRevShareReductionEvent",
@@ -317,7 +317,8 @@ export interface SellerProxy extends BaseContract {
     [
       sellerID: BigNumberish,
       itemID: BigNumberish,
-      newSharePermyriad: BigNumberish
+      discountPrice: BigNumberish,
+      endTime: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -410,7 +411,8 @@ export interface SellerProxy extends BaseContract {
     [
       sellerID: BigNumberish,
       itemID: BigNumberish,
-      newSharePermyriad: BigNumberish
+      discountPrice: BigNumberish,
+      endTime: BigNumberish
     ],
     [void],
     "nonpayable"

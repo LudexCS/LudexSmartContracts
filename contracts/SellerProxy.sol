@@ -166,13 +166,14 @@ contract SellerProxy is Ownable {
     function startDiscount(
         uint32 sellerID,
         uint32 itemID,
-        uint16 newSharePermyriad
+        uint256 discountPrice,
+        uint256 endTime
     )
         external
         onlyOwner
         onlyItemSellerID(itemID, sellerID)
     {
-        priceTable.changeRevShare(itemID, newSharePermyriad);
+        priceTable.startDiscount(itemID, discountPrice, endTime);
     }
 
     function changeRevShare(

@@ -18,7 +18,7 @@ export interface SellerProxyInterface extends Interface {
         BigNumberish[]
     ]): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
-    encodeFunctionData(functionFragment: "startDiscount", values: [BigNumberish, BigNumberish, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "startDiscount", values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "startRevShareReductionEvent", values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     decodeFunctionResult(functionFragment: "changeItemPrice", data: BytesLike): Result;
@@ -166,7 +166,8 @@ export interface SellerProxy extends BaseContract {
     startDiscount: TypedContractMethod<[
         sellerID: BigNumberish,
         itemID: BigNumberish,
-        newSharePermyriad: BigNumberish
+        discountPrice: BigNumberish,
+        endTime: BigNumberish
     ], [
         void
     ], "nonpayable">;
@@ -229,7 +230,8 @@ export interface SellerProxy extends BaseContract {
     getFunction(nameOrSignature: "startDiscount"): TypedContractMethod<[
         sellerID: BigNumberish,
         itemID: BigNumberish,
-        newSharePermyriad: BigNumberish
+        discountPrice: BigNumberish,
+        endTime: BigNumberish
     ], [
         void
     ], "nonpayable">;
