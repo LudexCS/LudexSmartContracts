@@ -41,19 +41,26 @@ export interface PriceTableInterface extends Interface {
       | "addPaymentChannel"
       | "changeExchangeRate"
       | "changeItemPrice"
+      | "changeRevShare"
+      | "discountEndTime"
+      | "discountUsdPrice"
       | "getPriceInfoList"
       | "getPriceUsd"
+      | "getRevShare"
       | "initializeItemPrice"
       | "isTrustedForwarder"
       | "itemRegistry"
       | "owner"
       | "paymentChannels"
       | "priceOfItemIn"
+      | "reducedRevShare"
       | "removePaymentChannel"
       | "renounceOwnership"
+      | "revShareReductionEndTime"
       | "revenueSharing"
       | "sellerRegistry"
       | "startDiscount"
+      | "startRevShareReductionEvent"
       | "transferOwnership"
       | "trustedForwarder"
       | "usdPrice"
@@ -68,6 +75,8 @@ export interface PriceTableInterface extends Interface {
       | "OwnershipTransferred"
       | "PaymentChannelAdded"
       | "PaymentChannelRemoved"
+      | "RevShareChanged"
+      | "RevShareReductionStarted"
   ): EventFragment;
 
   encodeFunctionData(
@@ -83,12 +92,28 @@ export interface PriceTableInterface extends Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "changeRevShare",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "discountEndTime",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "discountUsdPrice",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getPriceInfoList",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPriceUsd",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRevShare",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "initializeItemPrice",
@@ -112,6 +137,10 @@ export interface PriceTableInterface extends Interface {
     values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "reducedRevShare",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "removePaymentChannel",
     values: [AddressLike]
   ): string;
@@ -120,8 +149,12 @@ export interface PriceTableInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "revenueSharing",
+    functionFragment: "revShareReductionEndTime",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revenueSharing",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "sellerRegistry",
@@ -129,6 +162,10 @@ export interface PriceTableInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "startDiscount",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "startRevShareReductionEvent",
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
@@ -161,11 +198,27 @@ export interface PriceTableInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "changeRevShare",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "discountEndTime",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "discountUsdPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getPriceInfoList",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getPriceUsd",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRevShare",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -190,11 +243,19 @@ export interface PriceTableInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "reducedRevShare",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removePaymentChannel",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "revShareReductionEndTime",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -207,6 +268,10 @@ export interface PriceTableInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "startDiscount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "startRevShareReductionEvent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -320,6 +385,41 @@ export namespace PaymentChannelRemovedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace RevShareChangedEvent {
+  export type InputTuple = [
+    itemID: BigNumberish,
+    newShare: BigNumberish,
+    prevShare: BigNumberish
+  ];
+  export type OutputTuple = [
+    itemID: bigint,
+    newShare: bigint,
+    prevShare: bigint
+  ];
+  export interface OutputObject {
+    itemID: bigint;
+    newShare: bigint;
+    prevShare: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace RevShareReductionStartedEvent {
+  export type InputTuple = [itemID: BigNumberish, reducedShare: BigNumberish];
+  export type OutputTuple = [itemID: bigint, reducedShare: bigint];
+  export interface OutputObject {
+    itemID: bigint;
+    reducedShare: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface PriceTable extends BaseContract {
   connect(runner?: ContractRunner | null): PriceTable;
   waitForDeployment(): Promise<this>;
@@ -381,6 +481,16 @@ export interface PriceTable extends BaseContract {
     "nonpayable"
   >;
 
+  changeRevShare: TypedContractMethod<
+    [itemID: BigNumberish, newSharePermyriad: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  discountEndTime: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+
+  discountUsdPrice: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+
   getPriceInfoList: TypedContractMethod<
     [itemID: BigNumberish],
     [PriceTable.PriceInfoStructOutput[]],
@@ -388,6 +498,12 @@ export interface PriceTable extends BaseContract {
   >;
 
   getPriceUsd: TypedContractMethod<[itemID: BigNumberish], [bigint], "view">;
+
+  getRevShare: TypedContractMethod<
+    [sharerID: BigNumberish, itemID: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   initializeItemPrice: TypedContractMethod<
     [itemID: BigNumberish, usdPrice_: BigNumberish, revenueShare: BigNumberish],
@@ -413,6 +529,8 @@ export interface PriceTable extends BaseContract {
     "view"
   >;
 
+  reducedRevShare: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+
   removePaymentChannel: TypedContractMethod<
     [token: AddressLike],
     [void],
@@ -421,12 +539,28 @@ export interface PriceTable extends BaseContract {
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
-  revenueSharing: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+  revShareReductionEndTime: TypedContractMethod<
+    [arg0: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  revenueSharing: TypedContractMethod<
+    [arg0: BigNumberish, arg1: BigNumberish],
+    [[bigint, bigint] & { sharePermyriad: bigint; timestamp: bigint }],
+    "view"
+  >;
 
   sellerRegistry: TypedContractMethod<[], [string], "view">;
 
   startDiscount: TypedContractMethod<
     [itemID: BigNumberish, usdPrice_: BigNumberish, endTime: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  startRevShareReductionEvent: TypedContractMethod<
+    [itemID: BigNumberish, reducedShare: BigNumberish, endTime: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -469,6 +603,19 @@ export interface PriceTable extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "changeRevShare"
+  ): TypedContractMethod<
+    [itemID: BigNumberish, newSharePermyriad: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "discountEndTime"
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "discountUsdPrice"
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getPriceInfoList"
   ): TypedContractMethod<
     [itemID: BigNumberish],
@@ -478,6 +625,13 @@ export interface PriceTable extends BaseContract {
   getFunction(
     nameOrSignature: "getPriceUsd"
   ): TypedContractMethod<[itemID: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getRevShare"
+  ): TypedContractMethod<
+    [sharerID: BigNumberish, itemID: BigNumberish],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "initializeItemPrice"
   ): TypedContractMethod<
@@ -505,14 +659,24 @@ export interface PriceTable extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "reducedRevShare"
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+  getFunction(
     nameOrSignature: "removePaymentChannel"
   ): TypedContractMethod<[token: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "revenueSharing"
+    nameOrSignature: "revShareReductionEndTime"
   ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "revenueSharing"
+  ): TypedContractMethod<
+    [arg0: BigNumberish, arg1: BigNumberish],
+    [[bigint, bigint] & { sharePermyriad: bigint; timestamp: bigint }],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "sellerRegistry"
   ): TypedContractMethod<[], [string], "view">;
@@ -520,6 +684,13 @@ export interface PriceTable extends BaseContract {
     nameOrSignature: "startDiscount"
   ): TypedContractMethod<
     [itemID: BigNumberish, usdPrice_: BigNumberish, endTime: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "startRevShareReductionEvent"
+  ): TypedContractMethod<
+    [itemID: BigNumberish, reducedShare: BigNumberish, endTime: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -577,6 +748,20 @@ export interface PriceTable extends BaseContract {
     PaymentChannelRemovedEvent.InputTuple,
     PaymentChannelRemovedEvent.OutputTuple,
     PaymentChannelRemovedEvent.OutputObject
+  >;
+  getEvent(
+    key: "RevShareChanged"
+  ): TypedContractEvent<
+    RevShareChangedEvent.InputTuple,
+    RevShareChangedEvent.OutputTuple,
+    RevShareChangedEvent.OutputObject
+  >;
+  getEvent(
+    key: "RevShareReductionStarted"
+  ): TypedContractEvent<
+    RevShareReductionStartedEvent.InputTuple,
+    RevShareReductionStartedEvent.OutputTuple,
+    RevShareReductionStartedEvent.OutputObject
   >;
 
   filters: {
@@ -644,6 +829,28 @@ export interface PriceTable extends BaseContract {
       PaymentChannelRemovedEvent.InputTuple,
       PaymentChannelRemovedEvent.OutputTuple,
       PaymentChannelRemovedEvent.OutputObject
+    >;
+
+    "RevShareChanged(uint32,uint16,uint16)": TypedContractEvent<
+      RevShareChangedEvent.InputTuple,
+      RevShareChangedEvent.OutputTuple,
+      RevShareChangedEvent.OutputObject
+    >;
+    RevShareChanged: TypedContractEvent<
+      RevShareChangedEvent.InputTuple,
+      RevShareChangedEvent.OutputTuple,
+      RevShareChangedEvent.OutputObject
+    >;
+
+    "RevShareReductionStarted(uint32,uint16)": TypedContractEvent<
+      RevShareReductionStartedEvent.InputTuple,
+      RevShareReductionStartedEvent.OutputTuple,
+      RevShareReductionStartedEvent.OutputObject
+    >;
+    RevShareReductionStarted: TypedContractEvent<
+      RevShareReductionStartedEvent.InputTuple,
+      RevShareReductionStartedEvent.OutputTuple,
+      RevShareReductionStartedEvent.OutputObject
     >;
   };
 }

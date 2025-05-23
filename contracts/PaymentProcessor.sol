@@ -103,7 +103,7 @@ contract PaymentProcessor is OwnableERC2771Context {
 
         for (uint8 i = 0; i < sharers; i++) {
             uint32 parentID = itemRegistry.revenueSharerOfItem(itemID, i);
-            uint16 share = priceTable.revenueSharing(parentID);
+            uint16 share = priceTable.getRevShare(parentID, itemID);
             uint256 parentStake = (tokenAmount * share) / 10000;
 
             childShare -= parentStake;

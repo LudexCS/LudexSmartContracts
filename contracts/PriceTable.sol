@@ -23,6 +23,12 @@ contract PriceTable is OwnableERC2771Context {
         uint256 tokenAmount;
     }
 
+    struct RevShare
+    {
+        uint16 sharePermyriad;
+        uint256 timestamp;
+    }
+
     address[] public paymentChannels;
 
     mapping (address => uint256) public usdToToken;
@@ -33,10 +39,12 @@ contract PriceTable is OwnableERC2771Context {
 
     SellerRegistry public sellerRegistry;
 
-    mapping(uint32 => uint256) discountEndTimes;
-    mapping(uint32 => uint256) discountUsdPrice;
+    mapping(uint32 => uint256) public discountEndTime;
+    mapping(uint32 => uint256) public discountUsdPrice;
 
-    mapping(uint32 => uint16) public revenueSharing;
+    mapping(uint32 => RevShare[]) public revenueSharing;
+    mapping(uint32 => uint256) public revShareReductionEndTime;
+    mapping(uint32 => uint16) public reducedRevShare;
 
     event ItemPriceChanged(
         uint32 indexed itemID,
@@ -59,6 +67,15 @@ contract PriceTable is OwnableERC2771Context {
     event PaymentChannelRemoved(
         address indexed token,
         bool isSuccess);
+
+    event RevShareChanged(
+        uint32 indexed itemID,
+        uint16 indexed newShare,
+        uint16 indexed prevShare);
+
+    event RevShareReductionStarted(
+        uint32 indexed itemID,
+        uint16 indexed reducedShare);
 
     constructor (
         address forwarderAddress,
@@ -99,7 +116,7 @@ contract PriceTable is OwnableERC2771Context {
         view
         returns (uint256 price)
     {
-        if (discountEndTimes[itemID] >= block.timestamp)
+        if (discountEndTime[itemID] >= block.timestamp)
         {
             return discountUsdPrice[itemID];
         }
@@ -146,6 +163,26 @@ contract PriceTable is OwnableERC2771Context {
         {
             uint256 tokenPrice = priceOfItemIn(itemID, paymentChannels[i]);
             prices[i] = PriceInfo(paymentChannels[i], tokenPrice);
+        }
+    }
+
+    function getRevShare(
+        uint32 sharerID,
+        uint32 itemID
+    )
+        external
+        view
+        onlyItemOnSale (sharerID)
+        returns (uint16 revShare)
+    {
+        uint256 length = revenueSharing[sharerID].length;
+        uint256 timestampItemRegister = itemRegistry.timestampRegistered(itemID);
+
+        for (uint256 i = 0; i < length; i ++)
+        {
+            if (revenueSharing[sharerID][i].timestamp > timestampItemRegister)
+                break;
+            revShare = revenueSharing[sharerID][i].sharePermyriad;
         }
     }
 
@@ -274,13 +311,52 @@ contract PriceTable is OwnableERC2771Context {
         onlyItemSeller (itemID, _msgSender())
     {
         require(
+            discountEndTime[itemID] > block.timestamp,
+            "There's discount ongoing already");
+    
+        require(
             usdPrice[itemID] > usdPrice_,
             "Discounted price should be lower than the original price");
 
-        discountEndTimes[itemID] = endTime;
+        discountEndTime[itemID] = endTime;
         discountUsdPrice[itemID] = usdPrice_;
 
         emit DiscountStarted(itemID, usdPrice_);
+    }
+
+    function changeRevShare(
+        uint32 itemID,
+        uint16 newSharePermyriad
+    )
+        external
+        onlyItemSeller(itemID, _msgSender())
+    {
+        uint256 length = revenueSharing[itemID].length;
+        uint16 prevShare = revenueSharing[itemID][length - 1].sharePermyriad;
+
+        revenueSharing[itemID].push(RevShare(newSharePermyriad, block.timestamp));
+
+        emit RevShareChanged(itemID, newSharePermyriad, prevShare);
+    }   
+
+    function startRevShareReductionEvent(
+        uint32 itemID,
+        uint16 reducedShare,
+        uint256 endTime
+    )  
+        external
+        onlyItemSeller(itemID, _msgSender())
+    {
+        require(
+            revShareReductionEndTime[itemID] > block.timestamp,
+            "There's reduction event ongoing already"); 
+
+        revShareReductionEndTime[itemID] = endTime;
+        reducedRevShare[itemID] = reducedShare;
+
+        emit RevShareReductionStarted(
+            itemID,
+            reducedShare);
     }
 
     function initializeItemPrice (
@@ -294,7 +370,7 @@ contract PriceTable is OwnableERC2771Context {
     {
         isSuccess = itemRegistry.seller(itemID) != address(0);
 
-        revenueSharing[itemID] = revenueShare;
+        revenueSharing[itemID].push(RevShare(revenueShare, block.timestamp));
 
         usdPrice[itemID] = usdPrice_;
     }
