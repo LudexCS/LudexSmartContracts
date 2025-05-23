@@ -1,8 +1,10 @@
 import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
 import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../common";
 export interface SellerProxyInterface extends Interface {
-    getFunction(nameOrSignature: "claimProfit" | "claimSellerRight" | "getItemsOfSeller" | "owner" | "registerItem" | "renounceOwnership" | "transferOwnership"): FunctionFragment;
+    getFunction(nameOrSignature: "changeItemPrice" | "changeRevShare" | "claimProfit" | "claimSellerRight" | "getItemsOfSeller" | "owner" | "registerItem" | "renounceOwnership" | "startDiscount" | "startRevShareReductionEvent" | "transferOwnership"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "ItemRegistrationDelegated" | "OwnershipTransferred" | "ProfitClaimDelegated" | "SellerRightClaimed"): EventFragment;
+    encodeFunctionData(functionFragment: "changeItemPrice", values: [BigNumberish, BigNumberish, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "changeRevShare", values: [BigNumberish, BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "claimProfit", values: [BigNumberish, BigNumberish, AddressLike, AddressLike]): string;
     encodeFunctionData(functionFragment: "claimSellerRight", values: [BigNumberish, BigNumberish[], AddressLike]): string;
     encodeFunctionData(functionFragment: "getItemsOfSeller", values: [BigNumberish]): string;
@@ -16,13 +18,19 @@ export interface SellerProxyInterface extends Interface {
         BigNumberish[]
     ]): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
+    encodeFunctionData(functionFragment: "startDiscount", values: [BigNumberish, BigNumberish, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "startRevShareReductionEvent", values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
+    decodeFunctionResult(functionFragment: "changeItemPrice", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "changeRevShare", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "claimProfit", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "claimSellerRight", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getItemsOfSeller", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "registerItem", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "renounceOwnership", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "startDiscount", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "startRevShareReductionEvent", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
 }
 export declare namespace ItemRegistrationDelegatedEvent {
@@ -109,6 +117,20 @@ export interface SellerProxy extends BaseContract {
     listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
     listeners(eventName?: string): Promise<Array<Listener>>;
     removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+    changeItemPrice: TypedContractMethod<[
+        sellerID: BigNumberish,
+        itemID: BigNumberish,
+        newUsdPrice: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    changeRevShare: TypedContractMethod<[
+        sellerID: BigNumberish,
+        itemID: BigNumberish,
+        newSharePermyriad: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
     claimProfit: TypedContractMethod<[
         sellerID: BigNumberish,
         itemID: BigNumberish,
@@ -141,12 +163,41 @@ export interface SellerProxy extends BaseContract {
         void
     ], "nonpayable">;
     renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+    startDiscount: TypedContractMethod<[
+        sellerID: BigNumberish,
+        itemID: BigNumberish,
+        newSharePermyriad: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    startRevShareReductionEvent: TypedContractMethod<[
+        sellerID: BigNumberish,
+        itemID: BigNumberish,
+        reducedShare: BigNumberish,
+        endTime: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
     transferOwnership: TypedContractMethod<[
         newOwner: AddressLike
     ], [
         void
     ], "nonpayable">;
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+    getFunction(nameOrSignature: "changeItemPrice"): TypedContractMethod<[
+        sellerID: BigNumberish,
+        itemID: BigNumberish,
+        newUsdPrice: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "changeRevShare"): TypedContractMethod<[
+        sellerID: BigNumberish,
+        itemID: BigNumberish,
+        newSharePermyriad: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
     getFunction(nameOrSignature: "claimProfit"): TypedContractMethod<[
         sellerID: BigNumberish,
         itemID: BigNumberish,
@@ -175,6 +226,21 @@ export interface SellerProxy extends BaseContract {
         void
     ], "nonpayable">;
     getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
+    getFunction(nameOrSignature: "startDiscount"): TypedContractMethod<[
+        sellerID: BigNumberish,
+        itemID: BigNumberish,
+        newSharePermyriad: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "startRevShareReductionEvent"): TypedContractMethod<[
+        sellerID: BigNumberish,
+        itemID: BigNumberish,
+        reducedShare: BigNumberish,
+        endTime: BigNumberish
+    ], [
+        void
+    ], "nonpayable">;
     getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
     getEvent(key: "ItemRegistrationDelegated"): TypedContractEvent<ItemRegistrationDelegatedEvent.InputTuple, ItemRegistrationDelegatedEvent.OutputTuple, ItemRegistrationDelegatedEvent.OutputObject>;
     getEvent(key: "OwnershipTransferred"): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;

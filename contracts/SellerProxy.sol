@@ -12,6 +12,7 @@ contract SellerProxy is Ownable {
 
     ItemRegistry private itemRegistry;
     ProfitEscrow private profitEscrow;
+    PriceTable private priceTable;
 
     mapping(uint32 => uint32) seller;
     mapping(uint32 => uint32[]) itemsOfSeller;
@@ -42,6 +43,15 @@ contract SellerProxy is Ownable {
         PaymentProcessor payment = PaymentProcessor(paymentProcessor);
         itemRegistry = payment.itemRegistry();
         profitEscrow = payment.profitEscrow();
+        priceTable = payment.priceTable();
+    }
+
+    modifier onlyItemSellerID (uint32 itemID, uint32 sellerID)
+    {
+        require(
+            seller[itemID] == sellerID,
+            "Not item seller");
+        _;
     }
 
     function registerItem (
@@ -107,10 +117,8 @@ contract SellerProxy is Ownable {
     )
         external
         onlyOwner
+        onlyItemSellerID(itemID, sellerID)
     {
-        require(
-            seller[itemID] == sellerID,
-            "Not item seller");
         profitEscrow.claim(itemID, token, recipient);
     
         emit ProfitClaimDelegated(
@@ -141,5 +149,57 @@ contract SellerProxy is Ownable {
             sellerID,
             sellerAddress,
             items);
+    }
+
+    function changeItemPrice(
+        uint32 sellerID,
+        uint32 itemID,
+        uint256 newUsdPrice
+    )
+        external
+        onlyOwner
+        onlyItemSellerID(itemID, sellerID)
+    {
+        priceTable.changeItemPrice(itemID, newUsdPrice);
+    }
+
+    function startDiscount(
+        uint32 sellerID,
+        uint32 itemID,
+        uint16 newSharePermyriad
+    )
+        external
+        onlyOwner
+        onlyItemSellerID(itemID, sellerID)
+    {
+        priceTable.changeRevShare(itemID, newSharePermyriad);
+    }
+
+    function changeRevShare(
+        uint32 sellerID,
+        uint32 itemID,
+        uint16 newSharePermyriad
+    )
+        external
+        onlyOwner
+        onlyItemSellerID(itemID, sellerID)
+    {
+        priceTable.changeRevShare(itemID, newSharePermyriad);
+    }
+
+    function startRevShareReductionEvent(
+        uint32 sellerID,
+        uint32 itemID,
+        uint16 reducedShare,
+        uint256 endTime
+    )
+        external
+        onlyOwner
+        onlyItemSellerID(itemID, sellerID)
+    {
+        priceTable.startRevShareReductionEvent(
+            itemID,
+            reducedShare,
+            endTime);
     }
 }

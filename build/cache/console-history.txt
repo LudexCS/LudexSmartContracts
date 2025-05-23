@@ -1,3 +1,45 @@
+await itemRegistry.seller(2524044708)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0xF6104BEc7Ef58C02A31e23570710b58eC9b4806A")
+await priceTable.discountUsdPrice(1030516071)
+var priceInfoList = await priceTable.getPriceInfoList(1030516071)
+new Date(endtime * 1000)
+endtime = Number(endtime)
+new Date(endtime * 1000n)
+new Date(endtime * 1000)
+var endtime = await priceTable.revShareReductionEndTime(1855031587)
+await priceTable.revShareReductionEndTime(1855031587)
+console.log(d(1, 20))
+await priceTable.getRevShare(1855031587, 0)
+await priceTable.getRevShare(1748049120, 0)
+new Date(1748049120 * 1000)
+await priceTable.revShareReductionEndTime(1855031587)
+await priceTable.connect(seller2).startRevShareReductionEvent(1855031587, 1000, (d(1, 12).getTime() / 1000))
+var seller2 = signers[2]
+var d = (h, m) => new Date((new Date(Date.UTC(2025, 4, 24, h, m, 0)).getTime() /1000) * 1000)
+new Date((new Date(Date.UTC(2025, 4, 24, 0, 50, 0)).getTime() /1000) * 1000)
+new Date((new Date(Date.UTC(2025, 5, 24, 0, 50, 0)).getTime() /1000) * 1000)
+new Date((new Date(2025, 5, 24, 0, 50, 0).getTime() /1000) * 1000)
+(new Date(2025, 5, 24, 0, 50, 0).getTime() /1000)
+date
+new Date(1750693800 * 1000)
+new Date(1750693800)
+await priceTable.revShareReductionEndTime(3386994627)
+await priceTable.getRevShare(3386994627, 1030516071)
+priceTable.getRevShare(3386994627, 1030516071)
+await priceTable.getRevShare(3386994627, 1030516071)
+priceTable.getRevShare(3386994627, 1030516071)
+priceTable.getRevShare(3386994627, 1030516071_
+await priceTable.connect(seller1).startRevShareReductionEvent(3386994627, 1200, (new Date(2025, 5, 24, 0, 50, 0).getTime() /1000))
+await priceTable.connect.startRevShareReductionEvent(3386994627, 1200, (new Date(2025, 5, 24, 0, 50, 0).getTime() /1000))
+await priceTable.connect.startRevShareReductionEvent(3386994627, 1200, (new Date(2025, 5, 24, 0, 50, 0).getTime() /1000);
+priceTable.connect.startRevShareReductionEvent(3386994627, 1200, date.getTime() / 1000)
+date.getTime()
+date
+var date = new Date(2025, 5, 24, 0, 46, 0)
+var priceTable = await ethers.getContractAt("PriceTable", "0xb7F4a1181a040Ee4c80cab9DF52eD0380e3149C2")
+var seller1 = signers[1]
+var owner = signers[0]
+var signers = await ethers.getSigners()
 await priceTable.revShareReductionEndTime(3590375653)
 await priceTable.revenueSharing(3590375653, 1)
 await priceTable.connect(seller1).changeRevShare(3590375653, 1500)
@@ -53,58 +95,4 @@ ethers.getContractAt.toString()
 Object.keys(ethers.getContractAt)
 Object.Keys(ethers.getContractAt)
 ItemRegistry = await ItemRegistry
-var ItemRegistry = ethers.getContractFactory("ItemRegistry");
-ethers.getContractFactory
-var owner = accounts[0];
-accounts = await accounts;
-var accounts = ethers.getSigners()
-await mockUSDC.connect(owner).balanceOf("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")
-await mockUSDC.connect(owner).giveaway("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")
-mockUSDC.connect(owner).giveaway("0x4D2CBE6E0Bdd948c487776d0883C23F3303D9C16")
-mockUSDC
-var mockUSDC = await ethers.getContractAt("MockUSDC", "0xa513ABFdD3366E7cDf0cC50a2bebCD893CdA9729")
-var mockUSDC = ethers.getContractAt("0xa513ABFdD3366E7cDf0cC50a2bebCD893CdA9729", "MockUSDC", owner)
-var MockUSDC = await mockUSDC
-var mockUSDC = ethers.getContractFactory("MockUSDC")
-var owner = accounts[0]
-accounts = await accounts
-var accounts = ethers.getSigners()
-yield
-accounts
-accounts = await ethers.getSigners()
-accounts = ethers.getSigners()
-let accounts = ethers.getSigners()
-let accounts = ethers.getAccounts()
-yield
-signerOwner
-await token.balanceOf(buyer);
-token.balanceOf(buyer);
-await token.connect(signerOwner).giveaway(buyer);
-await token.balanceOf(buyer);
-token.balanceOf
-let buyer = signers[4];
-signers
-let token = Token.attach("0x225f3f481F7647B64219C6E4E1226dFEc60c7241");
-Token = await Token;
-let Token = ethers.getContractFactory("MockUSDC");
-await ledger.owner();
-await ledger.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
-let ledger = Ledger.attach("0x6EA8fc1c828FAc37e905D307302FC9e893178ad4");
-Ledger = await Ledger;
-let Ledger = ethers.getContractFactory("Ledger");
-await store.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
-store.isTrustedForwarder
-let store = Store.attach("0xAdD7B73d47Fc342be20058329acF01c833F3bCD1");
-let Store = await ethers.getContractFactory("Store");
-let signerOwner = signers[0];
-await owner
-let owner = signers[0];
-owner;
-owner = signers[0];
-signers = await ethers.getSigners();
-let signers = ethers.getSigners();
-owner = ethers.getSigner(0);
-owner = ethers.getSigners(0);
-[owner, user1, user2, user3, user4] = ethers.getSigners();
-let [owner, user1, user2, user3, user4] = ethers.getSigners();
-let [owner, user1, user2, user3, user4] = ethers.getSigners90;
+var Ite
