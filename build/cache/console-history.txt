@@ -1,3 +1,4 @@
+await priceTable.revShareReductionEndTime(3590375653)
 await priceTable.revenueSharing(3590375653, 1)
 await priceTable.connect(seller1).changeRevShare(3590375653, 1500)
 var seller1 = signer[1]
@@ -91,4 +92,19 @@ await ledger.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
 let ledger = Ledger.attach("0x6EA8fc1c828FAc37e905D307302FC9e893178ad4");
 Ledger = await Ledger;
 let Ledger = ethers.getContractFactory("Ledger");
-await store.isTrustedForwarder("0xb9bf741D2F7b5
+await store.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
+store.isTrustedForwarder
+let store = Store.attach("0xAdD7B73d47Fc342be20058329acF01c833F3bCD1");
+let Store = await ethers.getContractFactory("Store");
+let signerOwner = signers[0];
+await owner
+let owner = signers[0];
+owner;
+owner = signers[0];
+signers = await ethers.getSigners();
+let signers = ethers.getSigners();
+owner = ethers.getSigner(0);
+owner = ethers.getSigners(0);
+[owner, user1, user2, user3, user4] = ethers.getSigners();
+let [owner, user1, user2, user3, user4] = ethers.getSigners();
+let [owner, user1, user2, user3, user4] = ethers.getSigners90;

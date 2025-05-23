@@ -1263,8 +1263,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PriceTable.sol": {
-      "lastModificationDate": 1748009226392,
-      "contentHash": "3b59d4e7fc813922c67055f8e2839c0d",
+      "lastModificationDate": 1748013810746,
+      "contentHash": "ede42664b2757a3c81d4af3eb3a0c22d",
       "sourceName": "contracts/PriceTable.sol",
       "solcConfig": {
         "version": "0.8.21",

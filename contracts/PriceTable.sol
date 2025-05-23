@@ -322,7 +322,7 @@ contract PriceTable is OwnableERC2771Context {
         onlyItemSeller (itemID, _msgSender())
     {
         require(
-            discountEndTime[itemID] > block.timestamp,
+            discountEndTime[itemID] < block.timestamp,
             "There's discount ongoing already");
     
         require(
@@ -359,7 +359,7 @@ contract PriceTable is OwnableERC2771Context {
         onlyItemSeller(itemID, _msgSender())
     {
         require(
-            revShareReductionEndTime[itemID] > block.timestamp,
+            revShareReductionEndTime[itemID] < block.timestamp,
             "There's reduction event ongoing already"); 
 
         revShareReductionEndTime[itemID] = endTime;
