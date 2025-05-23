@@ -175,6 +175,12 @@ contract PriceTable is OwnableERC2771Context {
         onlyItemOnSale (sharerID)
         returns (uint16 revShare)
     {
+        uint16 reducedShare = type(uint16).max;
+        if (revShareReductionEndTime[sharerID] > block.timestamp)
+        {
+            reducedShare = reducedRevShare[itemID];
+        }
+
         uint256 length = revenueSharing[sharerID].length;
         uint256 timestampItemRegister = itemRegistry.timestampRegistered(itemID);
 
@@ -183,6 +189,11 @@ contract PriceTable is OwnableERC2771Context {
             if (revenueSharing[sharerID][i].timestamp > timestampItemRegister)
                 break;
             revShare = revenueSharing[sharerID][i].sharePermyriad;
+        }
+
+        if (reducedShare < revShare)
+        {
+            revShare = reducedShare;
         }
     }
 
