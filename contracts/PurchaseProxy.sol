@@ -43,15 +43,7 @@ contract PurchaseProxy is Ownable {
         external
         onlyOwner
     {
-        IERC20 tokenContract = IERC20(token);
-
-        uint256 allowance = 
-            tokenContract.allowance(address(this), address(store.payment()));
-
-        if (allowance < (type(uint256).max / 2)) 
-            tokenContract.approve(address(store.payment()), type(uint256).max);
-
-        uint256 purchaseID = store.purchaseItem(itemID, token);
+        uint256 purchaseID = store.purchaseWithPending(itemID, token);
 
         owner[purchaseID] = ownerID;
     }

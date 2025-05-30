@@ -1625,8 +1625,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PurchaseProxy.sol": {
-      "lastModificationDate": 1748613570114,
-      "contentHash": "82f86f85e0262501e9d37c34b2223965",
+      "lastModificationDate": 1748627705510,
+      "contentHash": "083f51803fb89f719c21779864b08f6e",
       "sourceName": "contracts/PurchaseProxy.sol",
       "solcConfig": {
         "version": "0.8.21",
