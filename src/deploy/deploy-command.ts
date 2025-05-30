@@ -5,7 +5,7 @@ import type { ItemRegistry as ItemRegistryContract } from "../typechain-types/co
 import type { Store as StoreContract } from "../typechain-types/contracts/Store";
 import type { Ledger as LedgerContract } from "../typechain-types/contracts/Ledger";
 import type { ProfitEscrow as ProfitEscrowContract } from "../typechain-types/contracts/ProfitEscrow";
-import { PaymentProcessor as PaymentProcessorContract } from "src/typechain-types";
+import type { PaymentProcessor as PaymentProcessorContract } from "src/typechain-types";
 
 export class DeployCommand {
   constructor(
@@ -146,7 +146,7 @@ export class DeployCommand {
 
     const setStoreTXPaymentProcessor = 
       await (paymentProcessor as PaymentProcessorContract).setStore(storeAddress);
-    await setPaymentProcessorTX.wait();
+    await setStoreTXPaymentProcessor.wait();
 
     const sellerProxyJson = loadJson("../build/contracts/contracts/SellerProxy.sol/SellerProxy.json");
     const sellerProxyFactory = new ethers.ContractFactory(sellerProxyJson.abi, sellerProxyJson.bytecode, this.wallet);

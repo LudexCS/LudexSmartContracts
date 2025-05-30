@@ -124,7 +124,7 @@ class DeployCommand {
             const setStoreTXLedger = yield ledger.setStore(storeAddress);
             yield setStoreTXLedger.wait();
             const setStoreTXPaymentProcessor = yield paymentProcessor.setStore(storeAddress);
-            yield setPaymentProcessorTX.wait();
+            yield setStoreTXPaymentProcessor.wait();
             const sellerProxyJson = loadJson("../build/contracts/contracts/SellerProxy.sol/SellerProxy.json");
             const sellerProxyFactory = new ethers_1.ethers.ContractFactory(sellerProxyJson.abi, sellerProxyJson.bytecode, this.wallet);
             const sellerProxy = yield sellerProxyFactory.deploy(paymentProcessorAddress);
