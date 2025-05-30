@@ -35,8 +35,11 @@ export interface StoreInterface extends Interface {
       | "priceTable"
       | "purchaseItem"
       | "purchaseItemWithPermission"
+      | "purchaseProxy"
+      | "purchaseWithPending"
       | "renounceOwnership"
       | "sellerRegistry"
+      | "setPurchaseProxy"
       | "transferOwnership"
       | "trustedForwarder"
   ): FunctionFragment;
@@ -80,12 +83,24 @@ export interface StoreInterface extends Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "purchaseProxy",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "purchaseWithPending",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "sellerRegistry",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setPurchaseProxy",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -121,11 +136,23 @@ export interface StoreInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "purchaseProxy",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "purchaseWithPending",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "sellerRegistry",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setPurchaseProxy",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -253,9 +280,23 @@ export interface Store extends BaseContract {
     "nonpayable"
   >;
 
+  purchaseProxy: TypedContractMethod<[], [string], "view">;
+
+  purchaseWithPending: TypedContractMethod<
+    [itemID: BigNumberish, token: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   sellerRegistry: TypedContractMethod<[], [string], "view">;
+
+  setPurchaseProxy: TypedContractMethod<
+    [purchaseProxyAddress: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -312,11 +353,28 @@ export interface Store extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "purchaseProxy"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "purchaseWithPending"
+  ): TypedContractMethod<
+    [itemID: BigNumberish, token: AddressLike],
+    [bigint],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "sellerRegistry"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "setPurchaseProxy"
+  ): TypedContractMethod<
+    [purchaseProxyAddress: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;

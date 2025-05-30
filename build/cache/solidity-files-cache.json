@@ -1179,8 +1179,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\Store.sol": {
-      "lastModificationDate": 1748547889770,
-      "contentHash": "435f789dca994cc744627d4c76565c0c",
+      "lastModificationDate": 1748623886849,
+      "contentHash": "777f157e2f508a232e5824161b570d2f",
       "sourceName": "contracts/Store.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1263,7 +1263,7 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PriceTable.sol": {
-      "lastModificationDate": 1748547736534,
+      "lastModificationDate": 1748612548468,
       "contentHash": "28c56ce427ec092a546a36c50675b38d",
       "sourceName": "contracts/PriceTable.sol",
       "solcConfig": {
@@ -1304,8 +1304,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PaymentProcessor.sol": {
-      "lastModificationDate": 1747981731647,
-      "contentHash": "3f3b44ba623d7247966057fe55757c62",
+      "lastModificationDate": 1748618198880,
+      "contentHash": "954371b5a1034614b9da0119f0052a7a",
       "sourceName": "contracts/PaymentProcessor.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1388,7 +1388,7 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\ItemRegistry.sol": {
-      "lastModificationDate": 1748547479559,
+      "lastModificationDate": 1748612548467,
       "contentHash": "0853b1a56981f2c6afaa169c2dd1d01a",
       "sourceName": "contracts/ItemRegistry.sol",
       "solcConfig": {
@@ -1583,8 +1583,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\ProfitEscrow.sol": {
-      "lastModificationDate": 1747656866632,
-      "contentHash": "b3988b8e0cf464266d3a066360b8de17",
+      "lastModificationDate": 1748623475975,
+      "contentHash": "265d29ef6c908d38112b79c2a3144b6d",
       "sourceName": "contracts/ProfitEscrow.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1625,7 +1625,7 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PurchaseProxy.sol": {
-      "lastModificationDate": 1747663206682,
+      "lastModificationDate": 1748613570114,
       "contentHash": "82f86f85e0262501e9d37c34b2223965",
       "sourceName": "contracts/PurchaseProxy.sol",
       "solcConfig": {

@@ -5,6 +5,7 @@ import type { ItemRegistry as ItemRegistryContract } from "../typechain-types/co
 import type { Store as StoreContract } from "../typechain-types/contracts/Store";
 import type { Ledger as LedgerContract } from "../typechain-types/contracts/Ledger";
 import type { ProfitEscrow as ProfitEscrowContract } from "../typechain-types/contracts/ProfitEscrow";
+import { PaymentProcessor as PaymentProcessorContract } from "src/typechain-types";
 
 export class DeployCommand {
   constructor(
@@ -60,15 +61,14 @@ export class DeployCommand {
     };
 
     // --- Deploy MockUSDC (optional)
-    let usdc;
-    if (includeMockUSDC) {
+    if (includeMockUSDC) 
+    {
       const usdcJson = loadJson("../build/contracts/contracts/MockUSDC.sol/MockUSDC.json");
       const MockUSDC = new ethers.ContractFactory(usdcJson.abi, usdcJson.bytecode, this.wallet);
-      usdc = await MockUSDC.deploy(accounts);
+      const usdc = await MockUSDC.deploy(accounts);
       await usdc.waitForDeployment();
       await record("MockUSDC", usdc as Contract, usdcJson.abi, usdc.deploymentTransaction());
     }
-
     // --- Deploy Forwarder
     const forwarderJson = loadJson("../build/contracts/@openzeppelin/contracts/metatx/ERC2771Forwarder.sol/ERC2771Forwarder.json");
     const forwarderFactory = new ethers.ContractFactory(forwarderJson.abi, forwarderJson.bytecode, this.wallet);
@@ -140,8 +140,13 @@ export class DeployCommand {
     await record("Store", store as Contract, storeJson.abi, store.deploymentTransaction());
 
     const storeAddress = await store.getAddress();
-    const setStoreTX = await (ledger as LedgerContract).setStore(storeAddress);
-    await setStoreTX.wait();
+    const setStoreTXLedger = 
+      await (ledger as LedgerContract).setStore(storeAddress);
+    await setStoreTXLedger.wait();
+
+    const setStoreTXPaymentProcessor = 
+      await (paymentProcessor as PaymentProcessorContract).setStore(storeAddress);
+    await setPaymentProcessorTX.wait();
 
     const sellerProxyJson = loadJson("../build/contracts/contracts/SellerProxy.sol/SellerProxy.json");
     const sellerProxyFactory = new ethers.ContractFactory(sellerProxyJson.abi, sellerProxyJson.bytecode, this.wallet);
@@ -159,6 +164,11 @@ export class DeployCommand {
     await purchaseProxy.waitForDeployment();
     await record("PurchaseProxy", purchaseProxy as Contract, purchaseProxyJson.abi, purchaseProxy.deploymentTransaction());
     
+    const purchaseProxyAddress = await purchaseProxy.getAddress();
+    const setPurchaseProxyTX = 
+      await (store as StoreContract).setPurchaseProxy(purchaseProxyAddress);
+    await setPurchaseProxyTX.wait();
+
     return deployed;
   }
 }

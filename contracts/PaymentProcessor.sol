@@ -26,6 +26,8 @@ contract PaymentProcessor is OwnableERC2771Context {
     PriceTable public priceTable;
     ProfitEscrow public profitEscrow;
 
+    address public store;
+
     uint256 public permissionDeadline = 1 hours;
 
     constructor(
@@ -42,6 +44,19 @@ contract PaymentProcessor is OwnableERC2771Context {
         itemRegistry = priceTable.itemRegistry();
         sellerRegistry = priceTable.sellerRegistry();
         profitEscrow = ProfitEscrow(profitEscrowAddress);
+    }
+
+    modifier onlyStore()
+    {
+        require(_msgSender() == store, "Not authorized store");
+        _;
+    }
+
+    function setStore(address storeAddress)
+        external
+        onlyOwner
+    {
+        store = storeAddress;
     }
 
     /// @notice Calculate fee rate for an item based on its registration time.
@@ -70,6 +85,7 @@ contract PaymentProcessor is OwnableERC2771Context {
         address token
     )
         external
+        onlyStore
     {
         uint256 tokenAmount = priceTable.priceOfItemIn(itemID, token);
         require(
@@ -117,6 +133,46 @@ contract PaymentProcessor is OwnableERC2771Context {
         );
 
         profitEscrow.accumulate(itemID, token, childShare);
+    }
+
+    function processWithPending(
+        uint32 itemID,
+        address token
+    )
+        external
+        onlyStore
+    {
+        uint256 tokenAmount = priceTable.priceOfItemIn(itemID, token);
+
+        uint16 feeRate = paymentFeeRate(itemID);
+        uint256 feeTokenAmount = (tokenAmount * feeRate) / 10000;
+
+        uint256 remainingTokenAmount = tokenAmount - feeTokenAmount;
+
+        _recordSharedPendingProfit(itemID, token, remainingTokenAmount);
+    }
+
+    function _recordSharedPendingProfit (
+        uint32 itemID,
+        address token,
+        uint256 tokenAmount
+    )
+        private
+    {
+        uint8 sharers = itemRegistry.numberOfSharers(itemID);
+        uint256 childShare = tokenAmount;
+
+        for (uint8 i = 0; i < sharers; i++) {
+            uint32 parentID = itemRegistry.revenueSharerOfItem(itemID, i);
+            uint16 share = priceTable.getRevShare(parentID, itemID);
+            uint256 parentStake = (tokenAmount * share) / 10000;
+
+            childShare -= parentStake;
+
+            _recordSharedPendingProfit(parentID, token, parentStake);
+        }
+
+        profitEscrow.accumulatePendingProfit(itemID, token, childShare);
     }
 
     /// @notice Change the expiration time allowed for permit usage.

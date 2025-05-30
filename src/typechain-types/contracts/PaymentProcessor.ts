@@ -34,9 +34,12 @@ export interface PaymentProcessorInterface extends Interface {
       | "permissionDeadline"
       | "priceTable"
       | "process"
+      | "processWithPending"
       | "profitEscrow"
       | "renounceOwnership"
       | "sellerRegistry"
+      | "setStore"
+      | "store"
       | "transferOwnership"
       | "trustedForwarder"
   ): FunctionFragment;
@@ -73,6 +76,10 @@ export interface PaymentProcessorInterface extends Interface {
     values: [AddressLike, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "processWithPending",
+    values: [BigNumberish, AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "profitEscrow",
     values?: undefined
   ): string;
@@ -84,6 +91,11 @@ export interface PaymentProcessorInterface extends Interface {
     functionFragment: "sellerRegistry",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "setStore",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(functionFragment: "store", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [AddressLike]
@@ -114,6 +126,10 @@ export interface PaymentProcessorInterface extends Interface {
   decodeFunctionResult(functionFragment: "priceTable", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "process", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "processWithPending",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "profitEscrow",
     data: BytesLike
   ): Result;
@@ -125,6 +141,8 @@ export interface PaymentProcessorInterface extends Interface {
     functionFragment: "sellerRegistry",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setStore", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "store", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -223,11 +241,25 @@ export interface PaymentProcessor extends BaseContract {
     "nonpayable"
   >;
 
+  processWithPending: TypedContractMethod<
+    [itemID: BigNumberish, token: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   profitEscrow: TypedContractMethod<[], [string], "view">;
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   sellerRegistry: TypedContractMethod<[], [string], "view">;
+
+  setStore: TypedContractMethod<
+    [storeAddress: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  store: TypedContractMethod<[], [string], "view">;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -274,6 +306,13 @@ export interface PaymentProcessor extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "processWithPending"
+  ): TypedContractMethod<
+    [itemID: BigNumberish, token: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "profitEscrow"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
@@ -281,6 +320,12 @@ export interface PaymentProcessor extends BaseContract {
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "sellerRegistry"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "setStore"
+  ): TypedContractMethod<[storeAddress: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "store"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "transferOwnership"

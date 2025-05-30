@@ -54,11 +54,10 @@ class DeployCommand {
                 console.log(`${name} deployed at:`, address);
             });
             // --- Deploy MockUSDC (optional)
-            let usdc;
             if (includeMockUSDC) {
                 const usdcJson = loadJson("../build/contracts/contracts/MockUSDC.sol/MockUSDC.json");
                 const MockUSDC = new ethers_1.ethers.ContractFactory(usdcJson.abi, usdcJson.bytecode, this.wallet);
-                usdc = yield MockUSDC.deploy(accounts);
+                const usdc = yield MockUSDC.deploy(accounts);
                 yield usdc.waitForDeployment();
                 yield record("MockUSDC", usdc, usdcJson.abi, usdc.deploymentTransaction());
             }
@@ -122,8 +121,10 @@ class DeployCommand {
             yield store.waitForDeployment();
             yield record("Store", store, storeJson.abi, store.deploymentTransaction());
             const storeAddress = yield store.getAddress();
-            const setStoreTX = yield ledger.setStore(storeAddress);
-            yield setStoreTX.wait();
+            const setStoreTXLedger = yield ledger.setStore(storeAddress);
+            yield setStoreTXLedger.wait();
+            const setStoreTXPaymentProcessor = yield paymentProcessor.setStore(storeAddress);
+            yield setPaymentProcessorTX.wait();
             const sellerProxyJson = loadJson("../build/contracts/contracts/SellerProxy.sol/SellerProxy.json");
             const sellerProxyFactory = new ethers_1.ethers.ContractFactory(sellerProxyJson.abi, sellerProxyJson.bytecode, this.wallet);
             const sellerProxy = yield sellerProxyFactory.deploy(paymentProcessorAddress);
@@ -137,6 +138,9 @@ class DeployCommand {
             const purchaseProxy = yield purchaseProxyFactory.deploy(storeAddress);
             yield purchaseProxy.waitForDeployment();
             yield record("PurchaseProxy", purchaseProxy, purchaseProxyJson.abi, purchaseProxy.deploymentTransaction());
+            const purchaseProxyAddress = yield purchaseProxy.getAddress();
+            const setPurchaseProxyTX = yield store.setPurchaseProxy(purchaseProxyAddress);
+            yield setPurchaseProxyTX.wait();
             return deployed;
         });
     }

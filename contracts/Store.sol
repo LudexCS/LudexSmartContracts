@@ -23,6 +23,8 @@ contract Store is OwnableERC2771Context {
     ItemRegistry public itemRegistry;
     SellerRegistry public sellerRegistry;
 
+    address public purchaseProxy;
+
     event ItemPurchased(
         uint32 indexed itemID,
         address indexed buyer,
@@ -49,6 +51,13 @@ contract Store is OwnableERC2771Context {
             itemRegistry.isOnSale(itemID),
             "Item is not on sale");
         _;
+    }
+
+    function setPurchaseProxy (address purchaseProxyAddress)
+        external
+        onlyOwner
+    {
+        purchaseProxy = purchaseProxyAddress;
     }
 
     /// @notice Perform permit-based approval for token transfer.
@@ -143,4 +152,18 @@ contract Store is OwnableERC2771Context {
         return _purchaseItem(_msgSender(), itemID, token);
     }
 
+    function purchaseWithPending(
+        uint32 itemID,
+        address token
+    )
+        external
+        onlyItemOnSale(itemID)
+        returns (uint256 purchaseID)
+    {
+        require(_msgSender() == purchaseProxy, "Not purchase proxy");
+        payment.processWithPending(itemID, token);
+        purchaseID = ledger.logPurchase(itemID, _msgSender());
+
+        emit ItemPurchased(itemID, _msgSender(), purchaseID);
+    }
 }

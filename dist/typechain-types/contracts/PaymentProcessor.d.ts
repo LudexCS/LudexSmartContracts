@@ -1,7 +1,7 @@
 import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
 import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../common";
 export interface PaymentProcessorInterface extends Interface {
-    getFunction(nameOrSignature: "changePermissionDeadline" | "feeRateLog" | "isTrustedForwarder" | "itemRegistry" | "owner" | "permissionDeadline" | "priceTable" | "process" | "profitEscrow" | "renounceOwnership" | "sellerRegistry" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
+    getFunction(nameOrSignature: "changePermissionDeadline" | "feeRateLog" | "isTrustedForwarder" | "itemRegistry" | "owner" | "permissionDeadline" | "priceTable" | "process" | "processWithPending" | "profitEscrow" | "renounceOwnership" | "sellerRegistry" | "setStore" | "store" | "transferOwnership" | "trustedForwarder"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
     encodeFunctionData(functionFragment: "changePermissionDeadline", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "feeRateLog", values: [BigNumberish]): string;
@@ -11,9 +11,12 @@ export interface PaymentProcessorInterface extends Interface {
     encodeFunctionData(functionFragment: "permissionDeadline", values?: undefined): string;
     encodeFunctionData(functionFragment: "priceTable", values?: undefined): string;
     encodeFunctionData(functionFragment: "process", values: [AddressLike, BigNumberish, AddressLike]): string;
+    encodeFunctionData(functionFragment: "processWithPending", values: [BigNumberish, AddressLike]): string;
     encodeFunctionData(functionFragment: "profitEscrow", values?: undefined): string;
     encodeFunctionData(functionFragment: "renounceOwnership", values?: undefined): string;
     encodeFunctionData(functionFragment: "sellerRegistry", values?: undefined): string;
+    encodeFunctionData(functionFragment: "setStore", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "store", values?: undefined): string;
     encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "trustedForwarder", values?: undefined): string;
     decodeFunctionResult(functionFragment: "changePermissionDeadline", data: BytesLike): Result;
@@ -24,9 +27,12 @@ export interface PaymentProcessorInterface extends Interface {
     decodeFunctionResult(functionFragment: "permissionDeadline", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "priceTable", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "process", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "processWithPending", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "profitEscrow", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "renounceOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "sellerRegistry", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "setStore", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "store", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "trustedForwarder", data: BytesLike): Result;
 }
@@ -84,9 +90,21 @@ export interface PaymentProcessor extends BaseContract {
     ], [
         void
     ], "nonpayable">;
+    processWithPending: TypedContractMethod<[
+        itemID: BigNumberish,
+        token: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
     profitEscrow: TypedContractMethod<[], [string], "view">;
     renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
     sellerRegistry: TypedContractMethod<[], [string], "view">;
+    setStore: TypedContractMethod<[
+        storeAddress: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
+    store: TypedContractMethod<[], [string], "view">;
     transferOwnership: TypedContractMethod<[
         newOwner: AddressLike
     ], [
@@ -115,9 +133,17 @@ export interface PaymentProcessor extends BaseContract {
     ], [
         void
     ], "nonpayable">;
+    getFunction(nameOrSignature: "processWithPending"): TypedContractMethod<[
+        itemID: BigNumberish,
+        token: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
     getFunction(nameOrSignature: "profitEscrow"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "renounceOwnership"): TypedContractMethod<[], [void], "nonpayable">;
     getFunction(nameOrSignature: "sellerRegistry"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "setStore"): TypedContractMethod<[storeAddress: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "store"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
     getFunction(nameOrSignature: "trustedForwarder"): TypedContractMethod<[], [string], "view">;
     getEvent(key: "OwnershipTransferred"): TypedContractEvent<OwnershipTransferredEvent.InputTuple, OwnershipTransferredEvent.OutputTuple, OwnershipTransferredEvent.OutputObject>;
