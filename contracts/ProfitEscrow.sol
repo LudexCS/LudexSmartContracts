@@ -17,7 +17,7 @@ contract ProfitEscrow is OwnableERC2771Context {
     mapping(uint32 => mapping(address => uint256)) private profit;
 
     mapping(uint32 => mapping(address => uint256)) private pendingProfit;
-    uint256 private wholePendingProfit;
+    mapping(address => uint256) private wholePendingProfit;
 
     event ProfitClaimed(
         uint32 indexed itemID,
@@ -96,7 +96,7 @@ contract ProfitEscrow is OwnableERC2771Context {
         onlyPaymentProcessor
     {
         pendingProfit[itemID][token] += amount;
-        wholePendingProfit += amount;
+        wholePendingProfit[token] += amount;
 
         emit ProfitPending(itemID, token, amount);
     }
@@ -140,13 +140,13 @@ contract ProfitEscrow is OwnableERC2771Context {
         return pendingProfit[itemID][token];
     }
 
-    function getWholePendingProfit()
+    function getWholePendingProfit(address token)
         external
         view
         onlyOwner
         returns (uint256)
     {
-        return wholePendingProfit;
+        return wholePendingProfit[token];
     }
 
     function settlePendingProfit(
@@ -171,7 +171,7 @@ contract ProfitEscrow is OwnableERC2771Context {
             }
         }
 
-        wholePendingProfit -= totalAmount;
+        wholePendingProfit[token] -= totalAmount;
 
         require(
             tokenContract.allowance(owner(), address(this)) >= totalAmount,

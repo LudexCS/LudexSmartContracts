@@ -8,7 +8,7 @@ export interface ProfitEscrowInterface extends Interface {
     encodeFunctionData(functionFragment: "claim", values: [BigNumberish, AddressLike, AddressLike]): string;
     encodeFunctionData(functionFragment: "getBalanceFor", values: [BigNumberish, AddressLike]): string;
     encodeFunctionData(functionFragment: "getPendingProfit", values: [BigNumberish, AddressLike]): string;
-    encodeFunctionData(functionFragment: "getWholePendingProfit", values?: undefined): string;
+    encodeFunctionData(functionFragment: "getWholePendingProfit", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "isTrustedForwarder", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "itemRegistry", values?: undefined): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -173,7 +173,11 @@ export interface ProfitEscrow extends BaseContract {
     ], [
         bigint
     ], "view">;
-    getWholePendingProfit: TypedContractMethod<[], [bigint], "view">;
+    getWholePendingProfit: TypedContractMethod<[
+        token: AddressLike
+    ], [
+        bigint
+    ], "view">;
     isTrustedForwarder: TypedContractMethod<[
         forwarder: AddressLike
     ], [
@@ -235,7 +239,7 @@ export interface ProfitEscrow extends BaseContract {
     ], [
         bigint
     ], "view">;
-    getFunction(nameOrSignature: "getWholePendingProfit"): TypedContractMethod<[], [bigint], "view">;
+    getFunction(nameOrSignature: "getWholePendingProfit"): TypedContractMethod<[token: AddressLike], [bigint], "view">;
     getFunction(nameOrSignature: "isTrustedForwarder"): TypedContractMethod<[forwarder: AddressLike], [boolean], "view">;
     getFunction(nameOrSignature: "itemRegistry"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;

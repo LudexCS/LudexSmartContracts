@@ -1583,8 +1583,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\ProfitEscrow.sol": {
-      "lastModificationDate": 1748623475975,
-      "contentHash": "265d29ef6c908d38112b79c2a3144b6d",
+      "lastModificationDate": 1748629986775,
+      "contentHash": "5889eb1f3ff0fcd0ea865cb884a47f8c",
       "sourceName": "contracts/ProfitEscrow.sol",
       "solcConfig": {
         "version": "0.8.21",

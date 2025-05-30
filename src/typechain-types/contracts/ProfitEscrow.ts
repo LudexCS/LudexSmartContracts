@@ -76,7 +76,7 @@ export interface ProfitEscrowInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getWholePendingProfit",
-    values?: undefined
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "isTrustedForwarder",
@@ -339,7 +339,11 @@ export interface ProfitEscrow extends BaseContract {
     "view"
   >;
 
-  getWholePendingProfit: TypedContractMethod<[], [bigint], "view">;
+  getWholePendingProfit: TypedContractMethod<
+    [token: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   isTrustedForwarder: TypedContractMethod<
     [forwarder: AddressLike],
@@ -418,7 +422,7 @@ export interface ProfitEscrow extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "getWholePendingProfit"
-  ): TypedContractMethod<[], [bigint], "view">;
+  ): TypedContractMethod<[token: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "isTrustedForwarder"
   ): TypedContractMethod<[forwarder: AddressLike], [boolean], "view">;
