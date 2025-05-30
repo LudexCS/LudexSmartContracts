@@ -27,6 +27,7 @@ export interface ItemRegistryInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "getItemsOfSeller"
+      | "isOnSale"
       | "itemRevenueSharers"
       | "nameHash"
       | "numberOfSharers"
@@ -40,7 +41,6 @@ export interface ItemRegistryInterface extends Interface {
       | "setPriceTable"
       | "setSellerProxy"
       | "suspendItemSale"
-      | "suspensions"
       | "timestampRegistered"
       | "transferOwnership"
       | "transferSellerRight"
@@ -57,6 +57,10 @@ export interface ItemRegistryInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getItemsOfSeller",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isOnSale",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "itemRevenueSharers",
@@ -112,10 +116,6 @@ export interface ItemRegistryInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "suspensions",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "timestampRegistered",
     values: [BigNumberish]
   ): string;
@@ -132,6 +132,7 @@ export interface ItemRegistryInterface extends Interface {
     functionFragment: "getItemsOfSeller",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isOnSale", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "itemRevenueSharers",
     data: BytesLike
@@ -173,10 +174,6 @@ export interface ItemRegistryInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "suspendItemSale",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "suspensions",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -309,6 +306,8 @@ export interface ItemRegistry extends BaseContract {
     "view"
   >;
 
+  isOnSale: TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
+
   itemRevenueSharers: TypedContractMethod<
     [arg0: BigNumberish, arg1: BigNumberish],
     [bigint],
@@ -374,8 +373,6 @@ export interface ItemRegistry extends BaseContract {
     "nonpayable"
   >;
 
-  suspensions: TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
-
   timestampRegistered: TypedContractMethod<
     [arg0: BigNumberish],
     [bigint],
@@ -401,6 +398,9 @@ export interface ItemRegistry extends BaseContract {
   getFunction(
     nameOrSignature: "getItemsOfSeller"
   ): TypedContractMethod<[seller_: AddressLike], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "isOnSale"
+  ): TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
   getFunction(
     nameOrSignature: "itemRevenueSharers"
   ): TypedContractMethod<
@@ -467,9 +467,6 @@ export interface ItemRegistry extends BaseContract {
   getFunction(
     nameOrSignature: "suspendItemSale"
   ): TypedContractMethod<[itemID: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "suspensions"
-  ): TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
   getFunction(
     nameOrSignature: "timestampRegistered"
   ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;

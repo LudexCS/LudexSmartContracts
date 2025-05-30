@@ -24,7 +24,7 @@ contract ItemRegistry is Ownable {
     mapping (uint32 => uint32[]) public revenueSharingItems;
     mapping (uint32 => uint256) public timestampRegistered;
 
-    mapping (uint32 => bool) public suspensions;
+    mapping (uint32 => bool) public isOnSale;
 
     mapping (uint256 => uint32[]) private listGenerator;
     uint256 private listGenId;
@@ -139,6 +139,7 @@ contract ItemRegistry is Ownable {
         itemID = abi.encode(itemNameHash, seller_).fnv1a32();
 
         seller[itemID] = seller_;
+        isOnSale[itemID] = true;
         itemsOfSeller[seller_].push(itemID);
 
         itemRevenueSharers[itemID] = revenueSharers;
@@ -158,6 +159,7 @@ contract ItemRegistry is Ownable {
             uint32 itemShareID = abi.encode(itemID, shareTermID).fnv1a32();
 
             seller[itemShareID] = seller_;
+            isOnSale[itemShareID] = true;
             itemsOfSeller[seller_].push(itemShareID);
 
             assert(
@@ -184,7 +186,7 @@ contract ItemRegistry is Ownable {
         private
     {
         accumulation.push(itemID);
-        suspensions[itemID] = true;
+        isOnSale[itemID] = false;
         for (uint8 i = 0 ; i < revenueSharingItems[itemID].length; i++)
         {
             _suspendItemSale(revenueSharingItems[itemID][i], accumulation);
@@ -214,7 +216,7 @@ contract ItemRegistry is Ownable {
         private
     {
         accumulation.push(itemID);
-        suspensions[itemID] = true;
+        isOnSale[itemID] = true;
         for (uint8 i = 0; i < revenueSharingItems[itemID].length; i ++)
         {
             _resumeItemSale(revenueSharingItems[itemID][i], accumulation);

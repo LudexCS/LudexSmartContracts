@@ -1179,8 +1179,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\Store.sol": {
-      "lastModificationDate": 1747652623322,
-      "contentHash": "3c07bff94ecdb16fa589234e0ec0dfc4",
+      "lastModificationDate": 1748547889770,
+      "contentHash": "435f789dca994cc744627d4c76565c0c",
       "sourceName": "contracts/Store.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1263,8 +1263,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PriceTable.sol": {
-      "lastModificationDate": 1748013810746,
-      "contentHash": "ede42664b2757a3c81d4af3eb3a0c22d",
+      "lastModificationDate": 1748547736534,
+      "contentHash": "28c56ce427ec092a546a36c50675b38d",
       "sourceName": "contracts/PriceTable.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1388,8 +1388,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\ItemRegistry.sol": {
-      "lastModificationDate": 1747977281784,
-      "contentHash": "a53fcf3c9a961c519355f0fc933d2678",
+      "lastModificationDate": 1748547479559,
+      "contentHash": "0853b1a56981f2c6afaa169c2dd1d01a",
       "sourceName": "contracts/ItemRegistry.sol",
       "solcConfig": {
         "version": "0.8.21",

@@ -43,6 +43,14 @@ contract Store is OwnableERC2771Context {
         sellerRegistry = priceTable.sellerRegistry();
     }
 
+    modifier onlyItemOnSale(uint32 itemID)
+    {
+        require(
+            itemRegistry.isOnSale(itemID),
+            "Item is not on sale");
+        _;
+    }
+
     /// @notice Perform permit-based approval for token transfer.
     function getPermission(
         address buyer,
@@ -103,6 +111,7 @@ contract Store is OwnableERC2771Context {
         address token
     )
         external
+        onlyItemOnSale(itemID)
         returns (uint256 purchaseID)
     {
         require(
@@ -121,6 +130,7 @@ contract Store is OwnableERC2771Context {
         bytes32 s
     )
         external
+        onlyItemOnSale(itemID)
         returns (uint256 purchaseID)
     {
         if (_isTokenPermitted(_msgSender(), token))

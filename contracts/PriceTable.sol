@@ -88,8 +88,10 @@ contract PriceTable is OwnableERC2771Context {
         sellerRegistry = SellerRegistry(sellerRegistryAddress);
     }
 
-    modifier onlyItemOnSale (uint32 itemID) {
-        require(itemRegistry.seller(itemID) != address(0));
+    modifier onlyRegisteredItem (uint32 itemID) {
+        require(
+            itemRegistry.seller(itemID) != address(0),
+            "This item is not registered");
         _;
     }
 
@@ -101,7 +103,7 @@ contract PriceTable is OwnableERC2771Context {
     modifier onlyRegistry () {
         require(
             msg.sender == address(itemRegistry),
-            "Initialization of Item Price can only be made by ItemRegistry");
+            "This function call can only be made by ItemRegistry");
         _;
     }
 
@@ -133,7 +135,7 @@ contract PriceTable is OwnableERC2771Context {
     ) 
         public
         view
-        onlyItemOnSale(itemID)
+        onlyRegisteredItem(itemID)
         returns (uint256 tokenAmount)
     {
         require(
@@ -155,7 +157,7 @@ contract PriceTable is OwnableERC2771Context {
     )
         external
         view
-        onlyItemOnSale (itemID)
+        onlyRegisteredItem (itemID)
         returns (PriceInfo[] memory prices)
     {
         prices = new PriceInfo[](paymentChannels.length);
@@ -172,7 +174,7 @@ contract PriceTable is OwnableERC2771Context {
     )
         external
         view
-        onlyItemOnSale (sharerID)
+        onlyRegisteredItem (sharerID)
         returns (uint16 revShare)
     {
         uint16 reducedShare = type(uint16).max;
