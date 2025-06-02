@@ -25,6 +25,7 @@ contract ItemRegistry is Ownable {
     mapping (uint32 => uint256) public timestampRegistered;
 
     mapping (uint32 => bool) public isOnSale;
+    mapping (uint32 => bool) public suspensionRoot;
 
     mapping (uint256 => uint32[]) private listGenerator;
     uint256 private listGenId;
@@ -204,6 +205,7 @@ contract ItemRegistry is Ownable {
         onlyOwner
     {
         uint32[] storage list = listGenerator[++listGenId];
+        suspensionRoot[itemID] = true;
         _suspendItemSale(itemID, list);
         emit ItemSaleSuspended(itemID, list);
     }
@@ -219,6 +221,9 @@ contract ItemRegistry is Ownable {
         isOnSale[itemID] = true;
         for (uint8 i = 0; i < revenueSharingItems[itemID].length; i ++)
         {
+            uint32 revenueSharingItem = revenueSharingItems[itemID][i];
+            if (suspensionRoot[revenueSharingItem])
+                continue;
             _resumeItemSale(revenueSharingItems[itemID][i], accumulation);
         }
     }
@@ -232,6 +237,7 @@ contract ItemRegistry is Ownable {
         onlyOwner
     {
         uint32[] storage list = listGenerator[++listGenId];
+        suspensionRoot[itemID] = false;
         _resumeItemSale(itemID, list);
         emit ItemSaleResumed(itemID, list);
     }

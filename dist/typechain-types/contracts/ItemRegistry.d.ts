@@ -1,7 +1,7 @@
 import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
 import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../common";
 export interface ItemRegistryInterface extends Interface {
-    getFunction(nameOrSignature: "getItemsOfSeller" | "isOnSale" | "itemRevenueSharers" | "nameHash" | "numberOfSharers" | "owner" | "registerItem" | "renounceOwnership" | "resumeItemSale" | "revenueSharerOfItem" | "revenueSharingItems" | "seller" | "setPriceTable" | "setSellerProxy" | "suspendItemSale" | "timestampRegistered" | "transferOwnership" | "transferSellerRight"): FunctionFragment;
+    getFunction(nameOrSignature: "getItemsOfSeller" | "isOnSale" | "itemRevenueSharers" | "nameHash" | "numberOfSharers" | "owner" | "registerItem" | "renounceOwnership" | "resumeItemSale" | "revenueSharerOfItem" | "revenueSharingItems" | "seller" | "setPriceTable" | "setSellerProxy" | "suspendItemSale" | "suspensionRoot" | "timestampRegistered" | "transferOwnership" | "transferSellerRight"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "ItemRegistered" | "ItemSaleResumed" | "ItemSaleSuspended" | "OwnershipTransferred"): EventFragment;
     encodeFunctionData(functionFragment: "getItemsOfSeller", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "isOnSale", values: [BigNumberish]): string;
@@ -25,6 +25,7 @@ export interface ItemRegistryInterface extends Interface {
     encodeFunctionData(functionFragment: "setPriceTable", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "setSellerProxy", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "suspendItemSale", values: [BigNumberish]): string;
+    encodeFunctionData(functionFragment: "suspensionRoot", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "timestampRegistered", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "transferSellerRight", values: [BigNumberish, AddressLike]): string;
@@ -43,6 +44,7 @@ export interface ItemRegistryInterface extends Interface {
     decodeFunctionResult(functionFragment: "setPriceTable", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "setSellerProxy", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "suspendItemSale", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "suspensionRoot", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "timestampRegistered", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "transferSellerRight", data: BytesLike): Result;
@@ -185,6 +187,7 @@ export interface ItemRegistry extends BaseContract {
     ], [
         void
     ], "nonpayable">;
+    suspensionRoot: TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
     timestampRegistered: TypedContractMethod<[
         arg0: BigNumberish
     ], [
@@ -248,6 +251,7 @@ export interface ItemRegistry extends BaseContract {
     ], "nonpayable">;
     getFunction(nameOrSignature: "setSellerProxy"): TypedContractMethod<[sellerProxy_: AddressLike], [void], "nonpayable">;
     getFunction(nameOrSignature: "suspendItemSale"): TypedContractMethod<[itemID: BigNumberish], [void], "nonpayable">;
+    getFunction(nameOrSignature: "suspensionRoot"): TypedContractMethod<[arg0: BigNumberish], [boolean], "view">;
     getFunction(nameOrSignature: "timestampRegistered"): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
     getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
     getFunction(nameOrSignature: "transferSellerRight"): TypedContractMethod<[
