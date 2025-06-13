@@ -163,6 +163,11 @@ contract ItemRegistry is Ownable {
             isOnSale[itemShareID] = true;
             itemsOfSeller[seller_].push(itemShareID);
 
+            itemRevenueSharers[itemShareID] = revenueSharers;
+            for (uint16 j = 0 ; j < revenueSharers.length; j ++)
+            {
+                revenueSharingItems[revenueSharers[j]].push(itemShareID);
+            }   
             assert(
                 priceTable.initializeItemPrice(
                     itemShareID, 

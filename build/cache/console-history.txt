@@ -1,3 +1,117 @@
+await priceTable.revenueSharing(764492463, 1)
+await priceTable.revenueSharing(764492463, 0)
+await itemRegistry.timestampRegistered(2162799128)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0xD9cFD4c2b149FB8cbf2682374e5AF782b9e87743")
+await priceTable.getRevShare(764492463, 2162799128)
+priceTable.getDeclaredShare(764492463, 2162799128)
+var priceTable = await ethers.getContractAt("PriceTable", "0x2df9A2A92f36847b9b5a70e603F9C379878F5246")
+yield
+await priceTable.revenueSharing(764492463, 1)
+await priceTable.revenueSharing(764492463, 0)
+await priceTablte.revenueSharing(764492463, 0)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0x3D74fE60C0c259ffC9cF4C855c178586A1289083")
+await priceTable.getDeclaredShare(764492463, 2162799128)
+await priceTable.getDeclaredShare
+await priceTable.getRevShare(764492463, 2162799128)
+await priceTable.getDeclaredShare(764492463, 2162799128)
+priceTable.getDeclaredShare(764492463, 2162799128)
+var priceTable = await ethers.getContractAt("PriceTable", "0x464420D7F97BFbEe986A7211420dB2CdF3b0F8C6")
+await itemRegistry.revenueSharerOfItem(2162799128, 1)
+await itemRegistry.timestampRegistered(2162799128)
+await itemRegistry.timestampRegistered(764492463)
+itemRegistry.timestampRegistered(764492463)
+)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0x44a72F9c6df7947C4EF01a37c65255df41Cec28C"
+await priceTable.getRevShare(764492463, 2162799128)
+await priceTable.revenueSharing(764492463, 1)
+await priceTable.revenueSharing(764492463, 0)
+await priceTable.getPriceUsd(2162799128)
+)
+var priceTable = await ethers.getContractAt("PriceTable", "0xf27b1Ec602fe063125d4A4042Cf7442C89c559c1"
+await priceTable.revenueSharing(2644850097, 0)
+await priceTable.revenueSharing(2644850097, 1)
+await priceTable.getPriceUsd(424062523)
+await priceTable.revenueSharing(2644850097, 1)
+await priceTable.revenueSharing(2644850097, 0)
+await priceTable.revenueSharing(3021322027, 1)
+await priceTable.revenueSharing(3021322027, 0)
+await itemRegistry.timestampRegistered(2162799128)
+await itemRegistry.timestampRegistered(764492463)
+await priceTable.revenueSharing(764492463, 2)
+await priceTable.revenueSharing(764492463, 1)
+await priceTable.revenueSharing(764492463, 0)
+await itemRegistry.timestampRegistered(2162799128)
+await priceTable.revenueSharing(764492463, 0)
+11990000000000000000n * 1000n / 10000n
+await priceTable.getPriceUsd(2162799128)
+await priceTable.discountEndTime(2162799128)
+await itemRegistry.numberOfSharers(2162799128)
+await priceTable.getPriceUsd(2162799128)
+await priceTable.getRevShare(764492463, 2162799128)
+await itemRegistry.revenueSharerOfItem(2162799128, 1)
+await itemRegistry.revenueSharerOfItem(2162799128, 0)
+itemRegistry.revenueSharerOfItem(2162799128, 0)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0xd30170762F247e825e5B8301C59D586A76845370")
+await priceTable.usdPrice(2162799128)
+await priceTable.revenueSharing(764492463, 0)
+await priceTable.getRevShare(764492463, 2162799128)
+await priceTable.getPriceUsd(2162799128)
+priceTable.getPriceUsd(2162799128)
+await priceTable.getPriceUsd(2162799128)
+priceTable.getPriceUsd(2162799128)
+var priceTable = await ethers.getContractAt("PriceTable", "0xCfF42e8b993A873D52E430a8e8e94B674D79BA28")
+yield
+await priceTable.getPriceUsd.staticCall(678565060)
+await priceTable.getUsdTakings(678565060)
+await priceTable.getPriceUsd(678565060)
+await priceTable.getUsdPrice(678565060)
+await priceTable.getUsdTakings(678565060)
+await itemRegistry.numberOfSharers(2162799128)
+itemRegistry.numberOfSharers(2162799128)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0xd30170762F247e825e5B8301C59D586A76845370")
+await priceTable.getUsdTakings(2162799128)
+await priceTable.getPriceInfoList(2162799128)
+await priceTable.getPriceUsd(2162799128)
+await priceTable.getPriceInfoList(2162799128)
+await priceTable.getUsdTakings(2162799128)
+await priceTable.getUsdTakings
+await priceTable.usdPrice(2162799128)
+await priceTable.getUsdTakings(2162799128)
+await priceTable.getUsdTakings
+await priceTable.getUsdTakings(2162799128n);
+var priceTable = await ethers.getContractAt("PriceTable", "0xCfF42e8b993A873D52E430a8e8e94B674D79BA28");
+signers = await signers
+var signers = ethers.getSigners()
+await usdc.allowance(ownerAddress, "0x17fC9045f4A6aD2C3A6615062370D09FE495e142")
+usdc.connect(owner).approve("0x17fC9045f4A6aD2C3A6615062370D09FE495e142", ethers.MaxUint256)
+usdc.connect(owner).approve
+usdc.approve
+await usdc.allowance(ownerAddress, "0x17fC9045f4A6aD2C3A6615062370D09FE495e142")
+await usdc.allowance(ownerAddress, "0x3aFC117E852e97A41143B06782627F113929FF30")
+usdc.allowance(ownerAddress, "0x3aFC117E852e97A41143B06782627F113929FF30")
+var ownerAddress = await owner.getAddress();
+var usdc = await ethers.getContractAt("MockUSDC", "0x30Db32C834bBada42AF142F183C89F68621b8742")
+var profitEscrow = await ethers.getContractAt("ProfitEscrow", "0x3aFC117E852e97A41143B06782627F113929FF30")
+var owner = signers[0]
+var signers = singers
+signers
+var owner = signers[0]
+var singers = await ethers.getSigners()
+await mockUSDC.balanceOf("0x3aFC117E852e97A41143B06782627F113929FF30")
+await mockUSDC.balanceOf(ownerAddress)
+await mockUSDC.connect(owner).allowance(ownerAddress, "0x3aFC117E852e97A41143B06782627F113929FF30")
+await mockUSDC.connect(owner).approve("0x3aFC117E852e97A41143B06782627F113929FF30", max);
+var max = ethers.MaxUint256;
+await mockUSDC.connect(owner).allowance(ownerAddress, "0x3aFC117E852e97A41143B06782627F113929FF30")
+mockUSDC.connect(owner).allowance(ownerAddress, "0x3aFC117E852e97A41143B06782627F113929FF30")
+var ownerAddress = await owner.getAddress();
+await owner.getAddress()
+awaitowner.getAddress()
+mockUSDC = await mockUSDC;
+var mockUSDC = ethers.getContractAt("MockUSDC", "0x30Db32C834bBada42AF142F183C89F68621b8742")
+var owner = signers[0]
+signers = await signers
+var signers = ethers.getSigners()
 await itemRegistry.seller(2524044708)
 var itemRegistry = await ethers.getContractAt("ItemRegistry", "0xF6104BEc7Ef58C02A31e23570710b58eC9b4806A")
 await priceTable.discountUsdPrice(1030516071)
@@ -138,17 +252,4 @@ await store.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
 store.isTrustedForwarder
 let store = Store.attach("0xAdD7B73d47Fc342be20058329acF01c833F3bCD1");
 let Store = await ethers.getContractFactory("Store");
-let signerOwner = signers[0];
-await owner
-let owner = signers[0];
-owner;
-owner = signers[0];
-signers = await ethers.getSigners();
-let signers = ethers.getSigners();
-owner = ethers.getSigner(0);
-owner = ethers.getSigners(0);
-[owner, user1, user2, user3, user4] = ethers.getSigners();
-let [owner, user1, user2, user3, user4] = ethers.getSigners();
-let [owner, user1, user2, user3, user4] = ethers.getSigners90;
-yield
-let [owner, user] = await ethers.getSigners();
+let signe

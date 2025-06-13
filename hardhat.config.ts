@@ -6,7 +6,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const config: HardhatUserConfig = {
-    solidity: "0.8.21",
+    solidity: {
+        version: "0.8.21",
+        settings: {
+            viaIR: true
+        }
+    },
     paths: {
         artifacts: path.join(__dirname, "src/build/contracts"),
         cache: path.join(__dirname, "build/cache"),

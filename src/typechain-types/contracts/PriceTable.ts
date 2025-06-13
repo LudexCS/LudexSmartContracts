@@ -44,6 +44,7 @@ export interface PriceTableInterface extends Interface {
       | "changeRevShare"
       | "discountEndTime"
       | "discountUsdPrice"
+      | "getDeclaredShare"
       | "getPriceInfoList"
       | "getPriceUsd"
       | "getRevShare"
@@ -102,6 +103,10 @@ export interface PriceTableInterface extends Interface {
   encodeFunctionData(
     functionFragment: "discountUsdPrice",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDeclaredShare",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPriceInfoList",
@@ -207,6 +212,10 @@ export interface PriceTableInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "discountUsdPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDeclaredShare",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -491,6 +500,12 @@ export interface PriceTable extends BaseContract {
 
   discountUsdPrice: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
 
+  getDeclaredShare: TypedContractMethod<
+    [sharerID: BigNumberish, itemID: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
   getPriceInfoList: TypedContractMethod<
     [itemID: BigNumberish],
     [PriceTable.PriceInfoStructOutput[]],
@@ -615,6 +630,13 @@ export interface PriceTable extends BaseContract {
   getFunction(
     nameOrSignature: "discountUsdPrice"
   ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getDeclaredShare"
+  ): TypedContractMethod<
+    [sharerID: BigNumberish, itemID: BigNumberish],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getPriceInfoList"
   ): TypedContractMethod<

@@ -11,7 +11,7 @@ export declare namespace PriceTable {
     };
 }
 export interface PriceTableInterface extends Interface {
-    getFunction(nameOrSignature: "addPaymentChannel" | "changeExchangeRate" | "changeItemPrice" | "changeRevShare" | "discountEndTime" | "discountUsdPrice" | "getPriceInfoList" | "getPriceUsd" | "getRevShare" | "initializeItemPrice" | "isTrustedForwarder" | "itemRegistry" | "owner" | "paymentChannels" | "priceOfItemIn" | "reducedRevShare" | "removePaymentChannel" | "renounceOwnership" | "revShareReductionEndTime" | "revenueSharing" | "sellerRegistry" | "startDiscount" | "startRevShareReductionEvent" | "transferOwnership" | "trustedForwarder" | "usdPrice" | "usdToToken"): FunctionFragment;
+    getFunction(nameOrSignature: "addPaymentChannel" | "changeExchangeRate" | "changeItemPrice" | "changeRevShare" | "discountEndTime" | "discountUsdPrice" | "getDeclaredShare" | "getPriceInfoList" | "getPriceUsd" | "getRevShare" | "initializeItemPrice" | "isTrustedForwarder" | "itemRegistry" | "owner" | "paymentChannels" | "priceOfItemIn" | "reducedRevShare" | "removePaymentChannel" | "renounceOwnership" | "revShareReductionEndTime" | "revenueSharing" | "sellerRegistry" | "startDiscount" | "startRevShareReductionEvent" | "transferOwnership" | "trustedForwarder" | "usdPrice" | "usdToToken"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "DiscountStarted" | "ExchangeRateChanged" | "ItemPriceChanged" | "OwnershipTransferred" | "PaymentChannelAdded" | "PaymentChannelRemoved" | "RevShareChanged" | "RevShareReductionStarted"): EventFragment;
     encodeFunctionData(functionFragment: "addPaymentChannel", values: [AddressLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "changeExchangeRate", values: [AddressLike, BigNumberish]): string;
@@ -19,6 +19,7 @@ export interface PriceTableInterface extends Interface {
     encodeFunctionData(functionFragment: "changeRevShare", values: [BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "discountEndTime", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "discountUsdPrice", values: [BigNumberish]): string;
+    encodeFunctionData(functionFragment: "getDeclaredShare", values: [BigNumberish, BigNumberish]): string;
     encodeFunctionData(functionFragment: "getPriceInfoList", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getPriceUsd", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "getRevShare", values: [BigNumberish, BigNumberish]): string;
@@ -46,6 +47,7 @@ export interface PriceTableInterface extends Interface {
     decodeFunctionResult(functionFragment: "changeRevShare", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "discountEndTime", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "discountUsdPrice", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "getDeclaredShare", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getPriceInfoList", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getPriceUsd", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getRevShare", data: BytesLike): Result;
@@ -233,6 +235,12 @@ export interface PriceTable extends BaseContract {
     ], "nonpayable">;
     discountEndTime: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
     discountUsdPrice: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+    getDeclaredShare: TypedContractMethod<[
+        sharerID: BigNumberish,
+        itemID: BigNumberish
+    ], [
+        bigint
+    ], "view">;
     getPriceInfoList: TypedContractMethod<[
         itemID: BigNumberish
     ], [
@@ -337,6 +345,12 @@ export interface PriceTable extends BaseContract {
     ], "nonpayable">;
     getFunction(nameOrSignature: "discountEndTime"): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
     getFunction(nameOrSignature: "discountUsdPrice"): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
+    getFunction(nameOrSignature: "getDeclaredShare"): TypedContractMethod<[
+        sharerID: BigNumberish,
+        itemID: BigNumberish
+    ], [
+        bigint
+    ], "view">;
     getFunction(nameOrSignature: "getPriceInfoList"): TypedContractMethod<[
         itemID: BigNumberish
     ], [

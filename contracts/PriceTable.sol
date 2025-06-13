@@ -118,12 +118,27 @@ contract PriceTable is OwnableERC2771Context {
         view
         returns (uint256 price)
     {
-        if (discountEndTime[itemID] >= block.timestamp)
-        {
-            return discountUsdPrice[itemID];
+        uint256 base = usdPrice[itemID];
+        uint256 totalReduced = 0;
+
+        uint8 numSharers = itemRegistry.numberOfSharers(itemID);
+        for (uint8 i = 0; i < numSharers; i++) {
+            uint32 sharerId = itemRegistry.revenueSharerOfItem(itemID, i);
+            uint16 currentShare = getRevShare(sharerId, itemID);
+            uint16 originalShare = getDeclaredShare(sharerId, itemID);
+            if (originalShare > currentShare) {
+                totalReduced += (base * (originalShare - currentShare)) / 10_000;
+            }
         }
 
-        return usdPrice[itemID];
+        uint256 reducedPrice = base - totalReduced;
+
+        if (discountEndTime[itemID] >= block.timestamp) {
+            uint256 discount = discountUsdPrice[itemID];
+            return reducedPrice < discount ? reducedPrice : discount;
+        }
+
+        return reducedPrice;
     }
 
     /// @notice Price of an item in given ERC-20 FT `token`
@@ -168,34 +183,78 @@ contract PriceTable is OwnableERC2771Context {
         }
     }
 
+    function getDeclaredShare(
+        uint32 sharerID,
+        uint32 itemID
+    ) 
+        public 
+        view 
+        returns (uint16) 
+    {
+        uint256 timestamp = itemRegistry.timestampRegistered(itemID);
+        uint16 declaredShare = 0;
+
+        for (uint256 i = 0; i < revenueSharing[sharerID].length; i++) {
+            if (revenueSharing[sharerID][i].timestamp <= timestamp) {
+                declaredShare = revenueSharing[sharerID][i].sharePermyriad;
+            } else {
+                break;
+            }
+        }
+        
+        return declaredShare;
+    }
+
     function getRevShare(
         uint32 sharerID,
         uint32 itemID
     )
-        external
+        public
         view
         onlyRegisteredItem (sharerID)
         returns (uint16 revShare)
     {
-        uint16 reducedShare = type(uint16).max;
-        if (revShareReductionEndTime[sharerID] > block.timestamp)
-        {
-            reducedShare = reducedRevShare[sharerID];
+        // 1. 본인의 선언된 지분
+        uint16 declaredShare = getDeclaredShare(sharerID, itemID);
+
+        // 2. 본인의 감면 지분 (if any)
+        uint16 reducedSelf = type(uint16).max;
+        if (revShareReductionEndTime[sharerID] > block.timestamp) {
+            reducedSelf = reducedRevShare[sharerID];
         }
 
-        uint256 length = revenueSharing[sharerID].length;
-        uint256 timestampItemRegister = itemRegistry.timestampRegistered(itemID);
+        // 3. upstream 감면 누적 계산
+        uint16 upstreamReductionTotal = 0;
+        uint8 numParents = itemRegistry.numberOfSharers(sharerID);
+        for (uint8 i = 0; i < numParents; i++) {
+            uint32 parent = itemRegistry.revenueSharerOfItem(sharerID, i);
+            uint16 current = getRevShare(parent, sharerID);
 
-        for (uint256 i = 0; i < length; i ++)
-        {
-            if (revenueSharing[sharerID][i].timestamp > timestampItemRegister)
-                break;
-            revShare = revenueSharing[sharerID][i].sharePermyriad;
+            uint16 declared = 0;
+            RevShare[] memory parentHistory = revenueSharing[parent];
+            uint256 parentTimestamp = itemRegistry.timestampRegistered(sharerID);
+            for (uint256 j = 0; j < parentHistory.length; j++) {
+                if (parentHistory[j].timestamp <= parentTimestamp) {
+                    declared = parentHistory[j].sharePermyriad;
+                } else {
+                    break;
+                }
+            }
+
+            if (declared > current) {
+                upstreamReductionTotal += (declared - current);
+            }
         }
 
-        if (reducedShare < revShare)
-        {
-            revShare = reducedShare;
+        // 4. 최종 지분 계산
+        uint16 upstreamEffect = 
+            10000 > upstreamReductionTotal 
+            ?   10000 - upstreamReductionTotal 
+            :   0;
+        revShare = declaredShare * upstreamEffect / 10000;
+
+        if (reducedSelf < revShare) {
+            revShare = reducedSelf;
         }
     }
 
