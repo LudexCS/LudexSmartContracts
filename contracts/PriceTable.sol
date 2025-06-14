@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0;
 
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "./OwnableERC2771Context.sol";
@@ -201,7 +202,7 @@ contract PriceTable is OwnableERC2771Context {
                 break;
             }
         }
-        
+
         return declaredShare;
     }
 
@@ -251,7 +252,16 @@ contract PriceTable is OwnableERC2771Context {
             10000 > upstreamReductionTotal 
             ?   10000 - upstreamReductionTotal 
             :   0;
-        revShare = declaredShare * upstreamEffect / 10000;
+        uint256 product = uint256(declaredShare) * uint256(upstreamEffect);
+        uint256 result = product / 10000;
+
+        require(result <= type(uint16).max, string(abi.encodePacked(
+            "overflow: declared=", Strings.toString(declaredShare),
+            ", effect=", Strings.toString(upstreamEffect),
+            ", result=", Strings.toString(result)
+        )));
+
+        revShare = uint16(result);
 
         if (reducedSelf < revShare) {
             revShare = reducedSelf;

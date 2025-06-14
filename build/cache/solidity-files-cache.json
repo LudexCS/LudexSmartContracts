@@ -1255,8 +1255,8 @@
       ]
     },
     "D:\\Solidity\\LudexSmartContracts\\contracts\\PriceTable.sol": {
-      "lastModificationDate": 1749849098263,
-      "contentHash": "93f917c8667a85ce8f19cb4ca56504ff",
+      "lastModificationDate": 1749858749148,
+      "contentHash": "fb2c1f052fbe7a918373e9d1aec7bfa1",
       "sourceName": "contracts/PriceTable.sol",
       "solcConfig": {
         "version": "0.8.21",
@@ -1284,6 +1284,7 @@
         }
       },
       "imports": [
+        "@openzeppelin/contracts/utils/Strings.sol",
         "@openzeppelin/contracts/token/ERC20/ERC20.sol",
         "./OwnableERC2771Context.sol",
         "./ItemRegistry.sol",

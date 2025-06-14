@@ -1,3 +1,25 @@
+await priceTable.getDeclaredShare(764492463, 2162799128)
+await itemRegistry.numberOfSharers(764492463)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0xD8e74C0655B5305abeE43ffbED03354B744C0962")
+await priceTable.getRevShare(764492463, 2162799128)
+var priceTable = await ethers.getContractAt("PriceTable", "0xfa0A8CB963DA679ed61e6C33e1E7cDc901EE482a")
+await priceTable.getRevShare(3739683494, 2162799128)
+await itemRegistry.numberOfSharers(3739683494)
+await priceTable.getRevShare(764492463, 2162799128)
+await priceTable.getDeclaredShare(764492463, 2162799128)
+await itemRegistry.numberOfSharers(764492463)
+await itemRegistry.numberOfSharers(2162799128)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0x16fA208cbCB569DFEE6E7a8D9aAaA5e11174C3c4")
+await priceTable.getDeclaredShare(764492463, 2162799128)
+await priceTable.getRevShare(764492463, 2162799128)
+var priceTable = await ethers.getContractAt("PriceTable", "0xA5295A3cDA6b7c44E2E0d26924F8D96c5133632d")
+await itemRegistry.numberOfSharers(2162799128)
+await itemRegistry.numberOfSharers(764492463)
+)
+var itemRegistry = await ethers.getContractAt("ItemRegistry", "0xE9A05Ce2BC71C09C1b0b4DE2aAEFB3679402AE55"
+await priceTable.getRevShare(764492463, 2162799128)
+await priceTable.getDeclaredShare(764492463, 2162799128)
+var priceTable = await ethers.getContractAt("PriceTable", "0x6Dd3e620ac7Ddf75701A8787CD51D76fc3eA143a")
 await priceTable.revenueSharing(764492463, 1)
 await priceTable.revenueSharing(764492463, 0)
 await itemRegistry.timestampRegistered(2162799128)
@@ -252,4 +274,9 @@ await store.isTrustedForwarder("0xb9bf741D2F7b56B9e854344Fd2c5eCE1a8731C4a");
 store.isTrustedForwarder
 let store = Store.attach("0xAdD7B73d47Fc342be20058329acF01c833F3bCD1");
 let Store = await ethers.getContractFactory("Store");
-let signe
+let signerOwner = signers[0];
+await owner
+let owner = signers[0];
+owner;
+owner = signers[0];
+sign
